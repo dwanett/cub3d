@@ -1,0 +1,46 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2021/01/15 01:41:01 by dwanetta          #+#    #+#              #
+#    Updated: 2021/01/15 01:41:01 by dwanetta         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+#gcc -I/usr/include -O3 -I mlx_linux/  -c -o main.o main.c
+#gcc -o cub3d main.o -L mlx_linux/ -lmlx -L/usr/include/../lib -lXext -lX11 -lm -lbsd
+#gcc -O3 -I mlx_linux/ -c -o main.o main.c
+#gcc -o cub3d main.o -L mlx_linux/ -lmlx -lXext -lX11 -lm -lbsd
+
+NAME = cub3d
+CC = gcc
+FLAGS = -Wall -Wextra #-Werror
+LIB = -L mlx_linux/ -L get_next_line/ -L libft/
+OPTION_LIB = -lmlx -lXext -lX11 -lm -lbsd -lft -lgnl
+OPTION = -O3 -c
+LIBFT = make -C libft
+GNLIB = make -C get_next_line
+SRCS = main.c
+
+OBJS_SRCS = ${SRCS:.c=.o}
+
+all: $(NAME)
+
+$(NAME) : $(OBJS_SRCS)
+		@$(CC) $(FLAGS) $(OPTION) $(SRCS)
+		#@$(LIBFT)
+		#@$(GNLIB)
+		@$(CC) $(OBJS_SRCS) -o $(NAME) $(LIB) $(OPTION_LIB)
+clean:
+		rm -f $(OBJS_SRCS)
+		#@$(LIBFT) clean
+		#@$(GNLIB) clean
+fclean: clean
+		rm -f $(NAME)
+		#@$(LIBFT) fclean
+		#@$(GNLIB) fclean
+re: fclean all
+.PHONY: all clean fclean re

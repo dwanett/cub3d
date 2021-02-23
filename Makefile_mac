@@ -1,0 +1,42 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2021/01/15 01:41:01 by dwanetta          #+#    #+#              #
+#    Updated: 2021/01/15 01:41:01 by dwanetta         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+NAME = cub3d
+CC = gcc
+FLAGS = -Wall -Wextra -Werror
+LIB = libmlx.dylib
+OPTION_LIB = -framework Metal -framework AppKit
+OPTION = -c
+LIBFT = make -C libft
+GNL = cd get_next_line && $(CC) $(FLAGS) $(OPTION) *.c -I get_next_line.h && cd ..
+SRCS = main.c
+
+OBJS_SRCS = ${SRCS:.c=.o}
+
+all: $(NAME)
+
+$(NAME) : $(OBJS_SRCS)
+		@$(CC) $(FLAGS) $(OPTION) $(SRCS)
+		@cp mlx_mac/$(LIB) .
+		#@cp mlx/$(LIB) .
+		@$(LIBFT)
+		@$(GNL)
+		@$(CC) $(LIB) $(OPTION_LIB) $(OBJS_SRCS) -o $(NAME)
+clean:
+		rm -f $(OBJS_SRCS)
+		@$(LIBFT) clean
+fclean: clean
+		rm -f $(NAME)
+		rm -f $(LIB)
+		@$(LIBFT) fclean
+re: fclean all
+.PHONY: all clean fclean re
