@@ -6,17 +6,29 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/02/24 20:31:52 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/02/25 23:30:06 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 #include <stdio.h>
 
+void ft_init_file(char *line, t_file *file)
+{
+	int i;
+
+	i = 0;
+	if (line[0] == 'R')
+	{
+
+	}
+}
+
 int	ft_pars(fd)
 {
-	t_file file;
-	int i;
+	t_file	file;
+	char	*line;
+	int		i;
 
 	i = 1;
 	file.R_x = 0;
@@ -31,8 +43,10 @@ int	ft_pars(fd)
 	file.map = NULL;
 	while (i > 0)
 	{
+		i = get_next_line(fd, &line);
 		if (i == -1)
 			break ;
+		ft_init_file(line, &file);
 	}
 }
 
@@ -41,7 +55,7 @@ int ft_open_file(int argc, char *argv[])
 	int fd;
 	int size_argv;
 
-	if (argc <= 1)
+	if (argc <= 1 || argc >= 4)
 	{
 		ft_putstr_fd("Error\nNumber of arguments\n", 1);
 		return (-1);
