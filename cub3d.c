@@ -20,11 +20,54 @@ void ft_init_file(char *line, t_file *file)
 	i = 0;
 	if (line[0] == 'R')
 	{
-
+		while (ft_isdigit(line[i]) == 0)
+			i++;
+		file->R_x = ft_atoi(line + i);
+		while (ft_isdigit(line[i]) == 1)
+			i++;
+		file->R_y = ft_atoi(line + i);
 	}
+	else if (line[0] == 'F')
+	{
+		while (ft_isdigit(line[i]) == 0)
+			i++;
+		file->F[0] = ft_atoi(line + i);
+		while (ft_isdigit(line[i]) == 1)
+			i++;
+		i++;
+		file->F[1] = ft_atoi(line + i);
+		while (ft_isdigit(line[i]) == 1)
+			i++;
+		i++;
+		file->F[2] = ft_atoi(line + i);
+	}
+	else if (line[0] == 'C')
+	{
+		while (ft_isdigit(line[i]) == 0)
+			i++;
+		file->C[0] = ft_atoi(line + i);
+		while (ft_isdigit(line[i]) == 1)
+			i++;
+		i++;
+		file->C[1] = ft_atoi(line + i);
+		while (ft_isdigit(line[i]) == 1)
+			i++;
+		i++;
+		file->C[2] = ft_atoi(line + i);
+	}
+	else if (line[0] == 'N' && line[1] == 'O')
+		file->NO_texture = ft_strtrim(line + 2, " ");
+	else if (line[0] == 'S' && line[1] == 'O')
+		file->SO_texture = ft_strtrim(line + 2, " ");
+	else if (line[0] == 'W' && line[1] == 'E')
+		file->WE_texture = ft_strtrim(line + 2, " ");
+	else if (line[0] == 'E' && line[1] == 'A')
+		file->EA_texture = ft_strtrim(line + 2, " ");
+	else if (line[0] == 'S' && line[1] != 'O')
+		file->S_texture = ft_strtrim(line + 2, " ");
 }
 
-int	ft_pars(fd)
+int	ft_pars(int fd)
 {
 	t_file	file;
 	char	*line;
@@ -38,8 +81,6 @@ int	ft_pars(fd)
 	file.WE_texture = NULL;
 	file.EA_texture = NULL;
 	file.S_texture = NULL;
-	file.C[0] = 0;
-	file.C[0] = 0;
 	file.map = NULL;
 	while (i > 0)
 	{
@@ -48,6 +89,15 @@ int	ft_pars(fd)
 			break ;
 		ft_init_file(line, &file);
 	}
+	printf("x = %d\n", file.R_x);
+	printf("y = %d\n", file.R_y);
+	printf("NO_texture = %s\n", file.NO_texture);
+	printf("SO_texture = %s\n", file.SO_texture);
+	printf("WE_texture = %s\n", file.WE_texture);
+	printf("EA_texture = %s\n", file.EA_texture);
+	printf("S_texture = %s\n", file.S_texture);
+	printf("F = %d,%d,%d\n", file.F[0], file.F[1], file.F[2]);
+	printf("C = %d,%d,%d\n", file.C[0], file.C[1], file.C[2]);
 }
 
 int ft_open_file(int argc, char *argv[])
