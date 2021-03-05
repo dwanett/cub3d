@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 18:41:07 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/02/24 20:28:11 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/01 15:19:07 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef struct	s_file
 	char		*S_texture;
 	int			F[3];
 	int			C[3];
-	char		*map;
+	char		**map;
 }				t_file;
 
 #endif
