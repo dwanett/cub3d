@@ -30,10 +30,52 @@ int ft_init_file_int(char *line, int *i)
 	return (0);
 }
 
-void ft_init_file_char(char *line, t_file *file, char **tmp_map)
+int check_last_str_map(char **tmp_map)
+{
+	int	i;
+
+	i = ft_strlen(*tmp_map);
+	while (tmp_map[0][i] != '1')
+		i--;
+	while (tmp_map[0][i] != '\n')
+	{
+		if (tmp_map[0][i] != ' ' && tmp_map[0][i] !=  '1')
+			return (0);
+		i--;
+	}
+	if (i == 0)
+		return (0);
+	return (1);
+}
+
+int ft_save_map(char *line, char **tmp_map, int *return_gnl)
 {
 	char *tmp;
+	int	i;
 
+	if (line[0] == '\0' && *return_gnl == 1 && *tmp_map != NULL && check_last_str_map(tmp_map) != 1)
+	{
+		ft_putstr_fd("Error\nInvalid map\n", 1);
+		exit(-1);
+	}
+	if (line[0] != '\0')
+	{
+		if (*tmp_map == NULL) {
+			*tmp_map = line;
+			*tmp_map = ft_strjoin(*tmp_map, "\n");
+		} else {
+			tmp = *tmp_map;
+			*tmp_map = ft_strjoin(*tmp_map, line);
+			free(tmp);
+			tmp = *tmp_map;
+			*tmp_map = ft_strjoin(*tmp_map, "\n");
+			free(tmp);
+		}
+	}
+}
+
+void ft_init_file_char(char *line, t_file *file, char **tmp_map, int *return_gnl)
+{
 	if (line[0] == 'N' && line[1] == 'O' && *tmp_map == NULL)
 		file->NO_texture = ft_strtrim(line + 2, " ");
 	else if (line[0] == 'S' && line[1] == 'O' && *tmp_map == NULL)
@@ -47,22 +89,7 @@ void ft_init_file_char(char *line, t_file *file, char **tmp_map)
 	else if (file->R_x != 0 && file->R_y != 0 && file->NO_texture != NULL
 				&& file->SO_texture != NULL && file->WE_texture != NULL
 				&& file->EA_texture != NULL && file->S_texture != NULL)
-	{
-					if (*tmp_map == NULL)
-					{
-						*tmp_map = line;
-						*tmp_map = ft_strjoin(*tmp_map, "\n");
-					}
-					else
-					{
-						tmp = *tmp_map;
-						*tmp_map = ft_strjoin(*tmp_map, line);
-						free(tmp);
-						tmp = *tmp_map;
-						*tmp_map = ft_strjoin(*tmp_map, "\n");
-						free(tmp);
-					}
-	}
+		ft_save_map(line, tmp_map, return_gnl);
 	else if (line[0] != '\0')
 	{
 		ft_putstr_fd("Error\nInvalid file\n", 1);
@@ -70,7 +97,7 @@ void ft_init_file_char(char *line, t_file *file, char **tmp_map)
 	}
 }
 
-void ft_init_file(char *line, t_file *file, char **tmp_map)
+void ft_init_file(char *line, t_file *file, char **tmp_map, int *return_gnl)
 {
 	int i;
 	int j;
@@ -89,7 +116,39 @@ void ft_init_file(char *line, t_file *file, char **tmp_map)
 		while (j != 3)
 			file->C[j++] = ft_init_file_int(line, &i);
 	else
-		ft_init_file_char(line, file, tmp_map);
+		ft_init_file_char(line, file, tmp_map, return_gnl);
+}
+
+int check_map(char **map)
+{
+	int i;
+	int j;
+	int	flag_player;
+
+	i = 0;
+	flag_player = 0;
+	if (map == NULL)
+		return (-1);
+	while (map[i] != NULL)
+	{
+		j = 0;
+		while (map[i][j] == ' ')
+			j++;
+		if (map[i][j] != '1')
+			return (-1);
+		while (map[i][j] != '\0')
+		{
+			if ((i == 0 || map[i + 1] == NULL) && map[i][j] != '1' && map[i][j] != ' ')
+				return (-1);
+			if ((map[i][j] == 'N' || map[i][j] == 'S' || map[i][j] == 'W' || map[i][j] == 'E') && flag_player == 0)
+				flag_player = 1;
+			j++;
+		}
+		if (map[i][j - 1] != '1')
+			return (-1);
+		i++;
+	}
+	return (0);
 }
 
 int ft_pars(int fd, t_file *file)
@@ -112,7 +171,7 @@ int ft_pars(int fd, t_file *file)
 		i = get_next_line(fd, &line);
 		if (i == -1)
 			return (-1);
-		ft_init_file(line, file, &tmp_map);
+		ft_init_file(line, file, &tmp_map, &i);
 		free(line);
 	}
 	file->map = ft_split(tmp_map, '\n');
@@ -141,58 +200,31 @@ int ft_open_file(int argc, char *argv[], t_file *file)
 	return (ft_pars(fd, file));
 }
 
-int check_map(char **map)
-{
-	int i;
-	int j;
-
-	i = 0;
-	if (map == NULL)
-		return (-1);
-	while (map[i] != NULL)
-	{
-		j = 0;
-		while (map[i][j] != '\0')
-		{
-			//printf("map[%d][%d] = %c\n", i, j, map[i][j]);
-			if ((i == 0 || map[i + 1] == NULL) && map[i][j] != '1' && map[i][j] != ' ')
-				return (-1);
-			j++;
-		}
-		//printf("map[%d] = %s\n", i, map[i]);
-		i++;
-	}
-	return (0);
-}
-
 int ft_check_init_file(t_file *file)
 {
-	int return_value;
-
-	return_value  = 0;
 	if (file->R_x < 1 || file->R_y < 1)
 	{
 		ft_putstr_fd("Error\nInvalid resolution\n", 1);
-		return_value = -1;
+		return(-1);
 	}
 	if (file->F[0] < 0 || file->F[1] < 0 || file->F[2] < 0 ||
 	 file->F[0] > 255 || file->F[1] > 255 || file->F[2] > 255)
 	{
 		ft_putstr_fd("Error\nInvalid floor color ([0-255], [0-255], [0-255])\n", 1);
-		return_value = -1;
+		return(-1);
 	}
 	if (file->C[0] < 0 || file->C[1] < 0 || file->C[2] < 0 ||
 		file->C[0] > 255 || file->C[1] > 255 || file->C[2] > 255)
 	{
 		ft_putstr_fd("Error\nInvalid ceiling color ([0-255], [0-255], [0-255])\n", 1);
-		return_value = -1;
+		return(-1);
 	}
 	if (check_map(file->map) == -1)
 	{
 		ft_putstr_fd("Error\nInvalid map\n", 1);
-		return_value = -1;
+		return(-1);
 	}
-	return(return_value);
+	return(0);
 }
 
 void full_free_file(t_file *file)
@@ -236,6 +268,7 @@ int main(int argc, char *argv[])
 	}
 	full_free_file(&file);
 }
+
 	/*
 void my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
