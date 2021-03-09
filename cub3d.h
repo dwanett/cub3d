@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 18:41:07 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/09 15:39:17 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/09 16:41:28 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,12 @@
 #include <fcntl.h>
 
 #define FOV 3.14 / 3
+
+typedef struct	s_vars
+{
+	void		*mlx;
+	void		*win;
+}				t_vars;
 
 typedef struct	s_data
 {
