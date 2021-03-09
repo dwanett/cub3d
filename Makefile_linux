@@ -23,7 +23,9 @@ OPTION_LIB = -lmlx -lXext -lX11 -lm -lbsd -lft -lgnl
 OPTION = -O3 -c -g
 LIBFT = make -C libft
 GNLIB = make -C get_next_line
-SRCS = cub3d.c
+SRCS =	cub3d.c\
+		check_file_save_map.c\
+		init_file.c
 
 OBJS_SRCS = ${SRCS:.c=.o}
 
