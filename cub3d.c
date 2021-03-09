@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/09 15:35:07 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/09 15:56:27 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,6 @@ int		main(int argc, char *argv[])
 		exit(-1);
 	if (ft_check_init_file(&file) == -1)
 		exit(-1);
-	printf("x = %d\n", file.R_x);
-	printf("y = %d\n", file.R_y);
-	printf("NO_texture = %s\n", file.NO_texture);
-	printf("SO_texture = %s\n", file.SO_texture);
-	printf("WE_texture = %s\n", file.WE_texture);
-	printf("EA_texture = %s\n", file.EA_texture);
-	printf("S_texture  = %s\n", file.S_texture);
-	printf("F = %d,%d,%d\n", file.F[0], file.F[1], file.F[2]);
-	printf("C = %d,%d,%d\n", file.C[0], file.C[1], file.C[2]);
-	while (file.map[i] != NULL)
-	{
-		printf("map[%2d] = %s\n", i, file.map[i]);
-		i++;
-	}
 	full_free_file(&file);
 }
 
@@ -72,3 +58,18 @@ void my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	}
 012NSEW
 */
+
+/*printf("x = %d\n", file.R_x);
+	printf("y = %d\n", file.R_y);
+	printf("NO_texture = %s\n", file.NO_texture);
+	printf("SO_texture = %s\n", file.SO_texture);
+	printf("WE_texture = %s\n", file.WE_texture);
+	printf("EA_texture = %s\n", file.EA_texture);
+	printf("S_texture  = %s\n", file.S_texture);
+	printf("F = %d,%d,%d\n", file.F[0], file.F[1], file.F[2]);
+	printf("C = %d,%d,%d\n", file.C[0], file.C[1], file.C[2]);
+	while (file.map[i] != NULL)
+	{
+		printf("map[%2d] = %s\n", i, file.map[i]);
+		i++;
+	}*/
