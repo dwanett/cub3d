@@ -13,9 +13,8 @@
 NAME = cub3d
 CC = gcc
 FLAGS = -Wall -Wextra #-Werror
-#LIB = libmlx.dylib
-LIB = -L mlx_mac -L get_next_line -L libft
-OPTION_LIB = -framework Metal -framework AppKit -lgnl -lft
+LIB =  mlx_mac/libmlx.dylib -L get_next_line -L libft
+OPTION_LIB =  -lgnl -lft -framework Metal -framework AppKit
 OPTION = -c
 LIBFT = make -C libft
 GNLIB = make -C get_next_line
@@ -29,17 +28,16 @@ all: $(NAME)
 
 $(NAME) : $(OBJS_SRCS)
 		@$(CC) $(FLAGS) $(OPTION) $(SRCS)
-		#@$(LIBFT)
-		#@$(GNLIB)
+		@$(LIBFT)
+		@$(GNLIB)
 		@$(CC) $(LIB) $(OPTION_LIB) $(OBJS_SRCS) -o $(NAME)
 clean:
 		rm -f $(OBJS_SRCS)
-		#@$(LIBFT) clean
-		#@$(GNLIB) clean
+		@$(LIBFT) clean
+		@$(GNLIB) clean
 fclean: clean
 		rm -f $(NAME)
-		rm -f $(LIB)
-		#@$(LIBFT) fclean
-		#@$(GNLIB) fclean
+		@$(LIBFT) fclean
+		@$(GNLIB) fclean
 re: fclean all
 .PHONY: all clean fclean re

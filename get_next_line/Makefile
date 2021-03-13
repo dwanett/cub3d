@@ -11,12 +11,12 @@ OBJS_SRCS = ${SRCS:.c=.o}
 all: $(NAME)
 
 $(NAME) : $(OBJS_SRCS)
-		$(CC) $(FLAGS) $(OPTION) $(SRCS)
+		@$(CC) $(FLAGS) $(OPTION) $(SRCS)
 		ar rc $(NAME) $(OBJS_SRCS)
 		ranlib $(NAME)
 
 clean:
-		rm -f $(OBJS_SRCS)
+		@rm -f $(OBJS_SRCS)
 fclean: clean
 		rm -f $(NAME)
 re: fclean all
