@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/14 09:20:10 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/14 19:21:36 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int ft_window(t_file file)
 	my_mlx_pixel_put(&img, 5, 5, 0x00FF0000);
 	mlx_put_image_to_window(vars.mlx, vars.win, img.img, 0, 0);
 	mlx_hook(vars.win, 2, 0, ft_key_hook, &vars);
-	mlx_hook(vars.win, 17, 0, ft_close_exit, &vars);
+	mlx_hook(vars.win, CLOSE, 0, ft_close_exit, &vars);
 	mlx_loop(vars.mlx);
 	return (0);
 }

@@ -2,7 +2,7 @@ NAME = libgnl.a
 CC = gcc
 FLAGS = -Wall -Wextra #-Werror
 HEADER = get_next_line.h
-OPTION = -c -I $(HEADER)
+OPTION = -c
 SRCS =	get_next_line.c\
 		get_next_line_utils.c
 

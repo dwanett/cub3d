@@ -2,7 +2,7 @@ NAME = libft.a
 CC = gcc
 FLAGS = -Wall -Wextra #-Werror
 HEADER = libft.h
-OPTION = -c -I $(HEADER)
+OPTION = -c
 SRCS =	ft_memset.c\
 		ft_strlen.c\
 		ft_bzero.c\

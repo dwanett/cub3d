@@ -6,27 +6,26 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 18:41:07 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/14 09:20:42 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/14 19:33:35 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
-#define CUB3D_H
+# define CUB3D_H
 
-#ifdef __APPLE__
-	#include "mlx_mac/mlx.h"
-	#define CLOSE 17
-#else
-	#include "mlx_linux/mlx.h"
-	#define CLOSE 33
-#endif
+# ifdef __APPLE__
+#  include "mlx_mac/mlx.h"
+#  define CLOSE 17
+# else
+#  include "mlx_linux/mlx.h"
+#  define CLOSE 33
+# endif
+# include "libft/libft.h"
+# include "get_next_line/get_next_line.h"
+# include <math.h>
+# include <fcntl.h>
 
-#include "libft/libft.h"
-#include "get_next_line/get_next_line.h"
-#include <math.h>
-#include <fcntl.h>
-
-#define FOV 3.14 / 3
+# define FOV 3.14 / 3
 
 typedef struct	s_vars
 {
@@ -57,16 +56,17 @@ typedef struct	s_file
 	char		**map;
 }				t_file;
 
-int		check_last_str_map(char **tmp_map);
-void	ft_save_map(char *line, char **tmp_map, int *return_gnl);
-int		help_check_map(char **map, int *flag_player, int *i, int *j);
-int		check_map(char **map);
-int		ft_check_init_file(t_file *file);
-int		ft_init_file_int(char *line, int *i);
-void	ft_init_file_char(char *line, t_file *file,
-					char **tmp_map, int *return_gnl);
-void	ft_init_file(char *line, t_file *file, char **tmp_map, int *return_gnl);
-int		ft_pars(int fd, t_file *file);
-int		ft_open_file(int argc, char *argv[], t_file *file);
+int				check_last_str_map(char **tmp_map);
+void			ft_save_map(char *line, char **tmp_map, int *return_gnl);
+int				help_check_map(char **map, int *flag_player, int *i, int *j);
+int				check_map(char **map);
+int				ft_check_init_file(t_file *file);
+int				ft_init_file_int(char *line, int *i);
+void			ft_init_file_char(char *line, t_file *file,
+				char **tmp_map, int *return_gnl);
+void			ft_init_file(char *line, t_file *file, char **tmp_map,
+				int *return_gnl);
+int				ft_pars(int fd, t_file *file);
+int				ft_open_file(int argc, char *argv[], t_file *file);
 
 #endif
