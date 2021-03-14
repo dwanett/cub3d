@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/14 10:05:20 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/14 23:41:14 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	full_free_file(t_file *file)
 	free(file->map);
 }
 
-void my_mlx_pixel_put(t_data *data, int x, int y, int color)
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
 	char *dst;
 
@@ -36,18 +36,82 @@ void my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-int ft_key_hook(int keycode, t_vars *vars)
+void print_kodred(t_all *all, int x, int y)
 {
-	printf("%d\n", keycode);
+	int tmp_y;
+	int tmp_x;
+
+	tmp_y = y;
+	tmp_x = x;
+	while (x != (tmp_x + 10))
+	{
+		y = tmp_y;
+		while (y != (tmp_y + 10))
+		{
+			my_mlx_pixel_put(&all->data, x, y, 0x00FF0000);
+			y++;
+		}
+		x++;
+	}
+	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
+}
+
+x = 500;
+y = 100;
+
+int		render_next_frame(t_all *all)
+{
+	print_kodred(all, x, y);
+	if (all->key.keycode == W)
+	{
+		mlx_destroy_image(all->vars.mlx, all->data.img);
+		all->data.img = mlx_new_image(all->vars.mlx, all->file.R_x, all->file.R_y);
+		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
+										   &all->data.endian);
+		y--;
+	}
+	if (all->key.keycode == S)
+	{
+		mlx_destroy_image(all->vars.mlx, all->data.img);
+		all->data.img = mlx_new_image(all->vars.mlx, all->file.R_x, all->file.R_y);
+		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
+										   &all->data.endian);
+		y++;
+	}
+	if (all->key.keycode == A)
+	{
+		mlx_destroy_image(all->vars.mlx, all->data.img);
+		all->data.img = mlx_new_image(all->vars.mlx, all->file.R_x, all->file.R_y);
+		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
+		 								   &all->data.endian);
+		x--;
+	}
+	if (all->key.keycode == D)
+	{
+		mlx_destroy_image(all->vars.mlx, all->data.img);
+		all->data.img = mlx_new_image(all->vars.mlx, all->file.R_x, all->file.R_y);
+		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
+		 								   &all->data.endian);
+		x++;
+	}
+	all->key.keycode = 0;
+}
+
+int ft_key_hook(int keycode, t_all *all)
+{
 	if (keycode == ESC)
 	{
-		mlx_destroy_window(vars->mlx, vars->win);
+		mlx_destroy_window(all->vars.mlx, all->vars.win);
 		exit(-1);
 	}
-	//if (keycode == W)
-	//if (keycode == S)
-	//if (keycode == A)
-	//if (keycode == D)
+	if (keycode == W)
+		all->key.keycode = keycode;
+	if (keycode == S)
+		all->key.keycode = keycode;
+	if (keycode == A)
+		all->key.keycode = keycode;
+	if (keycode == D)
+		all->key.keycode = keycode;
 	//if (keycode == ARROW_LEFT)
 	//if (keycode == ARROW_RIGHT)
 	return (0);
@@ -63,17 +127,20 @@ int ft_window(t_file file)
 {
 	t_vars	vars;
 	t_data	img;
+	t_all	all;
 
 	vars.mlx = mlx_init();
 	vars.win = mlx_new_window(vars.mlx, file.R_x, file.R_y, "cub3d");
 	img.img = mlx_new_image(vars.mlx, file.R_x, file.R_y);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
 								 &img.endian);
-	my_mlx_pixel_put(&img, 5, 5, 0x00FF0000);
-	mlx_put_image_to_window(vars.mlx, vars.win, img.img, 0, 0);
-	mlx_hook(vars.win, 2, 0, ft_key_hook, &vars);
-	mlx_hook(vars.win, CLOSE, 0, ft_close_exit, &vars);
-	mlx_loop(vars.mlx);
+	all.file = file;
+	all.data = img;
+	all.vars = vars;
+	mlx_loop_hook(all.vars.mlx, render_next_frame, &all);
+	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
+	mlx_hook(all.vars.win, CLOSE, 0, ft_close_exit, &all);
+	mlx_loop(all.vars.mlx);
 	return (0);
 }
 
@@ -92,13 +159,6 @@ int		main(int argc, char *argv[])
 }
 
 	/*
-void my_mlx_pixel_put(t_data *data, int x, int y, int color)
-{
-	char *dst;
-
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int *)dst = color;
-}*/
 	/*
 	while (x != 100)
 	{

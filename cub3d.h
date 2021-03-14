@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 18:41:07 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/14 09:48:15 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/14 22:13:20 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,12 @@
 #  include "mlx_linux/mlx.h"
 #  define CLOSE 33
 #  define ESC 65307
-#  define W 0
-#  define S 0
-#  define A 0
-#  define D 0
-#  define ARROW_LEFT 0
-#  define ARROW_RIGHT 0
+#  define W 119
+#  define S 115
+#  define A 97
+#  define D 100
+#  define ARROW_LEFT 65361
+#  define ARROW_RIGHT 65363
 # endif
 # include "libft/libft.h"
 # include "get_next_line/get_next_line.h"
@@ -69,6 +69,19 @@ typedef struct	s_file
 	int			C[3];
 	char		**map;
 }				t_file;
+
+typedef struct	s_key
+{
+	int			keycode;
+}				t_key;
+
+typedef struct	s_all
+{
+	t_file		file;
+	t_vars		vars;
+	t_data		data;
+	t_key		key;
+}				t_all;
 
 int				check_last_str_map(char **tmp_map);
 void			ft_save_map(char *line, char **tmp_map, int *return_gnl);
