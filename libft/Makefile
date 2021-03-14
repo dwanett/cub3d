@@ -1,7 +1,8 @@
 NAME = libft.a
 CC = gcc
 FLAGS = -Wall -Wextra #-Werror
-OPTION = -c
+HEADER = libft.h
+OPTION = -c -I $(HEADER)
 SRCS =	ft_memset.c\
 		ft_strlen.c\
 		ft_bzero.c\
@@ -55,7 +56,7 @@ $(NAME) : $(OBJS_SRCS)
 		ar rc $(NAME) $(OBJS_SRCS)
 		ranlib $(NAME)
 clean:
-		@rm -f $(OBJS_SRCS)
+		rm -f $(OBJS_SRCS)
 fclean: clean
 		rm -f $(NAME)
 re: fclean all
