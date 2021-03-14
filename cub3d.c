@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/15 00:58:07 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/15 01:03:20 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,7 @@ int ft_key_hook(int keycode, t_all *all)
 		mlx_destroy_window(all->vars.mlx, all->vars.win);
 		exit(-1);
 	}
-	if (keycode == W)
-		all->key.keycode = keycode;
-	if (keycode == S)
-		all->key.keycode = keycode;
-	if (keycode == A)
-		all->key.keycode = keycode;
-	if (keycode == D)
+	if (keycode == W || keycode == S || keycode == A || keycode == D)
 		all->key.keycode = keycode;
 	//if (keycode == ARROW_LEFT)
 	//if (keycode == ARROW_RIGHT)
