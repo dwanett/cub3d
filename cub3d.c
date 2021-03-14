@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/14 08:23:42 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/14 09:20:10 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-int	ft_close(int keycode, t_vars *vars)
+int ft_key_hook(int keycode, t_vars *vars)
 {
 	if (keycode == 65307 || keycode == 53)
 	{
@@ -46,7 +46,7 @@ int	ft_close(int keycode, t_vars *vars)
 	return (0);
 }
 
-int ft_close_ex()
+int ft_close_exit()
 {
 	exit(-1);
 	return (0);
@@ -64,8 +64,8 @@ int ft_window(t_file file)
 								 &img.endian);
 	my_mlx_pixel_put(&img, 5, 5, 0x00FF0000);
 	mlx_put_image_to_window(vars.mlx, vars.win, img.img, 0, 0);
-	mlx_hook(vars.win, 2, 1L << 0, ft_close, &vars);
-	mlx_hook(vars.win, 33, 1L << 5, ft_close_ex, &vars);
+	mlx_hook(vars.win, 2, 0, ft_key_hook, &vars);
+	mlx_hook(vars.win, 17, 0, ft_close_exit, &vars);
 	mlx_loop(vars.mlx);
 	return (0);
 }

@@ -6,15 +6,21 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 18:41:07 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/14 08:34:57 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/14 09:20:42 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 #define CUB3D_H
 
-//#include "mlx_linux/mlx.h"
-#include "mlx_mac/mlx.h"
+#ifdef __APPLE__
+	#include "mlx_mac/mlx.h"
+	#define CLOSE 17
+#else
+	#include "mlx_linux/mlx.h"
+	#define CLOSE 33
+#endif
+
 #include "libft/libft.h"
 #include "get_next_line/get_next_line.h"
 #include <math.h>
