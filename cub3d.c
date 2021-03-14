@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/14 19:21:36 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/14 10:05:20 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,18 @@ void my_mlx_pixel_put(t_data *data, int x, int y, int color)
 
 int ft_key_hook(int keycode, t_vars *vars)
 {
-	if (keycode == 65307 || keycode == 53)
+	printf("%d\n", keycode);
+	if (keycode == ESC)
 	{
 		mlx_destroy_window(vars->mlx, vars->win);
 		exit(-1);
 	}
+	//if (keycode == W)
+	//if (keycode == S)
+	//if (keycode == A)
+	//if (keycode == D)
+	//if (keycode == ARROW_LEFT)
+	//if (keycode == ARROW_RIGHT)
 	return (0);
 }
 

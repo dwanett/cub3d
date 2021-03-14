@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 18:41:07 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/14 19:33:35 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/14 09:48:15 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,23 @@
 # ifdef __APPLE__
 #  include "mlx_mac/mlx.h"
 #  define CLOSE 17
+#  define ESC 53
+#  define W 13
+#  define S 1
+#  define A 0
+#  define D 2
+#  define ARROW_LEFT 123
+#  define ARROW_RIGHT 124
 # else
 #  include "mlx_linux/mlx.h"
 #  define CLOSE 33
+#  define ESC 65307
+#  define W 0
+#  define S 0
+#  define A 0
+#  define D 0
+#  define ARROW_LEFT 0
+#  define ARROW_RIGHT 0
 # endif
 # include "libft/libft.h"
 # include "get_next_line/get_next_line.h"
