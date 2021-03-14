@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/14 23:41:14 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/15 00:58:07 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ void print_kodred(t_all *all, int x, int y)
 
 	tmp_y = y;
 	tmp_x = x;
-	while (x != (tmp_x + 10))
+	while (x != (tmp_x + 300))
 	{
 		y = tmp_y;
-		while (y != (tmp_y + 10))
+		while (y != (tmp_y + 100))
 		{
 			my_mlx_pixel_put(&all->data, x, y, 0x00FF0000);
 			y++;
@@ -62,39 +62,22 @@ y = 100;
 int		render_next_frame(t_all *all)
 {
 	print_kodred(all, x, y);
-	if (all->key.keycode == W)
+	if (all->key.keycode >= 0)
 	{
 		mlx_destroy_image(all->vars.mlx, all->data.img);
 		all->data.img = mlx_new_image(all->vars.mlx, all->file.R_x, all->file.R_y);
 		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
 										   &all->data.endian);
-		y--;
+		if (all->key.keycode == W)
+			y--;
+		if (all->key.keycode == S)
+			y++;
+		if (all->key.keycode == A)
+			x--;
+		if (all->key.keycode == D)
+			x++;
 	}
-	if (all->key.keycode == S)
-	{
-		mlx_destroy_image(all->vars.mlx, all->data.img);
-		all->data.img = mlx_new_image(all->vars.mlx, all->file.R_x, all->file.R_y);
-		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
-										   &all->data.endian);
-		y++;
-	}
-	if (all->key.keycode == A)
-	{
-		mlx_destroy_image(all->vars.mlx, all->data.img);
-		all->data.img = mlx_new_image(all->vars.mlx, all->file.R_x, all->file.R_y);
-		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
-		 								   &all->data.endian);
-		x--;
-	}
-	if (all->key.keycode == D)
-	{
-		mlx_destroy_image(all->vars.mlx, all->data.img);
-		all->data.img = mlx_new_image(all->vars.mlx, all->file.R_x, all->file.R_y);
-		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
-		 								   &all->data.endian);
-		x++;
-	}
-	all->key.keycode = 0;
+	all->key.keycode = -1;
 }
 
 int ft_key_hook(int keycode, t_all *all)
@@ -158,7 +141,6 @@ int		main(int argc, char *argv[])
 	full_free_file(&file);
 }
 
-	/*
 	/*
 	while (x != 100)
 	{
