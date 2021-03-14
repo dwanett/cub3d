@@ -6,14 +6,9 @@
 #    By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/15 01:41:01 by dwanetta          #+#    #+#              #
-#    Updated: 2021/03/14 07:50:06 by dwanetta         ###   ########.fr        #
+#    Updated: 2021/03/14 08:33:15 by dwanetta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
-#gcc -I/usr/include -O3 -I mlx_linux/  -c -o main.o main.c
-#gcc -o cub3d main.o -L mlx_linux/ -lmlx -L/usr/include/../lib -lXext -lX11 -lm -lbsd
-#gcc -O3 -I mlx_linux/ -c -o main.o main.c
-#gcc -o cub3d main.o -L mlx_linux/ -lmlx -lXext -lX11 -lm -lbsd
 
 NAME = cub3d
 CC = gcc
