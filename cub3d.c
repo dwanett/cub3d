@@ -55,6 +55,16 @@ void print_kodred(t_all *all, int size, int color, int *x, int *y)
 	}
 }
 
+void print_line(t_all *all, int *x, int *y)
+{
+	while (*x != 50)
+	{
+		*y = (149 * *x - 50) / 99;
+		my_mlx_pixel_put(&all->data, *x, *y, 0x00FF0000);
+		*x+=1;
+	}
+}
+
 void create_map(char **map, t_all *all)
 {
 	int color;
@@ -102,8 +112,13 @@ void create_player(t_all *all)
 
 int		render_next_frame(t_all *all)
 {
+	int x;
+	int y;
+	x = 0;
+	y = 0;
 	create_map(all->file.map, all);
 	create_player(all);
+	print_line(all, &x, &y);
 	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
 	if (all->key.keycode >= 0)
 	{
