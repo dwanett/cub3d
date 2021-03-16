@@ -13,13 +13,6 @@
 #include "cub3d.h"
 #include <stdio.h>
 
-int		g_x;
-int		g_y;
-int		g_i;
-int		g_j;
-int		g_Px;
-int		g_Py;
-
 void	full_free_file(t_file *file)
 {
 	int	i;
@@ -65,9 +58,7 @@ void print_kodred(t_all *all, int size, int color, int *x, int *y)
 void create_map(char **map, t_all *all)
 {
 	int color;
-	int size;
 
-	size = 15;
 	while (map[all->map_mass.x] != NULL)
 	{
 		while (map[all->map_mass.x][all->map_mass.y] != '\0')
@@ -80,38 +71,40 @@ void create_map(char **map, t_all *all)
 				color = 0x000FFFF0;
 			if (map[all->map_mass.x][all->map_mass.y] == 'N' && all->player.x == 0)
 			{
-				all->player.x = all->map_mass.y * size;
-				all->player.y = all->map_mass.x * size;
+				all->player.x = all->map_mass.y * SIZE_CHUNK + all->map_mass.y;
+				all->player.y = all->map_mass.x * SIZE_CHUNK + all->map_mass.x;
+				map[all->map_mass.x][all->map_mass.y] = '0';
+				color = 0x000FFFF0;
 			}
-			print_kodred(all, size, color, &all->pix_for_map.x, &all->pix_for_map.y);
-			all->pix_for_map.y-=size;
-			all->map_mass.y+=1;
+			print_kodred(all, SIZE_CHUNK, color, &all->pix_for_map.x, &all->pix_for_map.y);
+			all->pix_for_map.y -= SIZE_CHUNK;
+			all->map_mass.y++;
+			all->pix_for_map.x++; //black line
 		}
 		all->map_mass.y = 0;
 		all->pix_for_map.x = 0;
-		all->pix_for_map.y+=size;
-		all->map_mass.x+=1;
+		all->pix_for_map.y++; //black line
+		all->pix_for_map.y += SIZE_CHUNK;
+		all->map_mass.x++;
 	}
 }
 
-void create_player(char **map, t_all *all)
+void create_player(t_all *all)
 {
-	int size;
 	int	tmp_y;
 	int	tmp_x;
 
-	size = 15;
 	tmp_y = all->player.y;
 	tmp_x = all->player.x;
-	print_kodred(all, size, 0x00FF0000, &tmp_x, &tmp_y);
-	printf("x = %d, y = %d\n", all->player.x, all->player.y);
-	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
+	print_kodred(all, SIZE_PLAYER, 0x00FF0000, &tmp_x, &tmp_y);
+	//printf("x = %d, y = %d\n", all->player.x, all->player.y);
 }
 
 int		render_next_frame(t_all *all)
 {
 	create_map(all->file.map, all);
-	create_player(all->file.map, all);
+	create_player(all);
+	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
 	if (all->key.keycode >= 0)
 	{
 		all->map_mass.x = 0;
@@ -123,25 +116,13 @@ int		render_next_frame(t_all *all)
 		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
 										   &all->data.endian);
 		if (all->key.keycode == W)
-		{
-			all->file.map[all->player.x / 15][all->player.y / 15] = '0';
-			all->player.y-=2;
-		}
+			all->player.y -= SPEED;
 		if (all->key.keycode == S)
-		{
-			all->player.y+=2;
-			//all->file.map[all->player.x][all->player.y / 15] = '0';
-		}
+			all->player.y += SPEED;
 		if (all->key.keycode == A)
-		{
-			all->player.x-=2;
-			//all->file.map[all->player.x / 15][all->player.y] = '0';
-		}
+			all->player.x -= SPEED;
 		if (all->key.keycode == D)
-		{
-			all->player.x+=2;
-			//all->file.map[all->player.x / 15][all->player.y] = '0';
-		}
+			all->player.x += SPEED;
 	}
 	all->key.keycode = -1;
 }

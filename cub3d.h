@@ -40,6 +40,9 @@
 # include <fcntl.h>
 
 # define FOV 3.14 / 3
+# define SIZE_CHUNK 15
+# define SIZE_PLAYER 5
+# define SPEED 2
 
 typedef struct	s_vars
 {
