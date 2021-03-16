@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
 #include <stdio.h>
 
 void	full_free_file(t_file *file)
@@ -36,32 +37,70 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-void print_kodred(t_all *all, int x, int y)
+x = 0;
+y = 0;
+
+void print_kodred(t_all *all, int size, int color)
 {
 	int tmp_y;
 	int tmp_x;
 
 	tmp_y = y;
 	tmp_x = x;
-	while (x != (tmp_x + 300))
+	while (x != (tmp_x + size))
 	{
 		y = tmp_y;
-		while (y != (tmp_y + 100))
+		while (y != (tmp_y + size))
 		{
-			my_mlx_pixel_put(&all->data, x, y, 0x00FF0000);
+			my_mlx_pixel_put(&all->data, x, y, color);
 			y++;
 		}
 		x++;
 	}
+}
+
+i = 0;
+j = 0;
+
+void create_map(char **map, t_all *all)
+{
+	int color;
+	int size;
+	int c;
+	int b;
+
+	size = 15;
+	c = x;
+	b = y;
+	while (map[i] != NULL)
+	{
+		while (map[i][j] != '\0')
+		{
+			if (map[i][j] == ' ')
+				color = 0x00000000;
+			if (map[i][j] == '1')
+				color = 0x000FF000;
+			if (map[i][j] == '0')
+				color = 0x000FFFF0;
+			if (map[i][j] == 'N')
+				color = 0x00FF0000;
+			print_kodred(all, size, color);
+			y-=size;
+			j++;
+		}
+		j = 0;
+		x = c;
+		y+=size;
+		i++;
+	}
+	y = b;
 	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
 }
 
-x = 500;
-y = 100;
-
 int		render_next_frame(t_all *all)
 {
-	print_kodred(all, x, y);
+	create_map(all->file.map, all);
+	//printf("x = %d, y = %d\n", x, y);
 	if (all->key.keycode >= 0)
 	{
 		mlx_destroy_image(all->vars.mlx, all->data.img);
@@ -69,13 +108,15 @@ int		render_next_frame(t_all *all)
 		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
 										   &all->data.endian);
 		if (all->key.keycode == W)
-			y--;
+			y-=5;
 		if (all->key.keycode == S)
-			y++;
+			y+=5;
 		if (all->key.keycode == A)
-			x--;
+			x-=5;
 		if (all->key.keycode == D)
-			x++;
+			x+=5;
+		i = 0;
+		j = 0;
 	}
 	all->key.keycode = -1;
 }
