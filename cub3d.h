@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 18:41:07 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/14 22:13:20 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/16 18:33:42 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,21 @@ typedef struct	s_key
 	int			keycode;
 }				t_key;
 
+typedef struct	s_posi
+{
+	int			x;
+	int			y;
+}				t_posi;
+
 typedef struct	s_all
 {
 	t_file		file;
 	t_vars		vars;
 	t_data		data;
 	t_key		key;
+	t_posi		player;
+	t_posi		map_mass;
+	t_posi		pix_for_map;
 }				t_all;
 
 int				check_last_str_map(char **tmp_map);

@@ -6,13 +6,19 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/15 01:03:20 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/16 20:32:55 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
 #include <stdio.h>
+
+int		g_x;
+int		g_y;
+int		g_i;
+int		g_j;
+int		g_Px;
+int		g_Py;
 
 void	full_free_file(t_file *file)
 {
@@ -37,86 +43,105 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-x = 0;
-y = 0;
-
-void print_kodred(t_all *all, int size, int color)
+void print_kodred(t_all *all, int size, int color, int *x, int *y)
 {
 	int tmp_y;
 	int tmp_x;
 
-	tmp_y = y;
-	tmp_x = x;
-	while (x != (tmp_x + size))
+	tmp_y = *y;
+	tmp_x = *x;
+	while (*x != (tmp_x + size))
 	{
-		y = tmp_y;
-		while (y != (tmp_y + size))
+		*y = tmp_y;
+		while (*y != (tmp_y + size))
 		{
-			my_mlx_pixel_put(&all->data, x, y, color);
-			y++;
+			my_mlx_pixel_put(&all->data, *x, *y, color);
+			*y+=1;
 		}
-		x++;
+		*x+=1;
 	}
 }
-
-i = 0;
-j = 0;
 
 void create_map(char **map, t_all *all)
 {
 	int color;
 	int size;
-	int c;
-	int b;
 
 	size = 15;
-	c = x;
-	b = y;
-	while (map[i] != NULL)
+	while (map[all->map_mass.x] != NULL)
 	{
-		while (map[i][j] != '\0')
+		while (map[all->map_mass.x][all->map_mass.y] != '\0')
 		{
-			if (map[i][j] == ' ')
+			if (map[all->map_mass.x][all->map_mass.y] == ' ')
 				color = 0x00000000;
-			if (map[i][j] == '1')
+			if (map[all->map_mass.x][all->map_mass.y] == '1')
 				color = 0x000FF000;
-			if (map[i][j] == '0')
+			if (map[all->map_mass.x][all->map_mass.y] == '0')
 				color = 0x000FFFF0;
-			if (map[i][j] == 'N')
-				color = 0x00FF0000;
-			print_kodred(all, size, color);
-			y-=size;
-			j++;
+			if (map[all->map_mass.x][all->map_mass.y] == 'N' && all->player.x == 0)
+			{
+				all->player.x = all->map_mass.y * size;
+				all->player.y = all->map_mass.x * size;
+			}
+			print_kodred(all, size, color, &all->pix_for_map.x, &all->pix_for_map.y);
+			all->pix_for_map.y-=size;
+			all->map_mass.y+=1;
 		}
-		j = 0;
-		x = c;
-		y+=size;
-		i++;
+		all->map_mass.y = 0;
+		all->pix_for_map.x = 0;
+		all->pix_for_map.y+=size;
+		all->map_mass.x+=1;
 	}
-	y = b;
+}
+
+void create_player(char **map, t_all *all)
+{
+	int size;
+	int	tmp_y;
+	int	tmp_x;
+
+	size = 15;
+	tmp_y = all->player.y;
+	tmp_x = all->player.x;
+	print_kodred(all, size, 0x00FF0000, &tmp_x, &tmp_y);
+	printf("x = %d, y = %d\n", all->player.x, all->player.y);
 	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
 }
 
 int		render_next_frame(t_all *all)
 {
 	create_map(all->file.map, all);
-	//printf("x = %d, y = %d\n", x, y);
+	create_player(all->file.map, all);
 	if (all->key.keycode >= 0)
 	{
+		all->map_mass.x = 0;
+		all->map_mass.y = 0;
+		all->pix_for_map.x = 0;
+		all->pix_for_map.y = 0;
 		mlx_destroy_image(all->vars.mlx, all->data.img);
 		all->data.img = mlx_new_image(all->vars.mlx, all->file.R_x, all->file.R_y);
 		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
 										   &all->data.endian);
 		if (all->key.keycode == W)
-			y-=5;
+		{
+			all->file.map[all->player.x / 15][all->player.y / 15] = '0';
+			all->player.y-=2;
+		}
 		if (all->key.keycode == S)
-			y+=5;
+		{
+			all->player.y+=2;
+			//all->file.map[all->player.x][all->player.y / 15] = '0';
+		}
 		if (all->key.keycode == A)
-			x-=5;
+		{
+			all->player.x-=2;
+			//all->file.map[all->player.x / 15][all->player.y] = '0';
+		}
 		if (all->key.keycode == D)
-			x+=5;
-		i = 0;
-		j = 0;
+		{
+			all->player.x+=2;
+			//all->file.map[all->player.x / 15][all->player.y] = '0';
+		}
 	}
 	all->key.keycode = -1;
 }
@@ -155,6 +180,12 @@ int ft_window(t_file file)
 	all.file = file;
 	all.data = img;
 	all.vars = vars;
+	all.player.x = 0;
+	all.player.y = 0;
+	all.map_mass.x = 0;
+	all.map_mass.y = 0;
+	all.pix_for_map.x = 0;
+	all.pix_for_map.y = 0;
 	mlx_loop_hook(all.vars.mlx, render_next_frame, &all);
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
 	mlx_hook(all.vars.win, CLOSE, 0, ft_close_exit, &all);
