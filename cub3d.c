@@ -43,32 +43,56 @@ void print_kodred(t_all *all, int size, int color, int *x, int *y)
 
 	tmp_y = *y;
 	tmp_x = *x;
-	while (*x != (tmp_x + size))
+	while (*x < (tmp_x + size))
 	{
 		*y = tmp_y;
-		while (*y != (tmp_y + size))
+		while (*y < (tmp_y + size))
 		{
 			my_mlx_pixel_put(&all->data, *x, *y, color);
-			*y+=1;
+			*y += 1;
 		}
-		*x+=1;
+		*x += 1;
 	}
 }
 
-void print_line(t_all *all, int *x, int *y)
+/*void print_line(t_all *all, int x1, int y1, int x2, int y2)
 {
-	while (*x != 50)
+	int dX;
+	int dY;
+	int signX;
+	int signY;
+	int error;
+	int error2;
+
+	dX = abs(x2 - x1);
+	dY = abs(y2 - y1);
+	signX = x1 < x2 ? 1 : -1;
+	signY = y1 < y2 ? 1 : -1;
+	error = dX - dY;
+	my_mlx_pixel_put(&all->data, x2, y2, 0x00FF0000);
+	while(x1 != x2 || y1 != y2)
 	{
-		*y = (149 * *x - 50) / 99;
-		my_mlx_pixel_put(&all->data, *x, *y, 0x00FF0000);
-		*x+=1;
+		my_mlx_pixel_put(&all->data, x1, y1, 0x00FF0000);
+		error2 = error * 2;
+		if(error2 > -dY)
+		{
+			error -= dY;
+			x1 += signX;
+		}
+		if(error2 < dX)
+		{
+			error += dX;
+			y1 += signY;
+		}
 	}
-}
+
+}*/
 
 void create_map(char **map, t_all *all)
 {
 	int color;
 
+	color = 0x00000000;
 	while (map[all->map_mass.x] != NULL)
 	{
 		while (map[all->map_mass.x][all->map_mass.y] != '\0')
@@ -104,21 +128,93 @@ void create_player(t_all *all)
 	int	tmp_y;
 	int	tmp_x;
 
-	tmp_y = all->player.y;
-	tmp_x = all->player.x;
+	tmp_y = (int)all->player.y;
+	tmp_x = (int)all->player.x;
 	print_kodred(all, SIZE_PLAYER, 0x00FF0000, &tmp_x, &tmp_y);
-	//printf("x = %d, y = %d\n", all->player.x, all->player.y);
+}
+
+void print_line(t_all *all, double x1, double y1, double x2, double y2)
+{
+	int deltaX;
+	int deltaY;
+	int length;
+	double dX;
+	double dY;
+
+	deltaX = abs(round(x1) - round(x2));
+	deltaY = abs(round(y1) - round(y2));
+	length = MAX(deltaX, deltaY);
+	if (length == 0)
+	{
+		my_mlx_pixel_put(&all->data, round(x1),  round(y1), 0x00FF0000);
+		return;
+	}
+	dX = (x2 - x1) / length;
+	dY = (y2 - y1) / length;
+	length++;
+	while (length--)
+	{
+		x1 += dX;
+		y1 += dY;
+		my_mlx_pixel_put(&all->data, round(x1),  round(y1), 0x00FF0000);
+	}
+}
+
+void reycast(t_all *all)
+{
+	double	ugl;
+	double	x;
+	double	y;
+	int		col;
+	int		i;
+
+	ugl = all->angle.alpha * PI / 180;
+	col = 100;
+	i = 0;
+	while (ugl <= (PI + all->angle.alpha * PI / 180) || i < col)
+	{
+		x = (all->player.x + (SIZE_PLAYER / 2.0)) + (50 * cos(ugl));
+		y = (all->player.y + (SIZE_PLAYER / 2.0)) + (50 * sin(ugl));
+		print_line(all, (int)all->player.x + (SIZE_PLAYER / 2), (int)all->player.y + (SIZE_PLAYER / 2), (int)x, (int)y);
+		ugl += ((PI * 2) - PI) / (col - 1);
+		i++;
+	}
+	//printf("%d\n", i);
+}
+
+void move(t_all *all)
+{
+	if (all->key.keycode == W)
+	{
+		all->player.x += SPEED * cos((all->angle.alpha * PI / 180) + PI / 2);
+		all->player.y += SPEED * sin((all->angle.alpha * PI / 180) + PI / 2);
+	}
+	if (all->key.keycode == S)
+	{
+		all->player.x -= SPEED * cos((all->angle.alpha * PI / 180) + PI / 2);
+		all->player.y -= SPEED * sin((all->angle.alpha * PI / 180) + PI / 2);
+	}
+	if (all->key.keycode == A)
+	{
+		all->player.x += SPEED * cos((all->angle.alpha * PI / 180));
+		all->player.y += SPEED * sin((all->angle.alpha * PI / 180));
+	}
+	if (all->key.keycode == D)
+	{
+		all->player.x -= SPEED * cos((all->angle.alpha * PI / 180));
+		all->player.y -= SPEED * sin((all->angle.alpha * PI / 180));
+	}
+	if (all->key.keycode == ARROW_LEFT)
+		all->angle.alpha -= SPEED * 2;
+	if (all->key.keycode == ARROW_RIGHT)
+		all->angle.alpha += SPEED * 2;
 }
 
 int		render_next_frame(t_all *all)
 {
-	int x;
-	int y;
-	x = 0;
-	y = 0;
 	create_map(all->file.map, all);
 	create_player(all);
-	print_line(all, &x, &y);
+	reycast(all);
 	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
 	if (all->key.keycode >= 0)
 	{
@@ -130,14 +226,11 @@ int		render_next_frame(t_all *all)
 		all->data.img = mlx_new_image(all->vars.mlx, all->file.R_x, all->file.R_y);
 		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
 										   &all->data.endian);
-		if (all->key.keycode == W)
-			all->player.y -= SPEED;
-		if (all->key.keycode == S)
-			all->player.y += SPEED;
-		if (all->key.keycode == A)
-			all->player.x -= SPEED;
-		if (all->key.keycode == D)
-			all->player.x += SPEED;
+		move(all);
+		if (all->angle.alpha >= 360)
+			all->angle.alpha = 0;
+		else if (all->angle.alpha <= 0)
+			all->angle.alpha = 360;
 	}
 	all->key.keycode = -1;
 }
@@ -149,17 +242,15 @@ int ft_key_hook(int keycode, t_all *all)
 		mlx_destroy_window(all->vars.mlx, all->vars.win);
 		exit(-1);
 	}
-	if (keycode == W || keycode == S || keycode == A || keycode == D)
+	if (keycode == W || keycode == S || keycode == A || keycode == D
+	|| keycode == ARROW_LEFT || keycode == ARROW_RIGHT)
 		all->key.keycode = keycode;
-	//if (keycode == ARROW_LEFT)
-	//if (keycode == ARROW_RIGHT)
 	return (0);
 }
 
 int ft_close_exit()
 {
 	exit(-1);
-	return (0);
 }
 
 int ft_window(t_file file)
@@ -182,6 +273,7 @@ int ft_window(t_file file)
 	all.map_mass.y = 0;
 	all.pix_for_map.x = 0;
 	all.pix_for_map.y = 0;
+	all.angle.alpha = 180;
 	mlx_loop_hook(all.vars.mlx, render_next_frame, &all);
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
 	mlx_hook(all.vars.win, CLOSE, 0, ft_close_exit, &all);

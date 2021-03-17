@@ -40,9 +40,11 @@
 # include <fcntl.h>
 
 # define FOV 3.14 / 3
-# define SIZE_CHUNK 15
+# define MAX(x, y) x > y ? x: y
+# define SIZE_CHUNK 30
 # define SIZE_PLAYER 5
 # define SPEED 2
+# define PI 3.14159265358979323846
 
 typedef struct	s_vars
 {
@@ -80,9 +82,20 @@ typedef struct	s_key
 
 typedef struct	s_posi
 {
+	double		x;
+	double		y;
+}				t_posi;
+
+typedef struct	s_mas
+{
 	int			x;
 	int			y;
-}				t_posi;
+}				t_mas;
+
+typedef struct	s_angle
+{
+	int			alpha;
+}				t_angle;
 
 typedef struct	s_all
 {
@@ -91,8 +104,9 @@ typedef struct	s_all
 	t_data		data;
 	t_key		key;
 	t_posi		player;
-	t_posi		map_mass;
-	t_posi		pix_for_map;
+	t_mas		map_mass;
+	t_mas		pix_for_map;
+	t_angle		angle;
 }				t_all;
 
 int				check_last_str_map(char **tmp_map);
