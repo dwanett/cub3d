@@ -39,12 +39,12 @@
 # include <math.h>
 # include <fcntl.h>
 
-# define FOV 3.14 / 3
-# define MAX(x, y) x > y ? x: y
+# define PI 3.14159265358979323846
 # define SIZE_CHUNK 30
 # define SIZE_PLAYER 5
 # define SPEED 2
-# define PI 3.14159265358979323846
+# define FOV PI / 3
+# define MAX(x, y) x > y ? x: y
 
 typedef struct	s_vars
 {

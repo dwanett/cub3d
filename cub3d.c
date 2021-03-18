@@ -36,22 +36,22 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-void print_kodred(t_all *all, int size, int color, int *x, int *y)
+void print_kodred(t_all *all, int size, int color, int x, int y)
 {
 	int tmp_y;
 	int tmp_x;
 
-	tmp_y = *y;
-	tmp_x = *x;
-	while (*x < (tmp_x + size))
+	tmp_y = y;
+	tmp_x = x;
+	while (x < (tmp_x + size))
 	{
-		*y = tmp_y;
-		while (*y < (tmp_y + size))
+		y = tmp_y;
+		while (y < (tmp_y + size))
 		{
-			my_mlx_pixel_put(&all->data, *x, *y, color);
-			*y += 1;
+			my_mlx_pixel_put(&all->data, x, y, color);
+			y += 1;
 		}
-		*x += 1;
+		x += 1;
 	}
 }
 
@@ -103,14 +103,28 @@ void create_map(char **map, t_all *all)
 				color = 0x000FF000;
 			if (map[all->map_mass.x][all->map_mass.y] == '0')
 				color = 0x000FFFF0;
-			if (map[all->map_mass.x][all->map_mass.y] == 'N' && all->player.x == 0)
+			if (map[all->map_mass.x][all->map_mass.y] == 'N' ||
+			map[all->map_mass.x][all->map_mass.y] == 'S' ||
+			map[all->map_mass.x][all->map_mass.y] == 'E' ||
+			map[all->map_mass.x][all->map_mass.y] == 'W' &&
+			all->player.x == 0)
 			{
+				if (map[all->map_mass.x][all->map_mass.y] == 'S')
+					all->angle.alpha = 90;
+				if (map[all->map_mass.x][all->map_mass.y] == 'W')
+					all->angle.alpha = 180;
+				if (map[all->map_mass.x][all->map_mass.y] == 'N')
+					all->angle.alpha = 270;
+				if (map[all->map_mass.x][all->map_mass.y] == 'E')
+					all->angle.alpha = 0;
 				all->player.x = all->map_mass.y * SIZE_CHUNK + all->map_mass.y;
 				all->player.y = all->map_mass.x * SIZE_CHUNK + all->map_mass.x;
 				map[all->map_mass.x][all->map_mass.y] = '0';
 				color = 0x000FFFF0;
 			}
-			print_kodred(all, SIZE_CHUNK, color, &all->pix_for_map.x, &all->pix_for_map.y);
+			print_kodred(all, SIZE_CHUNK, color, all->pix_for_map.x, all->pix_for_map.y);
+			all->pix_for_map.x += SIZE_CHUNK;
+			all->pix_for_map.y += SIZE_CHUNK;
 			all->pix_for_map.y -= SIZE_CHUNK;
 			all->map_mass.y++;
 			all->pix_for_map.x++; //black line
@@ -130,7 +144,7 @@ void create_player(t_all *all)
 
 	tmp_y = (int)all->player.y;
 	tmp_x = (int)all->player.x;
-	print_kodred(all, SIZE_PLAYER, 0x00FF0000, &tmp_x, &tmp_y);
+	print_kodred(all, SIZE_PLAYER, 0x00FF0000, tmp_x, tmp_y);
 }
 
 void print_line(t_all *all, double x1, double y1, double x2, double y2)
@@ -160,6 +174,28 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2)
 	}
 }
 
+/*void reycast(t_all *all)
+{
+	double	ugl;
+	double	x;
+	double	y;
+	int		col;
+	int		i;
+
+	ugl = all->angle.alpha * PI / 180;
+	col = 1;
+	i = 0;
+	while (ugl <= (PI + all->angle.alpha * PI / 180) || i < col)
+	{
+		x = (all->player.x + (SIZE_PLAYER / 2.0)) + (50 * cos(ugl));
+		y = (all->player.y + (SIZE_PLAYER / 2.0)) + (50 * sin(ugl));
+		print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0), (int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y);
+		ugl += ((PI * 2) - PI) / (col - 1);
+		i++;
+	}
+	//printf("%d\n", i);
+}*/
+
 void reycast(t_all *all)
 {
 	double	ugl;
@@ -169,13 +205,13 @@ void reycast(t_all *all)
 	int		i;
 
 	ugl = all->angle.alpha * PI / 180;
-	col = 100;
+	col = 1;
 	i = 0;
 	while (ugl <= (PI + all->angle.alpha * PI / 180) || i < col)
 	{
 		x = (all->player.x + (SIZE_PLAYER / 2.0)) + (50 * cos(ugl));
 		y = (all->player.y + (SIZE_PLAYER / 2.0)) + (50 * sin(ugl));
-		print_line(all, (int)all->player.x + (SIZE_PLAYER / 2), (int)all->player.y + (SIZE_PLAYER / 2), (int)x, (int)y);
+		print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0), (int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y);
 		ugl += ((PI * 2) - PI) / (col - 1);
 		i++;
 	}
@@ -186,23 +222,23 @@ void move(t_all *all)
 {
 	if (all->key.keycode == W)
 	{
-		all->player.x += SPEED * cos((all->angle.alpha * PI / 180) + PI / 2);
-		all->player.y += SPEED * sin((all->angle.alpha * PI / 180) + PI / 2);
+		all->player.x += SPEED * cos((all->angle.alpha * PI / 180));
+		all->player.y += SPEED * sin((all->angle.alpha * PI / 180));
 	}
 	if (all->key.keycode == S)
+	{
+		all->player.x -= SPEED * cos((all->angle.alpha * PI / 180));
+		all->player.y -= SPEED * sin((all->angle.alpha * PI / 180));
+	}
+	if (all->key.keycode == A)
 	{
 		all->player.x -= SPEED * cos((all->angle.alpha * PI / 180) + PI / 2);
 		all->player.y -= SPEED * sin((all->angle.alpha * PI / 180) + PI / 2);
 	}
-	if (all->key.keycode == A)
-	{
-		all->player.x += SPEED * cos((all->angle.alpha * PI / 180));
-		all->player.y += SPEED * sin((all->angle.alpha * PI / 180));
-	}
 	if (all->key.keycode == D)
 	{
-		all->player.x -= SPEED * cos((all->angle.alpha * PI / 180));
-		all->player.y -= SPEED * sin((all->angle.alpha * PI / 180));
+		all->player.x += SPEED * cos((all->angle.alpha * PI / 180) + PI / 2);
+		all->player.y += SPEED * sin((all->angle.alpha * PI / 180) + PI / 2);
 	}
 	if (all->key.keycode == ARROW_LEFT)
 		all->angle.alpha -= SPEED * 2;
@@ -273,7 +309,6 @@ int ft_window(t_file file)
 	all.map_mass.y = 0;
 	all.pix_for_map.x = 0;
 	all.pix_for_map.y = 0;
-	all.angle.alpha = 180;
 	mlx_loop_hook(all.vars.mlx, render_next_frame, &all);
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
 	mlx_hook(all.vars.win, CLOSE, 0, ft_close_exit, &all);
