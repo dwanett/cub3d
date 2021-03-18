@@ -151,10 +151,10 @@ void print3d(t_all *all, double x, double y)
 	int Y;
 
 	L = sqrt(pow((all->player.x - x), 2) + pow((all->player.y - y), 2));
-	Y = 0;
-	while (Y != (int) round(all->file.R_y / L))
+	Y = all->file.R_y / 3;
+	while ((Y - all->file.R_y / 3)  != (int) round((all->file.R_y - 240)/ L))
 	{
-		my_mlx_pixel_put(&all->data_3d, x, Y, 0x00FF0000);
+		my_mlx_pixel_put(&all->data_3d, all->visual.width, Y, 0x00FF0000);
 		Y++;
 	}
 }
@@ -233,6 +233,7 @@ void reycast(t_all *all)
 		i++;
 	}*/
 	col -= 1;
+	all->visual.width = 0;
 	while (ugl <= ((all->angle.alpha + FOV / 2.0) * PI / 180))
 	{
 		x = (all->player.x + (SIZE_PLAYER / 2.0)) + (400 * cos(ugl));
@@ -240,6 +241,7 @@ void reycast(t_all *all)
 		if (ugl != all->angle.alpha * PI / 180)
 			print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0),(int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y, 0x00FF0000);
 		ugl += (FOV * PI / 180) / col;
+		all->visual.width++;
 	}
 	x = (all->player.x + (SIZE_PLAYER / 2.0)) + (h * cos(all->angle.alpha * PI / 180));
 	y = (all->player.y + (SIZE_PLAYER / 2.0)) + (h * sin(all->angle.alpha * PI / 180));

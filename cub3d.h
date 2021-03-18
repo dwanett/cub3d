@@ -80,6 +80,12 @@ typedef struct	s_key
 	int			keycode;
 }				t_key;
 
+typedef struct	s_reycast
+{
+	int			height;
+	int			width;
+}				t_reycast;
+
 typedef struct	s_posi
 {
 	double		x;
@@ -109,6 +115,7 @@ typedef struct	s_all
 	t_mas		map_mass;
 	t_mas		pix_for_map;
 	t_angle		angle;
+	t_reycast	visual;
 }				t_all;
 
 int				check_last_str_map(char **tmp_map);
