@@ -41,7 +41,7 @@
 
 # define PI 3.14159265358979323846
 # define SIZE_CHUNK 30
-# define SIZE_PLAYER 5
+# define SIZE_PLAYER 2
 # define SPEED 2
 # define FOV 60
 # define MAX(x, y) x > y ? x: y
@@ -102,6 +102,8 @@ typedef struct	s_all
 	t_file		file;
 	t_vars		vars;
 	t_data		data;
+	t_vars		vars_3d;
+	t_data		data_3d;
 	t_key		key;
 	t_posi		player;
 	t_mas		map_mass;
