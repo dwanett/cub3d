@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/16 20:32:55 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/18 14:55:30 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,8 +117,8 @@ void create_map(char **map, t_all *all)
 					all->angle.alpha = 270;
 				if (map[all->map_mass.x][all->map_mass.y] == 'E')
 					all->angle.alpha = 0;
-				all->player.x = all->map_mass.y * SIZE_CHUNK + all->map_mass.y;
-				all->player.y = all->map_mass.x * SIZE_CHUNK + all->map_mass.x;
+				all->player.x = all->map_mass.y * SIZE_CHUNK /*+ all->map_mass.y*/;
+				all->player.y = all->map_mass.x * SIZE_CHUNK /*+ all->map_mass.x*/;
 				map[all->map_mass.x][all->map_mass.y] = '0';
 				color = 0x000FFFF0;
 			}
@@ -127,11 +127,11 @@ void create_map(char **map, t_all *all)
 			all->pix_for_map.y += SIZE_CHUNK;
 			all->pix_for_map.y -= SIZE_CHUNK;
 			all->map_mass.y++;
-			all->pix_for_map.x++; //black line
+			//all->pix_for_map.x++; //black line
 		}
 		all->map_mass.y = 0;
 		all->pix_for_map.x = 0;
-		all->pix_for_map.y++; //black line
+		//all->pix_for_map.y++; //black line
 		all->pix_for_map.y += SIZE_CHUNK;
 		all->map_mass.x++;
 	}
@@ -147,7 +147,7 @@ void create_player(t_all *all)
 	print_kodred(all, SIZE_PLAYER, 0x00FF0000, tmp_x, tmp_y);
 }
 
-void print_line(t_all *all, double x1, double y1, double x2, double y2)
+void print_line(t_all *all, double x1, double y1, double x2, double y2, int color)
 {
 	int deltaX;
 	int deltaY;
@@ -160,7 +160,7 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2)
 	length = MAX(deltaX, deltaY);
 	if (length == 0)
 	{
-		my_mlx_pixel_put(&all->data, round(x1),  round(y1), 0x00FF0000);
+		my_mlx_pixel_put(&all->data, round(x1),  round(y1), color);
 		return;
 	}
 	dX = (x2 - x1) / length;
@@ -170,7 +170,9 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2)
 	{
 		x1 += dX;
 		y1 += dY;
-		my_mlx_pixel_put(&all->data, round(x1),  round(y1), 0x00FF0000);
+		if (all->file.map[(int)(round(y1) / SIZE_CHUNK)][(int)(round(x1) / SIZE_CHUNK)] == '1')
+			break;
+		my_mlx_pixel_put(&all->data, round(x1),  round(y1), color);
 	}
 }
 
@@ -202,19 +204,29 @@ void reycast(t_all *all)
 	double	x;
 	double	y;
 	int		col;
-	int		i;
 
-	ugl = all->angle.alpha * PI / 180;
-	col = 1;
-	i = 0;
-	while (ugl <= (PI + all->angle.alpha * PI / 180) || i < col)
+	ugl = (all->angle.alpha - FOV / 2) * PI / 180;
+	col = 50;
+/*	while (ugl <= (PI + all->angle.alpha * PI / 180) || i < col)
 	{
 		x = (all->player.x + (SIZE_PLAYER / 2.0)) + (50 * cos(ugl));
 		y = (all->player.y + (SIZE_PLAYER / 2.0)) + (50 * sin(ugl));
 		print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0), (int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y);
 		ugl += ((PI * 2) - PI) / (col - 1);
 		i++;
+	}*/
+	col -= 1;
+	while (ugl <= ((all->angle.alpha + FOV / 2) * PI / 180))
+	{
+		x = (all->player.x + (SIZE_PLAYER / 2.0)) + (500 * cos(ugl));
+		y = (all->player.y + (SIZE_PLAYER / 2.0)) + (500 * sin(ugl));
+		if (ugl != all->angle.alpha * PI / 180)
+			print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0), (int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y, 0x00FF0000);
+		ugl += (FOV / col) * PI / 180;
 	}
+	x = (all->player.x + (SIZE_PLAYER / 2.0)) + (100 * cos(all->angle.alpha * PI / 180));
+	y = (all->player.y + (SIZE_PLAYER / 2.0)) + (100 * sin(all->angle.alpha * PI / 180));
+	print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0), (int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y, 0x00000000);
 	//printf("%d\n", i);
 }
 

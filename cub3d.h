@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/24 18:41:07 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/16 18:33:42 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/18 14:28:54 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@
 # define SIZE_CHUNK 30
 # define SIZE_PLAYER 5
 # define SPEED 2
-# define FOV PI / 3
+# define FOV 60
 # define MAX(x, y) x > y ? x: y
 
 typedef struct	s_vars
