@@ -55,39 +55,6 @@ void print_kodred(t_all *all, int size, int color, int x, int y)
 	}
 }
 
-/*void print_line(t_all *all, int x1, int y1, int x2, int y2)
-{
-	int dX;
-	int dY;
-	int signX;
-	int signY;
-	int error;
-	int error2;
-
-	dX = abs(x2 - x1);
-	dY = abs(y2 - y1);
-	signX = x1 < x2 ? 1 : -1;
-	signY = y1 < y2 ? 1 : -1;
-	error = dX - dY;
-	my_mlx_pixel_put(&all->data, x2, y2, 0x00FF0000);
-	while(x1 != x2 || y1 != y2)
-	{
-		my_mlx_pixel_put(&all->data, x1, y1, 0x00FF0000);
-		error2 = error * 2;
-		if(error2 > -dY)
-		{
-			error -= dY;
-			x1 += signX;
-		}
-		if(error2 < dX)
-		{
-			error += dX;
-			y1 += signY;
-		}
-	}
-
-}*/
-
 void create_map(char **map, t_all *all)
 {
 	int color;
@@ -157,7 +124,6 @@ void print3d(t_all *all, double x, double y)
 	H = (int)round((SIZE_CHUNK / L) * all->visual.distC);
 	Y_up = all->file.R_y / 2;
 	Y_down = all->file.R_y / 2;
-
 	while (Y_up >= (all->file.R_y / 2) - (H / 2))
 	{
 		if (Y_up == 0)
@@ -207,28 +173,6 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2, int colo
 	}
 }
 
-/*void reycast(t_all *all)
-{
-	double	ugl;
-	double	x;
-	double	y;
-	int		col;
-	int		i;
-
-	ugl = all->angle.alpha * PI / 180;
-	col = 1;
-	i = 0;
-	while (ugl <= (PI + all->angle.alpha * PI / 180) || i < col)
-	{
-		x = (all->player.x + (SIZE_PLAYER / 2.0)) + (50 * cos(ugl));
-		y = (all->player.y + (SIZE_PLAYER / 2.0)) + (50 * sin(ugl));
-		print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0), (int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y);
-		ugl += ((PI * 2) - PI) / (col - 1);
-		i++;
-	}
-	//printf("%d\n", i);
-}*/
-
 void reycast(t_all *all)
 {
 	double	x;
@@ -239,11 +183,10 @@ void reycast(t_all *all)
 	all->visual.width = 0;
 	while (all->visual.ugl <= ((all->angle.alpha + FOV / 2.0) * PI / 180))
 	{
-		x = (all->player.x + (SIZE_PLAYER / 2.0)) + (400 * cos(all->visual.ugl));
-		y = (all->player.y + (SIZE_PLAYER / 2.0)) + (400 * sin(all->visual.ugl));
-		if (all->visual.ugl != all->angle.alpha * PI / 180)
-			print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0),(int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y, 0x00FF0000);
-		all->visual.ugl += (FOV * PI / 180) /  (all->file.R_x - 1);
+		x = (all->player.x + (SIZE_PLAYER / 2.0)) + (1000 * cos(all->visual.ugl));
+		y = (all->player.y + (SIZE_PLAYER / 2.0)) + (1000 * sin(all->visual.ugl));
+		print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0),(int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y, 0x00FF0000);
+		all->visual.ugl += (FOV * PI / 180) / (all->file.R_x - 1);
 		all->visual.width++;
 	}
 	x = (all->player.x + (SIZE_PLAYER / 2.0)) + (all->visual.distC * cos(all->angle.alpha * PI / 180));
