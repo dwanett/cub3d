@@ -203,7 +203,7 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2, int colo
 			print3d(all, x1, y1);
 			break;
 		}
-		my_mlx_pixel_put(&all->data, round(x1),  round(y1), color);
+		my_mlx_pixel_put(&all->data, (int)round(x1),  (int)round(y1), color);
 	}
 }
 
@@ -251,62 +251,6 @@ void reycast(t_all *all)
 	print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0), (int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y, 0x00000000);
 }
 
-int	chek_position(t_all *all, double x, double y)
-{
-	if (!((all->file.map[(int) (round(y) / SIZE_CHUNK)]
-	[(int) (round(x) / SIZE_CHUNK)] == '1')
-	|| (all->file.map[(int) (round(y + SIZE_PLAYER - 1) / SIZE_CHUNK)]
-	[(int) (round(x) / SIZE_CHUNK)] == '1')
-	|| (all->file.map[(int) (round(y) / SIZE_CHUNK)]
-	[(int) (round(x + SIZE_PLAYER - 1) / SIZE_CHUNK)] == '1')
-	|| (all->file.map[(int) (round(y + SIZE_PLAYER - 1) / SIZE_CHUNK)]
-	[(int) (round(x + SIZE_PLAYER - 1) / SIZE_CHUNK)] == '1')))
-		return (1);
-	return (0);
-}
-
-void walking(t_all *all, double x, double y, int key)
-{
-	if (key == W)
-	{
-		x += SPEED * cos((all->angle.alpha * PI / 180));
-		y += SPEED * sin((all->angle.alpha * PI / 180));
-	}
-	if (key == A)
-	{
-		x -= SPEED * cos((all->angle.alpha * PI / 180) + PI / 2);
-		y -= SPEED * sin((all->angle.alpha * PI / 180) + PI / 2);
-	}
-	if (key == S)
-	{
-		x -= SPEED * cos((all->angle.alpha * PI / 180));
-		y -= SPEED * sin((all->angle.alpha * PI / 180));
-	}
-	if (key == D)
-	{
-		x += SPEED * cos((all->angle.alpha * PI / 180) + PI / 2);
-		y += SPEED * sin((all->angle.alpha * PI / 180) + PI / 2);
-	}
-	if (chek_position(all, x, y))
-	{
-		all->player.x = x;
-		all->player.y = y;
-	}
-}
-
-void move(t_all *all)
-{
-	walking(all, all->player.x, all->player.y, all->key.keycode);
-	if (all->key.keycode == ARROW_LEFT)
-		all->angle.alpha -= SPEED * 2;
-	if (all->key.keycode == ARROW_RIGHT)
-		all->angle.alpha += SPEED * 2;
-	if (all->angle.alpha >= 360)
-		all->angle.alpha = 0;
-	else if (all->angle.alpha <= 0)
-		all->angle.alpha = 360;
-}
-
 int		render_next_frame(t_all *all)
 {
 	create_map(all->file.map, all);
@@ -331,24 +275,6 @@ int		render_next_frame(t_all *all)
 		move(all);
 	}
 	all->key.keycode = -1;
-}
-
-int ft_key_hook(int keycode, t_all *all)
-{
-	if (keycode == ESC)
-	{
-		mlx_destroy_window(all->vars.mlx, all->vars.win);
-		exit(-1);
-	}
-	if (keycode == W || keycode == S || keycode == A || keycode == D
-	|| keycode == ARROW_LEFT || keycode == ARROW_RIGHT)
-		all->key.keycode = keycode;
-	return (0);
-}
-
-int ft_close_exit()
-{
-	exit(-1);
 }
 
 int ft_window(t_file file)

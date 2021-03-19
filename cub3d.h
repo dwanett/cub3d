@@ -132,5 +132,8 @@ void			ft_init_file(char *line, t_file *file, char **tmp_map,
 				int *return_gnl);
 int				ft_pars(int fd, t_file *file);
 int				ft_open_file(int argc, char *argv[], t_file *file);
+void			move(t_all *all);
+int				ft_key_hook(int keycode, t_all *all);
+int				ft_close_exit();
 
 #endif

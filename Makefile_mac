@@ -20,7 +20,8 @@ LIBFT = make -C libft
 GNLIB = make -C get_next_line
 SRCS =	cub3d.c\
 		check_file_save_map.c\
-		init_file.c
+		init_file.c\
+		control.c
 
 OBJS_SRCS = ${SRCS:.c=.o}
 
