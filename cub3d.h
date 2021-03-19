@@ -40,10 +40,10 @@
 # include <fcntl.h>
 
 # define PI 3.14159265358979323846
-# define SIZE_CHUNK 30
+# define SIZE_CHUNK 16
 # define SIZE_PLAYER 2
 # define SPEED 2
-# define FOV 60
+# define FOV 90
 # define MAX(x, y) x > y ? x: y
 
 typedef struct	s_vars
@@ -84,6 +84,8 @@ typedef struct	s_reycast
 {
 	int			height;
 	int			width;
+	double		distC;
+	double		ugl;
 }				t_reycast;
 
 typedef struct	s_posi
