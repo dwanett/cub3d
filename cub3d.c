@@ -124,24 +124,17 @@ void print_player(t_all *all)
 
 void print_floor_and_ceilling(t_all *all, int Y_up, int Y_down)
 {
-	int floor;
-	int ceiling;
 
-	ceiling = Y_up;
-	floor = Y_down;
-	while (ceiling != 0)
+	if (Y_up != 0)
+		while (Y_up >= 0)
+		{
+			my_mlx_pixel_put(&all->data, all->visual.width, Y_up,create_trgb(0, all->file.F[0], all->file.F[1],all->file.F[2]));
+			Y_up--;
+		}
+	while (Y_down != all->file.R_y)
 	{
-		my_mlx_pixel_put(&all->data, all->visual.width, ceiling,
-				create_trgb(0, all->file.F[0], all->file.F[1],
-						all->file.F[2]));
-		ceiling--;
-	}
-	while (floor != all->file.R_y)
-	{
-		my_mlx_pixel_put(&all->data, all->visual.width, floor,
-				create_trgb(0, all->file.C[0], all->file.C[1],
-						all->file.C[2]));
-		floor++;
+		my_mlx_pixel_put(&all->data, all->visual.width, Y_down, create_trgb(0, all->file.C[0], all->file.C[1], all->file.C[2]));
+		Y_down++;
 	}
 }
 
@@ -166,9 +159,9 @@ void print3d(t_all *all, double x, double y)
 		color = 50;
 	while (Y_up >= (all->file.R_y / 2) - (H / 2))
 	{
+		my_mlx_pixel_put(&all->data, all->visual.width, Y_up, create_trgb(0, color, color, color));
 		if (Y_up == 0)
 			break ;
-		my_mlx_pixel_put(&all->data, all->visual.width, Y_up, create_trgb(0, color, color, color));
 		Y_up--;
 	}
 	while (Y_down <= (all->file.R_y / 2) + (H / 2))
@@ -209,7 +202,8 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2, int colo
 		y1 += dY;
 		if (all->file.map[(int)(round(y1) / SIZE_CHUNK)][(int)(round(x1) / SIZE_CHUNK)] == '1')
 		{
-			print3d(all, x1, y1);
+			if (color != 0)//------------map---------------
+				print3d(all, x1, y1);
 			break;
 		}
 		//------------map---------------
@@ -229,15 +223,17 @@ void reycast(t_all *all)
 	all->visual.width = 0;
 	while (all->visual.ugl <= ((all->angle.alpha + FOV / 2.0) * PI / 180))
 	{
-		x = (all->player.x + (SIZE_PLAYER / 2.0)) + (10000 * cos(all->visual.ugl));
-		y = (all->player.y + (SIZE_PLAYER / 2.0)) + (10000 * sin(all->visual.ugl));
-		print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0), (int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y, 0x00FF0000);
+		x = (all->player.x) + (10000 * cos(all->visual.ugl));
+		y = (all->player.y) + (10000 * sin(all->visual.ugl));
+		print_line(all, (int)all->player.x, (int)all->player.y, (int)x, (int)y, 0x00FF0000);
 		all->visual.ugl += (FOV * PI / 180) / (all->file.R_x - 1);
 		all->visual.width++;
 	}
-	x = (all->player.x + (SIZE_PLAYER / 2.0)) + (all->visual.distC * cos(all->angle.alpha * PI / 180));
-	y = (all->player.y + (SIZE_PLAYER / 2.0)) + (all->visual.distC * sin(all->angle.alpha * PI / 180));
-	print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0), (int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y, 0x00000000);
+	//------------map---------------
+	x = (all->player.x) + (all->visual.distC * cos(all->angle.alpha * PI / 180));
+	y = (all->player.y) + (all->visual.distC * sin(all->angle.alpha * PI / 180));
+	print_line(all, (int)all->player.x, (int)all->player.y, (int)x, (int)y, 0x00000000);
+	//------------map---------------
 }
 
 int		render_next_frame(t_all *all)

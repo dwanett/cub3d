@@ -92,7 +92,7 @@ typedef struct	s_reycast
 	int			height;
 	int			width;
 	double		distC;
-	double		ugl;
+	double 		ugl;
 }				t_reycast;
 
 typedef struct	s_posi
@@ -109,7 +109,7 @@ typedef struct	s_mas
 
 typedef struct	s_angle
 {
-	int			alpha;
+	double 		alpha;
 }				t_angle;
 
 typedef struct	s_all
