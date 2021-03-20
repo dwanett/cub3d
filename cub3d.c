@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include <stdio.h>
 
 void	full_free_file(t_file *file)
 {
@@ -36,6 +35,11 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
+int		create_trgb(int t, int r, int g, int b)
+{
+	return(t << 24 | r << 16 | g << 8 | b);
+}
+
 void print_kodred(t_all *all, int size, int color, int x, int y)
 {
 	int tmp_y;
@@ -48,7 +52,7 @@ void print_kodred(t_all *all, int size, int color, int x, int y)
 		y = tmp_y;
 		while (y < (tmp_y + size))
 		{
-			my_mlx_pixel_put(&all->data, x, y, color);
+			my_mlx_pixel_put(&all->map, x, y, color);
 			y += 1;
 		}
 		x += 1;
@@ -64,12 +68,14 @@ void create_map(char **map, t_all *all)
 	{
 		while (map[all->map_mass.x][all->map_mass.y] != '\0')
 		{
+			//------------map---------------
 			if (map[all->map_mass.x][all->map_mass.y] == ' ')
 				color = 0x00000000;
 			if (map[all->map_mass.x][all->map_mass.y] == '1')
 				color = 0x000FF000;
 			if (map[all->map_mass.x][all->map_mass.y] == '0')
 				color = 0x000FFFF0;
+			//------------map---------------
 			if (map[all->map_mass.x][all->map_mass.y] == 'N' ||
 			map[all->map_mass.x][all->map_mass.y] == 'S' ||
 			map[all->map_mass.x][all->map_mass.y] == 'E' ||
@@ -89,27 +95,54 @@ void create_map(char **map, t_all *all)
 				map[all->map_mass.x][all->map_mass.y] = '0';
 				color = 0x000FFFF0;
 			}
-			print_kodred(all, 16, color, all->pix_for_map.x, all->pix_for_map.y);
-			all->pix_for_map.x += SIZE_CHUNK;
-			all->map_mass.y++;
+			//------------map---------------
+			print_kodred(all, SIZE_MAP, color, all->pix_for_map.x, all->pix_for_map.y);
+			all->pix_for_map.x += SIZE_MAP;
 			//all->pix_for_map.x++; //black line
+			//------------map---------------
+			all->map_mass.y++;
 		}
-		all->map_mass.y = 0;
+		//------------map---------------
 		all->pix_for_map.x = 0;
 		//all->pix_for_map.y++; //black line
-		all->pix_for_map.y += SIZE_CHUNK;
+		all->pix_for_map.y += SIZE_MAP;
+		//------------map---------------
 		all->map_mass.x++;
+		all->map_mass.y = 0;
 	}
 }
 
-void create_player(t_all *all)
+void print_player(t_all *all)
 {
 	int	tmp_y;
 	int	tmp_x;
 
-	tmp_y = (int)all->player.y;
-	tmp_x = (int)all->player.x;
+	tmp_y = (int)(all->player.y / SIZE_CHUNK * SIZE_MAP);
+	tmp_x = (int)(all->player.x / SIZE_CHUNK * SIZE_MAP);
 	print_kodred(all, SIZE_PLAYER, 0x00FF0000, tmp_x, tmp_y);
+}
+
+void print_floor_and_ceilling(t_all *all, int Y_up, int Y_down)
+{
+	int floor;
+	int ceiling;
+
+	ceiling = Y_up;
+	floor = Y_down;
+	while (ceiling != 0)
+	{
+		my_mlx_pixel_put(&all->data, all->visual.width, ceiling,
+				create_trgb(0, all->file.F[0], all->file.F[1],
+						all->file.F[2]));
+		ceiling--;
+	}
+	while (floor != all->file.R_y)
+	{
+		my_mlx_pixel_put(&all->data, all->visual.width, floor,
+				create_trgb(0, all->file.C[0], all->file.C[1],
+						all->file.C[2]));
+		floor++;
+	}
 }
 
 void print3d(t_all *all, double x, double y)
@@ -118,26 +151,34 @@ void print3d(t_all *all, double x, double y)
 	int Y_up;
 	int Y_down;
 	int H;
+	int color;
 
 	L = sqrt(pow((all->player.x - x), 2) + pow((all->player.y - y), 2));
 	L *= cos(fabs(all->visual.ugl - (all->angle.alpha * PI / 180)));
 	H = (int)round((SIZE_CHUNK / L) * all->visual.distC);
 	Y_up = all->file.R_y / 2;
 	Y_down = all->file.R_y / 2;
+	color = (int)H + 220 / 220;
+	color -=70;
+	if (color >= 220)
+		color = 220;
+	if (color <= 50)
+		color = 50;
 	while (Y_up >= (all->file.R_y / 2) - (H / 2))
 	{
 		if (Y_up == 0)
 			break ;
-		my_mlx_pixel_put(&all->data_3d, all->visual.width, Y_up, 0x00FFFFFF);
+		my_mlx_pixel_put(&all->data, all->visual.width, Y_up, create_trgb(0, color, color, color));
 		Y_up--;
 	}
 	while (Y_down <= (all->file.R_y / 2) + (H / 2))
 	{
 		if (Y_down == all->file.R_y)
 			break ;
-		my_mlx_pixel_put(&all->data_3d, all->visual.width, Y_down, 0x00FFFFFF);
+		my_mlx_pixel_put(&all->data, all->visual.width, Y_down, create_trgb(0, color, color, color));
 		Y_down++;
 	}
+	print_floor_and_ceilling(all, Y_up, Y_down);
 
 }
 
@@ -154,7 +195,9 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2, int colo
 	length = MAX(deltaX, deltaY);
 	if (length == 0)
 	{
-		my_mlx_pixel_put(&all->data, (int)round(x1),  (int)round(y1), color);
+		//------------map---------------
+		my_mlx_pixel_put(&all->map, (int)round(x1 / SIZE_CHUNK * SIZE_MAP),  (int)round(y1 / SIZE_CHUNK * SIZE_MAP), color);
+		//------------map---------------
 		return ;
 	}
 	dX = (x2 - x1) / length;
@@ -169,7 +212,9 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2, int colo
 			print3d(all, x1, y1);
 			break;
 		}
-		my_mlx_pixel_put(&all->data, (int)round(x1),  (int)round(y1), color);
+		//------------map---------------
+		my_mlx_pixel_put(&all->map, (int)round(x1 / SIZE_CHUNK * SIZE_MAP),  (int)round(y1 / SIZE_CHUNK * SIZE_MAP), color);
+		//------------map---------------
 	}
 }
 
@@ -179,13 +224,14 @@ void reycast(t_all *all)
 	double	y;
 
 	all->visual.ugl = (all->angle.alpha - FOV / 2.0) * PI / 180;
-	all->visual.distC = (all->file.R_x / 2.0) * tan((FOV / 2.0) * PI / 180);
+	//all->visual.distC = (all->file.R_x / 2.0) * tan((FOV / 2.0) * PI / 180);
+	all->visual.distC = (all->file.R_x / 2.0) / tan((FOV / 2.0) * PI / 180);
 	all->visual.width = 0;
 	while (all->visual.ugl <= ((all->angle.alpha + FOV / 2.0) * PI / 180))
 	{
-		x = (all->player.x + (SIZE_PLAYER / 2.0)) + (1000 * cos(all->visual.ugl));
-		y = (all->player.y + (SIZE_PLAYER / 2.0)) + (1000 * sin(all->visual.ugl));
-		print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0),(int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y, 0x00FF0000);
+		x = (all->player.x + (SIZE_PLAYER / 2.0)) + (10000 * cos(all->visual.ugl));
+		y = (all->player.y + (SIZE_PLAYER / 2.0)) + (10000 * sin(all->visual.ugl));
+		print_line(all, (int)all->player.x + (SIZE_PLAYER / 2.0), (int)all->player.y + (SIZE_PLAYER / 2.0), (int)x, (int)y, 0x00FF0000);
 		all->visual.ugl += (FOV * PI / 180) / (all->file.R_x - 1);
 		all->visual.width++;
 	}
@@ -197,10 +243,15 @@ void reycast(t_all *all)
 int		render_next_frame(t_all *all)
 {
 	create_map(all->file.map, all);
-	create_player(all);
+	//------------map---------------
+	print_player(all);
+	//------------map---------------
 	reycast(all);
 	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
-	mlx_put_image_to_window(all->vars_3d.mlx, all->vars_3d.win, all->data_3d.img, 0, 0);
+	//------------map---------------
+	if (all->key.map == 1)
+		mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->map.img, 0, 0);
+	//------------map---------------
 	if (all->key.keycode >= 0)
 	{
 		all->map_mass.x = 0;
@@ -211,10 +262,13 @@ int		render_next_frame(t_all *all)
 		all->data.img = mlx_new_image(all->vars.mlx, all->file.R_x, all->file.R_y);
 		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
 										   &all->data.endian);
-		mlx_destroy_image(all->vars_3d.mlx, all->data_3d.img);
-		all->data_3d.img = mlx_new_image(all->vars_3d.mlx, all->file.R_x, all->file.R_y);
-		all->data_3d.addr = mlx_get_data_addr(all->data_3d.img, &all->data_3d.bits_per_pixel, &all->data_3d.line_length,
-				&all->data_3d.endian);
+		//------------map---------------
+			mlx_destroy_image(all->vars.mlx, all->map.img);
+			all->map.img = mlx_new_image(all->vars.mlx, 550, 250);
+			all->map.addr = mlx_get_data_addr(all->map.img,
+					&all->map.bits_per_pixel, &all->map.line_length,
+					&all->map.endian);
+		//------------map---------------
 		move(all);
 	}
 	all->key.keycode = -1;
@@ -222,25 +276,20 @@ int		render_next_frame(t_all *all)
 
 int ft_window(t_file file)
 {
-	t_vars	vars;
-	t_data	img;
 	t_all	all;
 
-	vars.mlx = mlx_init();
-	vars.win = mlx_new_window(vars.mlx, 550, 300, "map");
-	img.img = mlx_new_image(vars.mlx, 550, 300);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
-								 &img.endian);
-	///-------------------------------------------------------
-	all.vars_3d.mlx = mlx_init();
-	all.vars_3d.win = mlx_new_window(all.vars_3d.mlx, file.R_x, file.R_y, "cub3d");
-	all.data_3d.img = mlx_new_image(all.vars_3d.mlx, file.R_x, file.R_y);
-	all.data_3d.addr = mlx_get_data_addr(all.data_3d.img, &all.data_3d.bits_per_pixel, &all.data_3d.line_length,
-			&all.data_3d.endian);
-	///-------------------------------------------------------
+	all.vars.mlx = mlx_init();
+	all.vars.win = mlx_new_window(all.vars.mlx, file.R_x, file.R_y, "cub3d");
+	all.data.img = mlx_new_image(all.vars.mlx, file.R_x, file.R_y);
+	all.data.addr = mlx_get_data_addr(all.data.img, &all.data.bits_per_pixel, &all.data.line_length,
+								 &all.data.endian);
+	//------------map---------------
+	all.map.img = mlx_new_image(all.vars.mlx, 550, 250);
+	all.map.addr = mlx_get_data_addr(all.map.img, &all.map.bits_per_pixel, &all.map.line_length,
+			&all.map.endian);
+	all.key.map = 0;
+	//------------map---------------
 	all.file = file;
-	all.data = img;
-	all.vars = vars;
 	all.player.x = 0;
 	all.player.y = 0;
 	all.map_mass.x = 0;

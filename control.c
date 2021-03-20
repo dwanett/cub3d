@@ -30,23 +30,23 @@ void walking(t_all *all, double x, double y, int key)
 {
 	if (key == W)
 	{
-		x += SPEED * cos((all->angle.alpha * PI / 180));
-		y += SPEED * sin((all->angle.alpha * PI / 180));
+		x += SPEED_MOVE * cos((all->angle.alpha * PI / 180));
+		y += SPEED_MOVE * sin((all->angle.alpha * PI / 180));
 	}
 	if (key == A)
 	{
-		x -= SPEED * cos((all->angle.alpha * PI / 180) + PI / 2);
-		y -= SPEED * sin((all->angle.alpha * PI / 180) + PI / 2);
+		x -= SPEED_MOVE * cos((all->angle.alpha * PI / 180) + PI / 2);
+		y -= SPEED_MOVE * sin((all->angle.alpha * PI / 180) + PI / 2);
 	}
 	if (key == S)
 	{
-		x -= SPEED * cos((all->angle.alpha * PI / 180));
-		y -= SPEED * sin((all->angle.alpha * PI / 180));
+		x -= SPEED_MOVE * cos((all->angle.alpha * PI / 180));
+		y -= SPEED_MOVE * sin((all->angle.alpha * PI / 180));
 	}
 	if (key == D)
 	{
-		x += SPEED * cos((all->angle.alpha * PI / 180) + PI / 2);
-		y += SPEED * sin((all->angle.alpha * PI / 180) + PI / 2);
+		x += SPEED_MOVE * cos((all->angle.alpha * PI / 180) + PI / 2);
+		y += SPEED_MOVE * sin((all->angle.alpha * PI / 180) + PI / 2);
 	}
 	if (chek_position(all, x, y))
 	{
@@ -58,10 +58,16 @@ void walking(t_all *all, double x, double y, int key)
 void move(t_all *all)
 {
 	walking(all, all->player.x, all->player.y, all->key.keycode);
+	//------------map---------------
+	if (all->key.keycode == M && all->key.map != 1)
+		all->key.map = 1;
+	else if (all->key.keycode == M && all->key.map != 0)
+		all->key.map = 0;
+	//------------map---------------
 	if (all->key.keycode == ARROW_LEFT)
-		all->angle.alpha -= SPEED * 2;
+		all->angle.alpha -= SPEED_ANGLE;
 	if (all->key.keycode == ARROW_RIGHT)
-		all->angle.alpha += SPEED * 2;
+		all->angle.alpha += SPEED_ANGLE;
 	if (all->angle.alpha >= 360)
 		all->angle.alpha = 0;
 	else if (all->angle.alpha <= 0)
@@ -75,7 +81,7 @@ int ft_key_hook(int keycode, t_all *all)
 		mlx_destroy_window(all->vars.mlx, all->vars.win);
 		exit(-1);
 	}
-	if (keycode == W || keycode == S || keycode == A || keycode == D
+	if (keycode == W || keycode == S || keycode == A || keycode == D || keycode == M
 		|| keycode == ARROW_LEFT || keycode == ARROW_RIGHT)
 		all->key.keycode = keycode;
 	return (0);

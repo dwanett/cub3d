@@ -31,6 +31,7 @@
 #  define S 115
 #  define A 97
 #  define D 100
+#  define M 109
 #  define ARROW_LEFT 65361
 #  define ARROW_RIGHT 65363
 # endif
@@ -38,12 +39,16 @@
 # include "get_next_line/get_next_line.h"
 # include <math.h>
 # include <fcntl.h>
-
+//-----------------
+#include <stdio.h>
+//-----------------
 # define PI 3.14159265358979323846
-# define SIZE_CHUNK 16
+# define SIZE_CHUNK 128
+# define SIZE_MAP 16
 # define SIZE_PLAYER 2
-# define SPEED 2
-# define FOV 90
+# define SPEED_MOVE 15
+# define SPEED_ANGLE 3
+# define FOV 60
 # define MAX(x, y) x > y ? x: y
 
 typedef struct	s_vars
@@ -78,6 +83,7 @@ typedef struct	s_file
 typedef struct	s_key
 {
 	int			keycode;
+	int			map;
 }				t_key;
 
 typedef struct	s_reycast
@@ -110,14 +116,13 @@ typedef struct	s_all
 	t_file		file;
 	t_vars		vars;
 	t_data		data;
-	t_vars		vars_3d;
-	t_data		data_3d;
 	t_key		key;
 	t_posi		player;
 	t_mas		map_mass;
 	t_mas		pix_for_map;
 	t_angle		angle;
 	t_reycast	visual;
+	t_data		map;
 }				t_all;
 
 int				check_last_str_map(char **tmp_map);
