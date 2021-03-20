@@ -21,6 +21,7 @@
 #  define S 1
 #  define A 0
 #  define D 2
+#  define M 46
 #  define ARROW_LEFT 123
 #  define ARROW_RIGHT 124
 # else
