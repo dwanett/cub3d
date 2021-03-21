@@ -1,8 +1,8 @@
 R 1280 720
-NO ./path_to_the_north_texture
-SO ./path_to_the_south_texture
-WE ./path_to_the_west_texture
-EA ./path_to_the_east_texture
+NO ./texture/N.XMP
+SO ./texture/S.XMP
+WE ./texture/W.XMP
+EA ./texture/E.XMP
 S ./path_to_the_sprite_texture
 F 0,121,219
 C 102,102,102

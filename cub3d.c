@@ -77,10 +77,10 @@ void create_map(char **map, t_all *all)
 			if (map[all->map_mass.x][all->map_mass.y] == '0')
 				color = 0x000FFFF0;
 			//------------map---------------
-			if (map[all->map_mass.x][all->map_mass.y] == 'N' ||
+			if ((map[all->map_mass.x][all->map_mass.y] == 'N' ||
 			map[all->map_mass.x][all->map_mass.y] == 'S' ||
 			map[all->map_mass.x][all->map_mass.y] == 'E' ||
-			map[all->map_mass.x][all->map_mass.y] == 'W' &&
+			map[all->map_mass.x][all->map_mass.y] == 'W') &&
 			all->player.x == 0)
 			{
 				if (map[all->map_mass.x][all->map_mass.y] == 'S')
@@ -100,14 +100,14 @@ void create_map(char **map, t_all *all)
 			print_kodred(all, SIZE_MAP, color, all->pix_for_map.x, all->pix_for_map.y);
 			all->pix_for_map.x += SIZE_MAP;
 			//all->pix_for_map.x++; //black line
-			//------------map---------------
+			//------------mapend-------------
 			all->map_mass.y++;
 		}
 		//------------map---------------
 		all->pix_for_map.x = 0;
 		//all->pix_for_map.y++; //black line
 		all->pix_for_map.y += SIZE_MAP;
-		//------------map---------------
+		//------------mapend-------------
 		all->map_mass.x++;
 		all->map_mass.y = 0;
 	}
@@ -190,8 +190,9 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2, int colo
 	if (length == 0)
 	{
 		//------------map---------------
-		my_mlx_pixel_put(&all->map, (int)round(x1 / SIZE_CHUNK * SIZE_MAP),  (int)round(y1 / SIZE_CHUNK * SIZE_MAP), color);
-		//------------map---------------
+		if (color == 0)
+			my_mlx_pixel_put(&all->map, (int)round(x1 / SIZE_CHUNK * SIZE_MAP),  (int)round(y1 / SIZE_CHUNK * SIZE_MAP), color);
+		//------------mapend-------------
 		return ;
 	}
 	dX = (x2 - x1) / length;
@@ -208,8 +209,9 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2, int colo
 			break;
 		}
 		//------------map---------------
-		my_mlx_pixel_put(&all->map, (int)round(x1 / SIZE_CHUNK * SIZE_MAP),  (int)round(y1 / SIZE_CHUNK * SIZE_MAP), color);
-		//------------map---------------
+		if (color == 0)
+			my_mlx_pixel_put(&all->map, (int)round(x1 / SIZE_CHUNK * SIZE_MAP),  (int)round(y1 / SIZE_CHUNK * SIZE_MAP), color);
+		//------------mapend-------------
 	}
 }
 
@@ -234,21 +236,19 @@ void reycast(t_all *all)
 	x = (all->player.x) + (all->visual.distC * cos(all->angle.alpha * PI / 180));
 	y = (all->player.y) + (all->visual.distC * sin(all->angle.alpha * PI / 180));
 	print_line(all, (int)all->player.x, (int)all->player.y, (int)x, (int)y, 0x00000000);
-	//------------map---------------
+	//------------mapend-------------
 }
 
 int		render_next_frame(t_all *all)
 {
 	create_map(all->file.map, all);
-	//------------map---------------
-	print_player(all);
-	//------------map---------------
+	print_player(all);//------------map---------------
 	reycast(all);
 	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
 	//------------map---------------
 	if (all->key.map == 1)
 		mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->map.img, 0, 0);
-	//------------map---------------
+	//------------mapend-------------
 	if (all->key.keycode >= 0)
 	{
 		all->map_mass.x = 0;
@@ -265,7 +265,7 @@ int		render_next_frame(t_all *all)
 			all->map.addr = mlx_get_data_addr(all->map.img,
 					&all->map.bits_per_pixel, &all->map.line_length,
 					&all->map.endian);
-		//------------map---------------
+		//------------mapend-------------
 		move(all);
 	}
 	all->key.keycode = -1;
@@ -286,6 +286,9 @@ int myFPS(t_all *all)
 int ft_window(t_file file)
 {
 	t_all	all;
+	t_data test;
+	int width;
+	int height;
 
 	all.vars.mlx = mlx_init();
 	all.vars.win = mlx_new_window(all.vars.mlx, file.R_x, file.R_y, "cub3d");
@@ -297,7 +300,7 @@ int ft_window(t_file file)
 	all.map.addr = mlx_get_data_addr(all.map.img, &all.map.bits_per_pixel, &all.map.line_length,
 			&all.map.endian);
 	all.key.map = 0;
-	//------------map---------------
+	//------------mapend-------------
 	all.file = file;
 	all.player.x = 0;
 	all.player.y = 0;
@@ -305,8 +308,13 @@ int ft_window(t_file file)
 	all.map_mass.y = 0;
 	all.pix_for_map.x = 0;
 	all.pix_for_map.y = 0;
+	test.img = mlx_xpm_file_to_image(all.vars.mlx, all.file.NO_texture, &width, &height);
+	test.addr = mlx_get_data_addr(test.img, &test.bits_per_pixel, &test.line_length,
+			&test.endian);
+	//mlx_put_image_to_window(all.vars.mlx, all.vars.win, test.img, 0, 0);
+	//printf("width = %d\nheight = %d\n", width, height);
 	//mlx_loop_hook(all.vars.mlx, render_next_frame, &all);
-	mlx_loop_hook(all.vars.mlx, myFPS, &all);
+	//mlx_loop_hook(all.vars.mlx, myFPS, &all);
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
 	mlx_hook(all.vars.win, CLOSE, 0, ft_close_exit, &all);
 	mlx_loop(all.vars.mlx);
