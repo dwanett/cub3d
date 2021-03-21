@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/18 14:55:30 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/21 22:23:01 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,16 +309,12 @@ int ft_window(t_file file)
 	all.pix_for_map.x = 0;
 	all.pix_for_map.y = 0;
 	test.img = mlx_xpm_file_to_image(all.vars.mlx, all.file.NO_texture, &width, &height);
-	test.addr = mlx_get_data_addr(test.img, &test.bits_per_pixel, &test.line_length,
-			&test.endian);
-	//mlx_put_image_to_window(all.vars.mlx, all.vars.win, test.img, 0, 0);
-	//printf("width = %d\nheight = %d\n", width, height);
+	mlx_put_image_to_window(all.vars.mlx, all.vars.win, test.img, 0, 0);
 	//mlx_loop_hook(all.vars.mlx, render_next_frame, &all);
 	//mlx_loop_hook(all.vars.mlx, myFPS, &all);
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
 	mlx_hook(all.vars.win, CLOSE, 0, ft_close_exit, &all);
 	mlx_loop(all.vars.mlx);
-
 	return (0);
 }
 
