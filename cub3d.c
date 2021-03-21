@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include <time.h>
 
 void	full_free_file(t_file *file)
 {
@@ -223,8 +224,8 @@ void reycast(t_all *all)
 	all->visual.width = 0;
 	while (all->visual.ugl <= ((all->angle.alpha + FOV / 2.0) * PI / 180))
 	{
-		x = (all->player.x) + (10000 * cos(all->visual.ugl));
-		y = (all->player.y) + (10000 * sin(all->visual.ugl));
+		x = (all->player.x) + (100000 * cos(all->visual.ugl));
+		y = (all->player.y) + (100000 * sin(all->visual.ugl));
 		print_line(all, (int)all->player.x, (int)all->player.y, (int)x, (int)y, 0x00FF0000);
 		all->visual.ugl += (FOV * PI / 180) / (all->file.R_x - 1);
 		all->visual.width++;
@@ -270,6 +271,18 @@ int		render_next_frame(t_all *all)
 	all->key.keycode = -1;
 }
 
+int myFPS(t_all *all)
+{
+	clock_t current_ticks, delta_ticks;
+	clock_t fps = 0;
+	current_ticks = clock();
+	render_next_frame(all);
+	delta_ticks = clock() - current_ticks;
+	if(delta_ticks > 0)
+		fps = CLOCKS_PER_SEC / delta_ticks;
+	mlx_string_put(all->vars.mlx, all->vars.win, 5, 11, 0x00FF0000, ft_itoa(fps));
+}
+
 int ft_window(t_file file)
 {
 	t_all	all;
@@ -292,7 +305,8 @@ int ft_window(t_file file)
 	all.map_mass.y = 0;
 	all.pix_for_map.x = 0;
 	all.pix_for_map.y = 0;
-	mlx_loop_hook(all.vars.mlx, render_next_frame, &all);
+	//mlx_loop_hook(all.vars.mlx, render_next_frame, &all);
+	mlx_loop_hook(all.vars.mlx, myFPS, &all);
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
 	mlx_hook(all.vars.win, CLOSE, 0, ft_close_exit, &all);
 	mlx_loop(all.vars.mlx);
