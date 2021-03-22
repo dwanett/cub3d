@@ -219,13 +219,16 @@ void print3d(t_all *all, double x, double y)
 	double L;
 	int Y;
 	int H;
+	int H_real;
 	int color;
-	double color_y;
-	int H_text;
+	int i;
 
 	L = sqrt(pow((all->player.x - x), 2) + pow((all->player.y - y), 2));
 	L *= cos(fabs(all->visual.ugl - (all->angle.alpha * PI / 180)));
 	H = (int)round((SIZE_CHUNK / L) * all->visual.distC);
+	H_real = H;
+	if (H > all->file.R_y)
+		H = all->file.R_y;
 	Y = (all->file.R_y / 2) - (H / 2);
 	color = (int)H + 220 / 220;
 	color -=70;
@@ -234,20 +237,18 @@ void print3d(t_all *all, double x, double y)
 	if (color <= 50)
 		color = 50;
 	print_floor_and_ceilling(all, Y, all->file.R_y);
-	all->NO_texture.color_y = 0;
-	H_text = H / all->file.R_y;
+	all->NO_texture.color_x = (int)x % SIZE_CHUNK;
+	i = 0;
 	while (Y <= (all->file.R_y / 2) + (H / 2) && Y <= all->file.R_y)
 	{
-		all->NO_texture.color_y = ((Y + ((all->file.R_y / 2) + (H / 2))) % SIZE_CHUNK);
-		//if (all->NO_texture.color_y  > 256)
-		//	all->NO_texture.color_y  = 256;
+		all->NO_texture.color_y = (int)(all->NO_texture.height * ((((H + H_real) >> 1) - i)) / H_real);
 		if (Y < 0)
 			Y = 0;
 		//my_mlx_pixel_put(&all->data, all->visual.width, Y, create_trgb(0, color, color, color));
 		my_mlx_pixel_put(&all->data, all->visual.width, Y, (int)get_color_image(&all->NO_texture, (int)all->NO_texture.color_x, (int)all->NO_texture.color_y));
 		Y++;
+		i++;
 	}
-	printf("%d\n", H);
 	print_floor_and_ceilling(all, 0, Y);
 }
 
@@ -279,7 +280,6 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2, int colo
 		y1 += dY;
 		if (all->file.map[(int)(round(y1) / SIZE_CHUNK)][(int)(round(x1) / SIZE_CHUNK)] == '1')
 		{
-			all->NO_texture.color_x = (int)x1 % SIZE_CHUNK;
 			if (color != 0)//------------map---------------
 				print3d(all, x1, y1);
 			break;
