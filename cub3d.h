@@ -67,6 +67,19 @@ typedef struct	s_data
 	int			endian;
 }				t_data;
 
+typedef struct	s_texture
+{
+	void		*img;
+	char		*addr;
+	int			bits_per_pixel;
+	int			line_length;
+	int			endian;
+	int 		width;
+	int			height;
+	double		color_x;
+	double		color_y;
+}				t_texture;
+
 typedef struct	s_file
 {
 	int			R_x;
@@ -124,6 +137,11 @@ typedef struct	s_all
 	t_angle		angle;
 	t_reycast	visual;
 	t_data		map;
+	t_texture	NO_texture;
+	t_texture	SO_texture;
+	t_texture	WE_texture;
+	t_texture	EA_texture;
+	t_texture	S_texture;
 }				t_all;
 
 int				check_last_str_map(char **tmp_map);

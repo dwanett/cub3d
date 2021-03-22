@@ -36,6 +36,15 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
+unsigned int	get_color_image(t_texture *texture, int x, int y)
+{
+	char *dst;
+
+	dst = texture->addr + (y * texture->line_length + x * (texture->bits_per_pixel / 8));
+	return (*(unsigned int *)dst);
+}
+
+
 int		create_trgb(int t, int r, int g, int b)
 {
 	return(t << 24 | r << 16 | g << 8 | b);
@@ -123,7 +132,7 @@ void print_player(t_all *all)
 	print_kodred(all, SIZE_PLAYER, 0x00FF0000, tmp_x, tmp_y);
 }
 
-void print_floor_and_ceilling(t_all *all, int Y_up, int Y_down)
+/*void print_floor_and_ceilling(t_all *all, int Y_up, int Y_down)
 {
 
 	if (Y_up != 0)
@@ -137,15 +146,17 @@ void print_floor_and_ceilling(t_all *all, int Y_up, int Y_down)
 		my_mlx_pixel_put(&all->data, all->visual.width, Y_down, create_trgb(0, all->file.C[0], all->file.C[1], all->file.C[2]));
 		Y_down++;
 	}
-}
+}*/
 
-void print3d(t_all *all, double x, double y)
+/*void print3d(t_all *all, double x, double y)
 {
 	double L;
 	int Y_up;
 	int Y_down;
 	int H;
 	int color;
+	double color_y;
+	int H_text;
 
 	L = sqrt(pow((all->player.x - x), 2) + pow((all->player.y - y), 2));
 	L *= cos(fabs(all->visual.ugl - (all->angle.alpha * PI / 180)));
@@ -158,9 +169,14 @@ void print3d(t_all *all, double x, double y)
 		color = 220;
 	if (color <= 50)
 		color = 50;
+	color_y =  (double)all->NO_texture.height;
 	while (Y_up >= (all->file.R_y / 2) - (H / 2))
 	{
-		my_mlx_pixel_put(&all->data, all->visual.width, Y_up, create_trgb(0, color, color, color));
+		all->NO_texture.color_y = (double)Y_up / all->file.R_y * all->NO_texture.height / 2;
+		if (all->NO_texture.color_y  > 256)
+			all->NO_texture.color_y  = 0;
+		//my_mlx_pixel_put(&all->data, all->visual.width, Y_up, create_trgb(0, color, color, color));
+		//my_mlx_pixel_put(&all->data, all->visual.width, Y_up, (int)get_color_image(&all->NO_texture, (int)all->NO_texture.color_x, (int)all->NO_texture.color_y));
 		if (Y_up == 0)
 			break ;
 		Y_up--;
@@ -169,11 +185,70 @@ void print3d(t_all *all, double x, double y)
 	{
 		if (Y_down == all->file.R_y)
 			break ;
-		my_mlx_pixel_put(&all->data, all->visual.width, Y_down, create_trgb(0, color, color, color));
+		all->NO_texture.color_y = (double)Y_down / ((double)H / 2) * all->NO_texture.height * 2;
+		//all->NO_texture.color_y = (all->NO_texture.color_y /  (H / 2)) * all->NO_texture.height * 2;
+		if (all->NO_texture.color_y  > 256)
+			all->NO_texture.color_y  = 256;
+		//my_mlx_pixel_put(&all->data, all->visual.width, Y_down, create_trgb(0, color, color, color));
+		my_mlx_pixel_put(&all->data, all->visual.width, Y_down, (int)get_color_image(&all->NO_texture, (int)all->NO_texture.color_x, (int)all->NO_texture.color_y));
 		Y_down++;
 	}
 	print_floor_and_ceilling(all, Y_up, Y_down);
 
+}*/
+
+void print_floor_and_ceilling(t_all *all, int floor, int ceilling)
+{
+
+	if (floor != 0)
+		while (floor >= 0)
+		{
+			my_mlx_pixel_put(&all->data, all->visual.width, floor,create_trgb(0, all->file.F[0], all->file.F[1],all->file.F[2]));
+			floor--;
+		}
+	if (ceilling != all->file.R_y)
+		while (ceilling <= all->file.R_y)
+		{
+			my_mlx_pixel_put(&all->data, all->visual.width, ceilling, create_trgb(0, all->file.C[0], all->file.C[1], all->file.C[2]));
+			ceilling++;
+		}
+}
+
+void print3d(t_all *all, double x, double y)
+{
+	double L;
+	int Y;
+	int H;
+	int color;
+	double color_y;
+	int H_text;
+
+	L = sqrt(pow((all->player.x - x), 2) + pow((all->player.y - y), 2));
+	L *= cos(fabs(all->visual.ugl - (all->angle.alpha * PI / 180)));
+	H = (int)round((SIZE_CHUNK / L) * all->visual.distC);
+	Y = (all->file.R_y / 2) - (H / 2);
+	color = (int)H + 220 / 220;
+	color -=70;
+	if (color >= 220)
+		color = 220;
+	if (color <= 50)
+		color = 50;
+	print_floor_and_ceilling(all, Y, all->file.R_y);
+	all->NO_texture.color_y = 0;
+	H_text = H / all->file.R_y;
+	while (Y <= (all->file.R_y / 2) + (H / 2) && Y <= all->file.R_y)
+	{
+		all->NO_texture.color_y = ((Y + ((all->file.R_y / 2) + (H / 2))) % SIZE_CHUNK);
+		//if (all->NO_texture.color_y  > 256)
+		//	all->NO_texture.color_y  = 256;
+		if (Y < 0)
+			Y = 0;
+		//my_mlx_pixel_put(&all->data, all->visual.width, Y, create_trgb(0, color, color, color));
+		my_mlx_pixel_put(&all->data, all->visual.width, Y, (int)get_color_image(&all->NO_texture, (int)all->NO_texture.color_x, (int)all->NO_texture.color_y));
+		Y++;
+	}
+	printf("%d\n", H);
+	print_floor_and_ceilling(all, 0, Y);
 }
 
 void print_line(t_all *all, double x1, double y1, double x2, double y2, int color)
@@ -191,7 +266,7 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2, int colo
 	{
 		//------------map---------------
 		if (color == 0)
-			my_mlx_pixel_put(&all->map, (int)round(x1 / SIZE_CHUNK * SIZE_MAP),  (int)round(y1 / SIZE_CHUNK * SIZE_MAP), color);
+			my_mlx_pixel_put(&all->map, (int)round(x1 / SIZE_CHUNK * SIZE_MAP),  (int)round(y1 / SIZE_CHUNK * SIZE_MAP), all->SO_texture.color_y);
 		//------------mapend-------------
 		return ;
 	}
@@ -204,6 +279,7 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2, int colo
 		y1 += dY;
 		if (all->file.map[(int)(round(y1) / SIZE_CHUNK)][(int)(round(x1) / SIZE_CHUNK)] == '1')
 		{
+			all->NO_texture.color_x = (int)x1 % SIZE_CHUNK;
 			if (color != 0)//------------map---------------
 				print3d(all, x1, y1);
 			break;
@@ -286,9 +362,6 @@ int myFPS(t_all *all)
 int ft_window(t_file file)
 {
 	t_all	all;
-	t_data test;
-	int width;
-	int height;
 
 	all.vars.mlx = mlx_init();
 	all.vars.win = mlx_new_window(all.vars.mlx, file.R_x, file.R_y, "cub3d");
@@ -308,10 +381,45 @@ int ft_window(t_file file)
 	all.map_mass.y = 0;
 	all.pix_for_map.x = 0;
 	all.pix_for_map.y = 0;
-	test.img = mlx_xpm_file_to_image(all.vars.mlx, all.file.NO_texture, &width, &height);
-	mlx_put_image_to_window(all.vars.mlx, all.vars.win, test.img, 0, 0);
+	all.NO_texture.img = mlx_xpm_file_to_image(all.vars.mlx, all.file.NO_texture, &all.NO_texture.width, &all.NO_texture.height);
+	all.NO_texture.addr = mlx_get_data_addr(all.NO_texture.img, &all.NO_texture.bits_per_pixel, &all.NO_texture.line_length,
+			&all.NO_texture.endian);
+	all.SO_texture.img = mlx_xpm_file_to_image(all.vars.mlx, all.file.SO_texture, &all.SO_texture.width, &all.SO_texture.height);
+	all.SO_texture.addr = mlx_get_data_addr(all.SO_texture.img, &all.SO_texture.bits_per_pixel, &all.SO_texture.line_length,
+			&all.SO_texture.endian);
+	all.WE_texture.img = mlx_xpm_file_to_image(all.vars.mlx, all.file.WE_texture, &all.WE_texture.width, &all.WE_texture.height);
+	all.WE_texture.addr = mlx_get_data_addr(all.WE_texture.img, &all.WE_texture.bits_per_pixel, &all.WE_texture.line_length,
+			&all.WE_texture.endian);
+	all.EA_texture.img = mlx_xpm_file_to_image(all.vars.mlx, all.file.EA_texture, &all.EA_texture.width, &all.EA_texture.height);
+	all.EA_texture.addr = mlx_get_data_addr(all.EA_texture.img, &all.EA_texture.bits_per_pixel, &all.EA_texture.line_length,
+			&all.EA_texture.endian);
 	//mlx_loop_hook(all.vars.mlx, render_next_frame, &all);
-	//mlx_loop_hook(all.vars.mlx, myFPS, &all);
+	/*double x;
+	double y;
+	double x_tmp;
+	double y_tmp;
+
+	x = 0;
+	while (x <= file.R_x)
+	{
+		y = 0;
+		while (y <= file.R_y)
+		{
+			x_tmp = x / file.R_x * SIZE_CHUNK;
+			y_tmp = y / file.R_y * SIZE_CHUNK;
+			all.NO_texture.color_x = x_tmp / file.R_x * all.NO_texture.width;
+			all.NO_texture.color_y = y_tmp / file.R_y * all.NO_texture.height;
+			//if (y == SIZE_CHUNK)
+			//	break ;
+			my_mlx_pixel_put(&all.data, (int)x, (int)y, (int)get_color_image(&all.NO_texture, (int)all.NO_texture.color_x, (int)all.NO_texture.color_y));
+			y++;
+		}
+		//if (x == SIZE_CHUNK && y == SIZE_CHUNK)
+		//	break ;
+		x++;
+	}*/
+	mlx_loop_hook(all.vars.mlx, myFPS, &all);
+	mlx_put_image_to_window(all.vars.mlx, all.vars.win, all.data.img, 0, 0);
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
 	mlx_hook(all.vars.win, CLOSE, 0, ft_close_exit, &all);
 	mlx_loop(all.vars.mlx);
