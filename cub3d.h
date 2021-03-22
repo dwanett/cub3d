@@ -159,5 +159,9 @@ int				ft_open_file(int argc, char *argv[], t_file *file);
 void			move(t_all *all);
 int				ft_key_hook(int keycode, t_all *all);
 int				ft_close_exit();
+void			full_free_file(t_file *file);
+void			my_mlx_pixel_put(t_data *data, int x, int y, int color);
+unsigned int	get_color_image(t_texture *texture, int x, int y);
+int				create_trgb(int t, int r, int g, int b);
 
 #endif
