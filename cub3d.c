@@ -6,113 +6,83 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/21 22:23:01 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/23 23:56:14 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include <time.h>
 
-void print_kodred(t_all *all, int size, int color, int x, int y)
+void	angel_palyer(t_all *all, int *color, char **map)
 {
-	int tmp_y;
-	int tmp_x;
-
-	tmp_y = y;
-	tmp_x = x;
-	while (x < (tmp_x + size))
+	if ((map[all->map_mass.x][all->map_mass.y] == 'N' ||
+		map[all->map_mass.x][all->map_mass.y] == 'S' ||
+		map[all->map_mass.x][all->map_mass.y] == 'E' ||
+		map[all->map_mass.x][all->map_mass.y] == 'W') &&
+		all->player.x == 0)
 	{
-		y = tmp_y;
-		while (y < (tmp_y + size))
-		{
-			my_mlx_pixel_put(&all->map, x, y, color);
-			y += 1;
-		}
-		x += 1;
+		if (map[all->map_mass.x][all->map_mass.y] == 'S')
+			all->angle.alpha = 90;
+		if (map[all->map_mass.x][all->map_mass.y] == 'W')
+			all->angle.alpha = 180;
+		if (map[all->map_mass.x][all->map_mass.y] == 'N')
+			all->angle.alpha = 270;
+		if (map[all->map_mass.x][all->map_mass.y] == 'E')
+			all->angle.alpha = 0;
+		all->player.x = all->map_mass.y * SIZE_CHUNK;
+		all->player.y = all->map_mass.x * SIZE_CHUNK;
+		map[all->map_mass.x][all->map_mass.y] = '0';
+		*color = 0x000FFFF0;
 	}
 }
 
-void create_map(char **map, t_all *all)
+void	create_map(char **map, t_all *all)
 {
-	int color;
+	int	color;
 
 	color = 0x00000000;
 	while (map[all->map_mass.x] != NULL)
 	{
 		while (map[all->map_mass.x][all->map_mass.y] != '\0')
 		{
-			//------------map---------------
-			if (map[all->map_mass.x][all->map_mass.y] == ' ')
-				color = 0x00000000;
-			if (map[all->map_mass.x][all->map_mass.y] == '1')
-				color = 0x000FF000;
-			if (map[all->map_mass.x][all->map_mass.y] == '0')
-				color = 0x000FFFF0;
-			//------------map---------------
-			if ((map[all->map_mass.x][all->map_mass.y] == 'N' ||
-			map[all->map_mass.x][all->map_mass.y] == 'S' ||
-			map[all->map_mass.x][all->map_mass.y] == 'E' ||
-			map[all->map_mass.x][all->map_mass.y] == 'W') &&
-			all->player.x == 0)
-			{
-				if (map[all->map_mass.x][all->map_mass.y] == 'S')
-					all->angle.alpha = 90;
-				if (map[all->map_mass.x][all->map_mass.y] == 'W')
-					all->angle.alpha = 180;
-				if (map[all->map_mass.x][all->map_mass.y] == 'N')
-					all->angle.alpha = 270;
-				if (map[all->map_mass.x][all->map_mass.y] == 'E')
-					all->angle.alpha = 0;
-				all->player.x = all->map_mass.y * SIZE_CHUNK /*+ all->map_mass.y*/;
-				all->player.y = all->map_mass.x * SIZE_CHUNK /*+ all->map_mass.x*/;
-				map[all->map_mass.x][all->map_mass.y] = '0';
-				color = 0x000FFFF0;
-			}
-			//------------map---------------
-			print_kodred(all, SIZE_MAP, color, all->pix_for_map.x, all->pix_for_map.y);
+			/*------------map---------------*/
+			color_map(map[all->map_mass.x][all->map_mass.y], &color);
+			/*------------mapend-------------*/
+			angel_palyer(all, &color, map);
+			/*------------map---------------*/
+			print_kodred(all, SIZE_MAP, color,
+					all->pix_for_map.x, all->pix_for_map.y);
 			all->pix_for_map.x += SIZE_MAP;
-			//all->pix_for_map.x++; //black line
-			//------------mapend-------------
+			/*------------mapend-------------*/
 			all->map_mass.y++;
 		}
-		//------------map---------------
+		/*------------map---------------*/
 		all->pix_for_map.x = 0;
-		//all->pix_for_map.y++; //black line
 		all->pix_for_map.y += SIZE_MAP;
-		//------------mapend-------------
+		/*------------mapend-------------*/
 		all->map_mass.x++;
 		all->map_mass.y = 0;
 	}
 }
 
-void print_player(t_all *all)
+void	print_floor_and_ceilling(t_all *all, int floor, int ceilling)
 {
-	int	tmp_y;
-	int	tmp_x;
-
-	tmp_y = (int)(all->player.y / SIZE_CHUNK * SIZE_MAP);
-	tmp_x = (int)(all->player.x / SIZE_CHUNK * SIZE_MAP);
-	print_kodred(all, SIZE_PLAYER, 0x00FF0000, tmp_x, tmp_y);
-}
-
-void print_floor_and_ceilling(t_all *all, int floor, int ceilling)
-{
-
 	if (floor != 0)
 		while (floor >= 0)
 		{
-			my_mlx_pixel_put(&all->data, all->visual.width, floor,create_trgb(0, all->file.F[0], all->file.F[1],all->file.F[2]));
+			my_mlx_pixel_put(&all->data, all->visual.width, floor,
+			create_trgb(0, all->file.F[0], all->file.F[1], all->file.F[2]));
 			floor--;
 		}
 	if (ceilling != all->file.R_y)
 		while (ceilling <= all->file.R_y)
 		{
-			my_mlx_pixel_put(&all->data, all->visual.width, ceilling, create_trgb(0, all->file.C[0], all->file.C[1], all->file.C[2]));
+			my_mlx_pixel_put(&all->data, all->visual.width, ceilling,
+			create_trgb(0, all->file.C[0], all->file.C[1], all->file.C[2]));
 			ceilling++;
 		}
 }
 
-void print3d(t_all *all, double x, double y)
+void	print3d(t_all *all, double x, double y)
 {
 	double L;
 	int Y;
@@ -150,8 +120,8 @@ void print3d(t_all *all, double x, double y)
 	{
 		all->NO_texture.color_y = (int)(all->NO_texture.height * ((((H + H_real) >> 1) - i)) / H_real);
 		all->SO_texture.color_y = (int)(all->SO_texture.height * ((((H + H_real) >> 1) - i)) / H_real);
-		all->EA_texture.color_y = (int)(all->NO_texture.height * ((((H + H_real) >> 1) - i)) / H_real);
-		all->WE_texture.color_y = (int)(all->SO_texture.height * ((((H + H_real) >> 1) - i)) / H_real);
+		all->EA_texture.color_y = (int)(all->EA_texture.height * ((((H + H_real) >> 1) - i)) / H_real);
+		all->WE_texture.color_y = (int)(all->WE_texture.height * ((((H + H_real) >> 1) - i)) / H_real);
 		if (Y < 0)
 			Y = 0;
 		if ((y_mass + SIZE_CHUNK - 1 <= (int)round(y)) && (all->file.map[(y_mass / SIZE_CHUNK) + 1][x_mass / SIZE_CHUNK] == '0'))
@@ -168,25 +138,17 @@ void print3d(t_all *all, double x, double y)
 	print_floor_and_ceilling(all, 0, Y);
 }
 
-void print_line(t_all *all, double x1, double y1, double x2, double y2, int color)
+void	dda(t_all *all, double x2, double y2, int length)
 {
-	int deltaX;
-	int deltaY;
-	int length;
-	double dX;
-	double dY;
+	double	dX;
+	double	dY;
+	double	x1;
+	double	y1;
 
-	deltaX = abs((int)(round(x1) - round(x2)));
-	deltaY = abs((int)(round(y1) - round(y2)));
-	length = MAX(deltaX, deltaY);
+	x1 = all->player.x;
+	y1 = all->player.y;
 	if (length == 0)
-	{
-		//------------map---------------
-		if (color == 0)
-			my_mlx_pixel_put(&all->map, (int)round(x1 / SIZE_CHUNK * SIZE_MAP),  (int)round(y1 / SIZE_CHUNK * SIZE_MAP), all->SO_texture.color_y);
-		//------------mapend-------------
 		return ;
-	}
 	dX = (x2 - x1) / length;
 	dY = (y2 - y1) / length;
 	length++;
@@ -194,53 +156,60 @@ void print_line(t_all *all, double x1, double y1, double x2, double y2, int colo
 	{
 		x1 += dX;
 		y1 += dY;
-		if (all->file.map[(int)(round(y1) / SIZE_CHUNK)][(int)(round(x1) / SIZE_CHUNK)] == '1')
+		if (all->file.map[(int)(round(y1) / SIZE_CHUNK)]
+				[(int)(round(x1) / SIZE_CHUNK)] == '1')
 		{
-			if (color != 0)//------------map---------------
+			if (all->visual.color != 0)/*------------map---------------*/
 				print3d(all, x1, y1);
 			break;
 		}
-		//------------map---------------
-		if (color == 0)
-			my_mlx_pixel_put(&all->map, (int)round(x1 / SIZE_CHUNK * SIZE_MAP),  (int)round(y1 / SIZE_CHUNK * SIZE_MAP), color);
-		//------------mapend-------------
+		if (all->visual.color == 0)/*------------map---------------*/
+			my_mlx_pixel_put(&all->map, (int)round(x1 / SIZE_CHUNK * SIZE_MAP),
+					(int)round(y1 / SIZE_CHUNK * SIZE_MAP), all->visual.color);
+		/*------------mapend-------------*/
 	}
 }
 
-void reycast(t_all *all)
+void	reycast(t_all *all)
 {
 	double	x;
 	double	y;
 
 	all->visual.ugl = (all->angle.alpha - FOV / 2.0) * PI / 180;
-	//all->visual.distC = (all->file.R_x / 2.0) * tan((FOV / 2.0) * PI / 180);
+	/*all->visual.distC = (all->file.R_x / 2.0) * tan((FOV / 2.0) * PI / 180);*/
 	all->visual.distC = (all->file.R_x / 2.0) / tan((FOV / 2.0) * PI / 180);
 	all->visual.width = 0;
+	all->visual.color = 1;
 	while (all->visual.ugl <= ((all->angle.alpha + FOV / 2.0) * PI / 180))
 	{
-		x = (all->player.x) + (10000 * cos(all->visual.ugl));
-		y = (all->player.y) + (10000 * sin(all->visual.ugl));
-		print_line(all, (int)all->player.x, (int)all->player.y, (int)x, (int)y, 0x00FF0000);
+		x = all->player.x + (10000 * cos(all->visual.ugl));
+		y = all->player.y + (10000 * sin(all->visual.ugl));
+		dda(all, (int)x, (int)y,
+		MAX(abs((int)(round(all->player.x) - round(x))),
+		abs((int)(round(all->player.y) - round(y)))));
 		all->visual.ugl += (FOV * PI / 180) / (all->file.R_x - 1);
 		all->visual.width++;
 	}
-	//------------map---------------
+	all->visual.color = 0x00000000;
+	/*------------map---------------*/
 	x = (all->player.x) + (all->visual.distC * cos(all->angle.alpha * PI / 180));
 	y = (all->player.y) + (all->visual.distC * sin(all->angle.alpha * PI / 180));
-	print_line(all, (int)all->player.x, (int)all->player.y, (int)x, (int)y, 0x00000000);
-	//------------mapend-------------
+	dda(all, (int)x, (int)y,
+	MAX(abs((int)(round(all->player.x) - round(x))),
+	abs((int)(round(all->player.y) - round(y)))));
+	/*------------mapend------------*/
 }
 
 int		render_next_frame(t_all *all)
 {
 	create_map(all->file.map, all);
-	print_player(all);//------------map---------------
+	print_player(all);/*------------map---------------*/
 	reycast(all);
 	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
-	//------------map---------------
+	/*------------map---------------*/
 	if (all->key.map == 1)
 		mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->map.img, 0, 0);
-	//------------mapend-------------
+	/*------------mapend------------*/
 	if (all->key.keycode >= 0)
 	{
 		all->map_mass.x = 0;
@@ -251,31 +220,44 @@ int		render_next_frame(t_all *all)
 		all->data.img = mlx_new_image(all->vars.mlx, all->file.R_x, all->file.R_y);
 		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
 										   &all->data.endian);
-		//------------map---------------
+		/*------------map---------------*/
 			mlx_destroy_image(all->vars.mlx, all->map.img);
 			all->map.img = mlx_new_image(all->vars.mlx, 550, 250);
 			all->map.addr = mlx_get_data_addr(all->map.img,
 					&all->map.bits_per_pixel, &all->map.line_length,
 					&all->map.endian);
-		//------------mapend-------------
+		/*------------mapend------------*/
 		move(all);
 	}
 	all->key.keycode = -1;
 }
 
-int myFPS(t_all *all)
+void	init_all(t_all *all)
 {
-	clock_t current_ticks, delta_ticks;
-	clock_t fps = 0;
-	current_ticks = clock();
-	render_next_frame(all);
-	delta_ticks = clock() - current_ticks;
-	if(delta_ticks > 0)
-		fps = CLOCKS_PER_SEC / delta_ticks;
-	mlx_string_put(all->vars.mlx, all->vars.win, 5, 11, 0x00FF0000, ft_itoa(fps));
+	all->player.x = 0;
+	all->player.y = 0;
+	all->map_mass.x = 0;
+	all->map_mass.y = 0;
+	all->pix_for_map.x = 0;
+	all->pix_for_map.y = 0;
+	all->NO_texture.img = mlx_xpm_file_to_image(all->vars.mlx, all->file.NO_texture, &all->NO_texture.width, &all->NO_texture.height);
+	all->NO_texture.addr = mlx_get_data_addr(all->NO_texture.img, &all->NO_texture.bits_per_pixel, &all->NO_texture.line_length,
+			&all->NO_texture.endian);
+	all->SO_texture.img = mlx_xpm_file_to_image(all->vars.mlx, all->file.SO_texture, &all->SO_texture.width, &all->SO_texture.height);
+	all->SO_texture.addr = mlx_get_data_addr(all->SO_texture.img, &all->SO_texture.bits_per_pixel, &all->SO_texture.line_length,
+			&all->SO_texture.endian);
+	all->WE_texture.img = mlx_xpm_file_to_image(all->vars.mlx, all->file.WE_texture, &all->WE_texture.width, &all->WE_texture.height);
+	all->WE_texture.addr = mlx_get_data_addr(all->WE_texture.img, &all->WE_texture.bits_per_pixel, &all->WE_texture.line_length,
+			&all->WE_texture.endian);
+	all->EA_texture.img = mlx_xpm_file_to_image(all->vars.mlx, all->file.EA_texture, &all->EA_texture.width, &all->EA_texture.height);
+	all->EA_texture.addr = mlx_get_data_addr(all->EA_texture.img, &all->EA_texture.bits_per_pixel, &all->EA_texture.line_length,
+			&all->EA_texture.endian);
+	all->S_texture.img = mlx_xpm_file_to_image(all->vars.mlx, all->file.EA_texture, &all->S_texture.width, &all->S_texture.height);
+	all->S_texture.addr = mlx_get_data_addr(all->S_texture.img, &all->S_texture.bits_per_pixel, &all->S_texture.line_length,
+			&all->S_texture.endian);
 }
 
-int ft_window(t_file file)
+int		ft_window(t_file file)
 {
 	t_all	all;
 
@@ -284,31 +266,14 @@ int ft_window(t_file file)
 	all.data.img = mlx_new_image(all.vars.mlx, file.R_x, file.R_y);
 	all.data.addr = mlx_get_data_addr(all.data.img, &all.data.bits_per_pixel, &all.data.line_length,
 								 &all.data.endian);
-	//------------map---------------
+	/*------------map---------------*/
 	all.map.img = mlx_new_image(all.vars.mlx, 550, 250);
 	all.map.addr = mlx_get_data_addr(all.map.img, &all.map.bits_per_pixel, &all.map.line_length,
 			&all.map.endian);
 	all.key.map = 0;
-	//------------mapend-------------
+	/*------------mapend------------*/
 	all.file = file;
-	all.player.x = 0;
-	all.player.y = 0;
-	all.map_mass.x = 0;
-	all.map_mass.y = 0;
-	all.pix_for_map.x = 0;
-	all.pix_for_map.y = 0;
-	all.NO_texture.img = mlx_xpm_file_to_image(all.vars.mlx, all.file.NO_texture, &all.NO_texture.width, &all.NO_texture.height);
-	all.NO_texture.addr = mlx_get_data_addr(all.NO_texture.img, &all.NO_texture.bits_per_pixel, &all.NO_texture.line_length,
-			&all.NO_texture.endian);
-	all.SO_texture.img = mlx_xpm_file_to_image(all.vars.mlx, all.file.SO_texture, &all.SO_texture.width, &all.SO_texture.height);
-	all.SO_texture.addr = mlx_get_data_addr(all.SO_texture.img, &all.SO_texture.bits_per_pixel, &all.SO_texture.line_length,
-			&all.SO_texture.endian);
-	all.WE_texture.img = mlx_xpm_file_to_image(all.vars.mlx, all.file.WE_texture, &all.WE_texture.width, &all.WE_texture.height);
-	all.WE_texture.addr = mlx_get_data_addr(all.WE_texture.img, &all.WE_texture.bits_per_pixel, &all.WE_texture.line_length,
-			&all.WE_texture.endian);
-	all.EA_texture.img = mlx_xpm_file_to_image(all.vars.mlx, all.file.EA_texture, &all.EA_texture.width, &all.EA_texture.height);
-	all.EA_texture.addr = mlx_get_data_addr(all.EA_texture.img, &all.EA_texture.bits_per_pixel, &all.EA_texture.line_length,
-			&all.EA_texture.endian);
+	init_all(&all);
 	mlx_loop_hook(all.vars.mlx, myFPS, &all);
 	mlx_put_image_to_window(all.vars.mlx, all.vars.win, all.data.img, 0, 0);
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);

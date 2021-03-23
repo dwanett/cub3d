@@ -102,10 +102,10 @@ typedef struct	s_key
 
 typedef struct	s_reycast
 {
-	int			height;
 	int			width;
 	double		distC;
 	double 		ugl;
+	int 		color;
 }				t_reycast;
 
 typedef struct	s_posi
@@ -163,5 +163,12 @@ void			full_free_file(t_file *file);
 void			my_mlx_pixel_put(t_data *data, int x, int y, int color);
 unsigned int	get_color_image(t_texture *texture, int x, int y);
 int				create_trgb(int t, int r, int g, int b);
+int				render_next_frame(t_all *all);
+/*------------map---------------*/
+void			print_kodred(t_all *all, int size, int color, int x, int y);
+void			print_player(t_all *all);
+void			color_map(char symbol, int *color);
+/*------------mapend---------------*/
+int myFPS(t_all *all); /*------------cheats_42---------------*/
 
 #endif

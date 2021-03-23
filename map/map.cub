@@ -1,8 +1,8 @@
 R 1280 720
-NO ./path_to_the_north_texture
-SO ./path_to_the_south_texture
-WE ./path_to_the_west_texture
-EA ./path_to_the_east_texture
+NO ./texture/N.xpm
+SO ./texture/S.xpm
+WE ./texture/W.xpm
+EA ./texture/E.xpm
 S ./path_to_the_sprite_texture
 F 0,121,219
 C 102,102,102
@@ -13,7 +13,7 @@ C 102,102,102
 1000000000001000000000001
 1000000010000000000000001
 1000000000000000000000001
-10000000000N0000000000001
+10000000000S0000000000001
 1000010000001000000000001
 1000010000011100000000001
 1000010000001000000000001
