@@ -1,4 +1,4 @@
-R 1920 1080
+R 1240 720
 NO ./texture/N.xpm
 SO ./texture/S.xpm
 WE ./texture/W.xpm
