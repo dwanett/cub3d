@@ -94,7 +94,7 @@ void	print3d(t_all *all, double x, double y)
 	int y_mass;
 
 	L = sqrt(pow((all->player.x - x), 2) + pow((all->player.y - y), 2));
-	L *= cos(fabs(all->visual.ugl - (all->angle.alpha * PI / 180)));
+	L *= cos(fabs(all->visual.ugl - (all->angle.alpha * PI180)));
 	H = (int)round((SIZE_CHUNK / L) * all->visual.distC);
 	H_real = H;
 	if (H > all->file.R_y)
@@ -149,15 +149,12 @@ void	dda(t_all *all, double x2, double y2, int length)
 	y1 = all->player.y;
 	if (length == 0)
 		return ;
-	dX = (x2 - x1) / length;
-	dY = (y2 - y1) / length;
-	length++;
+	dX = (x2 - all->player.x) / length;
+	dY = (y2 - all->player.y) / length++;
 	while (length--)
 	{
-		x1 += dX;
-		y1 += dY;
-		if (all->file.map[(int)(round(y1) / SIZE_CHUNK)]
-				[(int)(round(x1) / SIZE_CHUNK)] == '1')
+		if (all->file.map[(int)(round((y1 += dY)) / SIZE_CHUNK)]
+				[(int)(round((x1 += dX)) / SIZE_CHUNK)] == '1')
 		{
 			if (all->visual.color != 0)/*------------map---------------*/
 				print3d(all, x1, y1);
@@ -175,25 +172,25 @@ void	reycast(t_all *all)
 	double	x;
 	double	y;
 
-	all->visual.ugl = (all->angle.alpha - FOV / 2.0) * PI / 180;
-	/*all->visual.distC = (all->file.R_x / 2.0) * tan((FOV / 2.0) * PI / 180);*/
-	all->visual.distC = (all->file.R_x / 2.0) / tan((FOV / 2.0) * PI / 180);
+	all->visual.ugl = (all->angle.alpha - (int)FOV2) * PI180;
+	/*all->visual.distC = (all->file.R_x / 2.0) * tan((int)FOV2 * PI180);*/
+	all->visual.distC = (all->file.R_x / 2.0) / tan((int)FOV2 * PI180);
 	all->visual.width = 0;
-	all->visual.color = 1;
-	while (all->visual.ugl <= ((all->angle.alpha + FOV / 2.0) * PI / 180))
+	all->visual.color =  0x00FF0000;
+	while (all->visual.ugl <= ((all->angle.alpha + (int)FOV2) * PI180))
 	{
 		x = all->player.x + (10000 * cos(all->visual.ugl));
 		y = all->player.y + (10000 * sin(all->visual.ugl));
 		dda(all, (int)x, (int)y,
 		MAX(abs((int)(round(all->player.x) - round(x))),
 		abs((int)(round(all->player.y) - round(y)))));
-		all->visual.ugl += (FOV * PI / 180) / (all->file.R_x - 1);
+		all->visual.ugl += (FOV * PI180) / (all->file.R_x - 1);
 		all->visual.width++;
 	}
 	all->visual.color = 0x00000000;
 	/*------------map---------------*/
-	x = (all->player.x) + (all->visual.distC * cos(all->angle.alpha * PI / 180));
-	y = (all->player.y) + (all->visual.distC * sin(all->angle.alpha * PI / 180));
+	x = (all->player.x) + (all->visual.distC * cos(all->angle.alpha * PI180));
+	y = (all->player.y) + (all->visual.distC * sin(all->angle.alpha * PI180));
 	dda(all, (int)x, (int)y,
 	MAX(abs((int)(round(all->player.x) - round(x))),
 	abs((int)(round(all->player.y) - round(y)))));

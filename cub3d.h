@@ -50,6 +50,8 @@
 # define SPEED_MOVE 30
 # define SPEED_ANGLE 3
 # define FOV 60
+# define FOV2 (FOV / 2)
+# define PI180 (PI / 180)
 # define MAX(x, y) x > y ? x: y
 
 typedef struct	s_vars
