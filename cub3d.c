@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/24 12:56:00 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/24 12:59:16 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,7 @@ int		render_next_frame(t_all *all)
 		all->file.R_x, all->file.R_y);
 		all->data.addr = mlx_get_data_addr(all->data.img,
 		&all->data.bits_per_pixel, &all->data.line_length,
-		 &all->data.endian);
+		&all->data.endian);
 		/*------------map---------------*/
 		mlx_destroy_image(all->vars.mlx, all->map.img);
 		all->map.img = mlx_new_image(all->vars.mlx, 550, 250);
@@ -257,7 +257,7 @@ int		ft_window(t_file file)
 	if ((all.vars.mlx = mlx_init()) == NULL)
 	{
 		ft_putstr_fd("Error\nLibrary initialization mlx.\n", 1);
-		return	(-1);
+		return (-1);
 	}
 	all.vars.win = mlx_new_window(all.vars.mlx, file.R_x, file.R_y, "cub3d");
 	all.data.img = mlx_new_image(all.vars.mlx, file.R_x, file.R_y);
@@ -271,7 +271,7 @@ int		ft_window(t_file file)
 	/*------------mapend------------*/
 	all.file = file;
 	if (init_all(&all) == -1)
-		return	(-1);
+		return (-1);
 	mlx_loop_hook(all.vars.mlx, myFPS, &all);
 	//mlx_loop_hook(all.vars.mlx, render_next_frame, &all);
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
