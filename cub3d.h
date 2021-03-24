@@ -82,6 +82,15 @@ typedef struct	s_texture
 	double		color_y;
 }				t_texture;
 
+typedef struct s_maping_texture
+{
+	int x_mass;
+	int y_mass;
+	int Y;
+	double x;
+	double y;
+} t_maping_texture;
+
 typedef struct	s_file
 {
 	int			R_x;
