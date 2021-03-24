@@ -53,6 +53,7 @@
 # define FOV2 (FOV / 2)
 # define PI180 (PI / 180)
 # define MAX(x, y) x > y ? x: y
+# define MIN(x, y) x < y ? x: y
 
 typedef struct	s_vars
 {
@@ -84,12 +85,22 @@ typedef struct	s_texture
 
 typedef struct s_maping_texture
 {
-	int x_mass;
-	int y_mass;
-	int Y;
-	double x;
-	double y;
-} t_maping_texture;
+	int			x_mass;
+	int			y_mass;
+	int			y_tmp;
+	double		x;
+	double		y;
+}				t_maping_texture;
+
+typedef struct s_sprite
+{
+	double		x;
+	int			y_tmp;
+	int 		yes;
+	int 		h;
+	double		dist;
+	int			h_real;
+}				t_sprite;
 
 typedef struct	s_file
 {
@@ -153,6 +164,7 @@ typedef struct	s_all
 	t_texture	WE_texture;
 	t_texture	EA_texture;
 	t_texture	S_texture;
+	t_sprite	sprite;
 }				t_all;
 
 int				check_last_str_map(char **tmp_map);
@@ -179,7 +191,7 @@ void			print_error_img(t_all *all);
 void			angel_palyer(t_all *all, int *color, char **map);
 void			create_map(char **map, t_all *all);
 	/*------------map---------------*/
-	void print_kodred(t_all *all, int size, int color, int x, int y);
+void			print_kodred(t_all *all, int size, int color, int x, int y);
 void			print_player(t_all *all);
 void			color_map(char symbol, int *color);
 /*------------mapend---------------*/
