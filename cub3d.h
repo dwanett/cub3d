@@ -180,6 +180,6 @@ void			print_kodred(t_all *all, int size, int color, int x, int y);
 void			print_player(t_all *all);
 void			color_map(char symbol, int *color);
 /*------------mapend---------------*/
-int myFPS(t_all *all); /*------------cheats_42---------------*/
+int				myFPS(t_all *all); /*------------cheats_42---------------*/
 
 #endif

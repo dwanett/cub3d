@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 15:29:56 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/09 15:53:09 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/24 12:20:50 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,15 +107,25 @@ int		ft_open_file(int argc, char *argv[], t_file *file)
 {
 	int	fd;
 	int	size_argv;
+	int	check_dot;
+	int i;
 
+	check_dot = 0;
+	i = 0;
 	if (argc <= 1 || argc >= 4)
 	{
 		ft_putstr_fd("Error\nNumber of arguments\n", 1);
 		return (-1);
 	}
+	while (argv[1][i] != '\0')
+	{
+		if (argv[1][i] == '.')
+			check_dot++;
+		i++;
+	}
 	size_argv = ft_strlen(argv[1]) - 1;
 	if (argv[1][size_argv - 3] != '.' || argv[1][size_argv - 2] != 'c'
-	|| argv[1][size_argv - 1] != 'u' || argv[1][size_argv] != 'b')
+	|| argv[1][size_argv - 1] != 'u' || argv[1][size_argv] != 'b' || check_dot > 1)
 	{
 		ft_putstr_fd("Error\nInvalid file extension\n", 1);
 		return (-1);

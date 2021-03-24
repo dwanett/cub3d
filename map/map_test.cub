@@ -3,7 +3,7 @@ NO ./texture/N.xpm
 SO ./texture/S.xpm
 WE ./texture/W.xpm
 EA ./texture/E.xpm
-S ./path_to_the_sprite_texture
+S ./texture/E.xpm
 F 0,219,255
 C 102,102,102
 

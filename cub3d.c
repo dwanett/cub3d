@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/24 03:18:56 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/24 12:24:20 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,29 +85,29 @@ void	print_floor_and_ceilling(t_all *all, int floor, int ceilling)
 void put_pix_texture(t_all *all, t_maping_texture *texture)
 {
 	if ((texture->y_mass + SIZE_CHUNK - 1 <= (int)round(texture->y)) &&
-		(all->file.map[(texture->y_mass / SIZE_CHUNK) + 1]
-					  [texture->x_mass / SIZE_CHUNK] == '0'))
+			(all->file.map[(texture->y_mass / SIZE_CHUNK) + 1]
+			[texture->x_mass / SIZE_CHUNK] == '0'))
 		my_mlx_pixel_put(&all->data, all->visual.width, texture->Y,
-						 (int)get_color_image(&all->NO_texture,
-											(int)all->NO_texture.color_x, (int)all->NO_texture.color_y));
+			(int)get_color_image(&all->NO_texture,
+			(int)all->NO_texture.color_x, (int)all->NO_texture.color_y));
 	else if ((texture->y_mass == (int)round(texture->y)) &&
 			 (all->file.map[(texture->y_mass / SIZE_CHUNK) - 1]
-						   [texture->x_mass / SIZE_CHUNK] == '0'))
+			[texture->x_mass / SIZE_CHUNK] == '0'))
 		my_mlx_pixel_put(&all->data, all->visual.width, texture->Y,
-						 (int)get_color_image(&all->SO_texture,
-											(int)all->SO_texture.color_x, (int)all->SO_texture.color_y));
+			(int)get_color_image(&all->SO_texture,
+			(int)all->SO_texture.color_x, (int)all->SO_texture.color_y));
 	else if ((texture->x_mass + SIZE_CHUNK - 1 <= (int)round(texture->x)) &&
 			 (all->file.map[texture->y_mass / SIZE_CHUNK]
-						   [(texture->x_mass / SIZE_CHUNK) + 1] == '0'))
+			[(texture->x_mass / SIZE_CHUNK) + 1] == '0'))
 		my_mlx_pixel_put(&all->data, all->visual.width, texture->Y,
-						 (int)get_color_image(&all->EA_texture,
-											(int)all->EA_texture.color_x, (int)all->EA_texture.color_y));
+			(int)get_color_image(&all->EA_texture,
+			(int)all->EA_texture.color_x, (int)all->EA_texture.color_y));
 	else if ((texture->x_mass == (int)round(texture->x)) &&
 			 (all->file.map[texture->y_mass / SIZE_CHUNK]
-						   [(texture->x_mass / SIZE_CHUNK) - 1] == '0'))
+			[(texture->x_mass / SIZE_CHUNK) - 1] == '0'))
 		my_mlx_pixel_put(&all->data, all->visual.width, texture->Y,
-						 (int)get_color_image(&all->WE_texture,
-											(int)all->WE_texture.color_x, (int)all->WE_texture.color_y));
+			(int)get_color_image(&all->WE_texture,
+			(int)all->WE_texture.color_x, (int)all->WE_texture.color_y));
 }
 
 void put_texture(t_all *all, t_maping_texture *texture, int h, int h_real)
@@ -226,7 +226,8 @@ int		render_next_frame(t_all *all)
 	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
 	/*------------map---------------*/
 	if (all->key.map == 1)
-		mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->map.img, 0, 0);
+		mlx_put_image_to_window(all->vars.mlx, all->vars.win,
+		all->map.img, 0, 0);
 	/*------------mapend------------*/
 	if (all->key.keycode >= 0)
 	{
@@ -235,22 +236,57 @@ int		render_next_frame(t_all *all)
 		all->pix_for_map.x = 0;
 		all->pix_for_map.y = 0;
 		mlx_destroy_image(all->vars.mlx, all->data.img);
-		all->data.img = mlx_new_image(all->vars.mlx, all->file.R_x, all->file.R_y);
-		all->data.addr = mlx_get_data_addr(all->data.img, &all->data.bits_per_pixel, &all->data.line_length,
-										   &all->data.endian);
+		all->data.img = mlx_new_image(all->vars.mlx,
+		all->file.R_x, all->file.R_y);
+		all->data.addr = mlx_get_data_addr(all->data.img,
+		&all->data.bits_per_pixel, &all->data.line_length,
+		 &all->data.endian);
 		/*------------map---------------*/
-			mlx_destroy_image(all->vars.mlx, all->map.img);
-			all->map.img = mlx_new_image(all->vars.mlx, 550, 250);
-			all->map.addr = mlx_get_data_addr(all->map.img,
-					&all->map.bits_per_pixel, &all->map.line_length,
-					&all->map.endian);
+		mlx_destroy_image(all->vars.mlx, all->map.img);
+		all->map.img = mlx_new_image(all->vars.mlx, 550, 250);
+		all->map.addr = mlx_get_data_addr(all->map.img,
+		&all->map.bits_per_pixel, &all->map.line_length,
+		&all->map.endian);
 		/*------------mapend------------*/
 		move(all);
 	}
 	all->key.keycode = -1;
 }
 
-void	init_all(t_all *all)
+void print_error_img(t_all *all)
+{
+	if (all->NO_texture.img == NULL)
+		ft_putstr_fd("Error\ncould not read the wall texture file NO\n", 1);
+	if (all->SO_texture.img == NULL)
+		ft_putstr_fd("Error\ncould not read the wall texture file SO\n", 1);
+	if (all->WE_texture.img == NULL)
+		ft_putstr_fd("Error\ncould not read the wall texture file WE\n", 1);
+	if (all->EA_texture.img == NULL)
+		ft_putstr_fd("Error\ncould not read the wall texture file EA\n", 1);
+	if (all->S_texture.img == NULL)
+		ft_putstr_fd("Error\nСould not read sprite texture file S\n", 1);
+}
+
+void init_all_help(t_all *all)
+{
+	all->NO_texture.addr = mlx_get_data_addr(all->NO_texture.img,
+	&all->NO_texture.bits_per_pixel, &all->NO_texture.line_length,
+	&all->NO_texture.endian);
+	all->SO_texture.addr = mlx_get_data_addr(all->SO_texture.img,
+	&all->SO_texture.bits_per_pixel, &all->SO_texture.line_length,
+	&all->SO_texture.endian);
+	all->WE_texture.addr = mlx_get_data_addr(all->WE_texture.img,
+	&all->WE_texture.bits_per_pixel, &all->WE_texture.line_length,
+	&all->WE_texture.endian);
+	all->EA_texture.addr = mlx_get_data_addr(all->EA_texture.img,
+	&all->EA_texture.bits_per_pixel, &all->EA_texture.line_length,
+	&all->EA_texture.endian);
+	all->S_texture.addr = mlx_get_data_addr(all->S_texture.img,
+	&all->S_texture.bits_per_pixel, &all->S_texture.line_length,
+	&all->S_texture.endian);
+}
+
+int init_all(t_all *all)
 {
 	all->player.x = 0;
 	all->player.y = 0;
@@ -258,40 +294,49 @@ void	init_all(t_all *all)
 	all->map_mass.y = 0;
 	all->pix_for_map.x = 0;
 	all->pix_for_map.y = 0;
-	all->NO_texture.img = mlx_xpm_file_to_image(all->vars.mlx, all->file.NO_texture, &all->NO_texture.width, &all->NO_texture.height);
-	all->NO_texture.addr = mlx_get_data_addr(all->NO_texture.img, &all->NO_texture.bits_per_pixel, &all->NO_texture.line_length,
-			&all->NO_texture.endian);
-	all->SO_texture.img = mlx_xpm_file_to_image(all->vars.mlx, all->file.SO_texture, &all->SO_texture.width, &all->SO_texture.height);
-	all->SO_texture.addr = mlx_get_data_addr(all->SO_texture.img, &all->SO_texture.bits_per_pixel, &all->SO_texture.line_length,
-			&all->SO_texture.endian);
-	all->WE_texture.img = mlx_xpm_file_to_image(all->vars.mlx, all->file.WE_texture, &all->WE_texture.width, &all->WE_texture.height);
-	all->WE_texture.addr = mlx_get_data_addr(all->WE_texture.img, &all->WE_texture.bits_per_pixel, &all->WE_texture.line_length,
-			&all->WE_texture.endian);
-	all->EA_texture.img = mlx_xpm_file_to_image(all->vars.mlx, all->file.EA_texture, &all->EA_texture.width, &all->EA_texture.height);
-	all->EA_texture.addr = mlx_get_data_addr(all->EA_texture.img, &all->EA_texture.bits_per_pixel, &all->EA_texture.line_length,
-			&all->EA_texture.endian);
-	all->S_texture.img = mlx_xpm_file_to_image(all->vars.mlx, all->file.EA_texture, &all->S_texture.width, &all->S_texture.height);
-	all->S_texture.addr = mlx_get_data_addr(all->S_texture.img, &all->S_texture.bits_per_pixel, &all->S_texture.line_length,
-			&all->S_texture.endian);
+	all->NO_texture.img = mlx_xpm_file_to_image(all->vars.mlx,
+	all->file.NO_texture, &all->NO_texture.width, &all->NO_texture.height);
+	all->SO_texture.img = mlx_xpm_file_to_image(all->vars.mlx,
+	all->file.SO_texture, &all->SO_texture.width, &all->SO_texture.height);
+	all->WE_texture.img = mlx_xpm_file_to_image(all->vars.mlx,
+	all->file.WE_texture, &all->WE_texture.width, &all->WE_texture.height);
+	all->EA_texture.img = mlx_xpm_file_to_image(all->vars.mlx,
+	all->file.EA_texture, &all->EA_texture.width, &all->EA_texture.height);
+	all->S_texture.img = mlx_xpm_file_to_image(all->vars.mlx,
+	all->file.S_texture, &all->S_texture.width, &all->S_texture.height);
+	if (all->NO_texture.img == NULL || all->SO_texture.img == NULL ||
+	all->WE_texture.img == NULL || all->EA_texture.img == NULL ||
+	all->S_texture.img == NULL)
+	{
+		print_error_img(all);
+		return (-1);
+	}
+	init_all_help(all);
+	return (0);
 }
 
 int		ft_window(t_file file)
 {
 	t_all	all;
 
-	all.vars.mlx = mlx_init();
+	if ((all.vars.mlx = mlx_init()) == NULL)
+	{
+		ft_putstr_fd("Error\nLibrary initialization mlx.\n", 1);
+		return	(-1);
+	}
 	all.vars.win = mlx_new_window(all.vars.mlx, file.R_x, file.R_y, "cub3d");
 	all.data.img = mlx_new_image(all.vars.mlx, file.R_x, file.R_y);
-	all.data.addr = mlx_get_data_addr(all.data.img, &all.data.bits_per_pixel, &all.data.line_length,
-								 &all.data.endian);
+	all.data.addr = mlx_get_data_addr(all.data.img,
+	&all.data.bits_per_pixel, &all.data.line_length, &all.data.endian);
 	/*------------map---------------*/
 	all.map.img = mlx_new_image(all.vars.mlx, 550, 250);
-	all.map.addr = mlx_get_data_addr(all.map.img, &all.map.bits_per_pixel, &all.map.line_length,
-			&all.map.endian);
+	all.map.addr = mlx_get_data_addr(all.map.img,
+	&all.map.bits_per_pixel, &all.map.line_length, &all.map.endian);
 	all.key.map = 0;
 	/*------------mapend------------*/
 	all.file = file;
-	init_all(&all);
+	if (init_all(&all) == -1)
+		return	(-1);
 	mlx_loop_hook(all.vars.mlx, myFPS, &all);
 	mlx_put_image_to_window(all.vars.mlx, all.vars.win, all.data.img, 0, 0);
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
