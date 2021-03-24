@@ -175,8 +175,11 @@ void			my_mlx_pixel_put(t_data *data, int x, int y, int color);
 unsigned int	get_color_image(t_texture *texture, int x, int y);
 int				create_trgb(int t, int r, int g, int b);
 int				render_next_frame(t_all *all);
-/*------------map---------------*/
-void			print_kodred(t_all *all, int size, int color, int x, int y);
+void			print_error_img(t_all *all);
+void			angel_palyer(t_all *all, int *color, char **map);
+void			create_map(char **map, t_all *all);
+	/*------------map---------------*/
+	void print_kodred(t_all *all, int size, int color, int x, int y);
 void			print_player(t_all *all);
 void			color_map(char symbol, int *color);
 /*------------mapend---------------*/

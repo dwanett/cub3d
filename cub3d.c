@@ -6,63 +6,11 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 16:33:24 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/24 12:24:20 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/24 12:56:00 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-void	angel_palyer(t_all *all, int *color, char **map)
-{
-	if ((map[all->map_mass.x][all->map_mass.y] == 'N' ||
-		map[all->map_mass.x][all->map_mass.y] == 'S' ||
-		map[all->map_mass.x][all->map_mass.y] == 'E' ||
-		map[all->map_mass.x][all->map_mass.y] == 'W') &&
-		all->player.x == 0)
-	{
-		if (map[all->map_mass.x][all->map_mass.y] == 'S')
-			all->angle.alpha = 90;
-		if (map[all->map_mass.x][all->map_mass.y] == 'W')
-			all->angle.alpha = 180;
-		if (map[all->map_mass.x][all->map_mass.y] == 'N')
-			all->angle.alpha = 270;
-		if (map[all->map_mass.x][all->map_mass.y] == 'E')
-			all->angle.alpha = 0;
-		all->player.x = all->map_mass.y * SIZE_CHUNK;
-		all->player.y = all->map_mass.x * SIZE_CHUNK;
-		map[all->map_mass.x][all->map_mass.y] = '0';
-		*color = 0x000FFFF0;
-	}
-}
-
-void	create_map(char **map, t_all *all)
-{
-	int	color;
-
-	color = 0x00000000;
-	while (map[all->map_mass.x] != NULL)
-	{
-		while (map[all->map_mass.x][all->map_mass.y] != '\0')
-		{
-			/*------------map---------------*/
-			color_map(map[all->map_mass.x][all->map_mass.y], &color);
-			/*------------mapend-------------*/
-			angel_palyer(all, &color, map);
-			/*------------map---------------*/
-			print_kodred(all, SIZE_MAP, color,
-					all->pix_for_map.x, all->pix_for_map.y);
-			all->pix_for_map.x += SIZE_MAP;
-			/*------------mapend-------------*/
-			all->map_mass.y++;
-		}
-		/*------------map---------------*/
-		all->pix_for_map.x = 0;
-		all->pix_for_map.y += SIZE_MAP;
-		/*------------mapend-------------*/
-		all->map_mass.x++;
-		all->map_mass.y = 0;
-	}
-}
 
 void	print_floor_and_ceilling(t_all *all, int floor, int ceilling)
 {
@@ -82,7 +30,7 @@ void	print_floor_and_ceilling(t_all *all, int floor, int ceilling)
 		}
 }
 
-void put_pix_texture(t_all *all, t_maping_texture *texture)
+void	put_pix_texture(t_all *all, t_maping_texture *texture)
 {
 	if ((texture->y_mass + SIZE_CHUNK - 1 <= (int)round(texture->y)) &&
 			(all->file.map[(texture->y_mass / SIZE_CHUNK) + 1]
@@ -110,9 +58,9 @@ void put_pix_texture(t_all *all, t_maping_texture *texture)
 			(int)all->WE_texture.color_x, (int)all->WE_texture.color_y));
 }
 
-void put_texture(t_all *all, t_maping_texture *texture, int h, int h_real)
+void	put_texture(t_all *all, t_maping_texture *texture, int h, int h_real)
 {
-	int huet;
+	int k;
 	int i;
 
 	i = 0;
@@ -124,11 +72,11 @@ void put_texture(t_all *all, t_maping_texture *texture, int h, int h_real)
 	while (texture->Y <= (all->file.R_y / 2) + (h / 2) &&
 		   texture->Y <= all->file.R_y)
 	{
-		huet = ((h + h_real) >> 1) - i;
-		all->NO_texture.color_y = (int)(all->NO_texture.height * huet / h_real);
-		all->SO_texture.color_y = (int)(all->SO_texture.height * huet / h_real);
-		all->EA_texture.color_y = (int)(all->EA_texture.height * huet / h_real);
-		all->WE_texture.color_y = (int)(all->WE_texture.height * huet / h_real);
+		k = ((h + h_real) >> 1) - i;
+		all->NO_texture.color_y = (int)(all->NO_texture.height * k / h_real);
+		all->SO_texture.color_y = (int)(all->SO_texture.height * k / h_real);
+		all->EA_texture.color_y = (int)(all->EA_texture.height * k / h_real);
+		all->WE_texture.color_y = (int)(all->WE_texture.height * k / h_real);
 		put_pix_texture(all, texture);
 		/*if (Y < 0)
 			Y = 0;*/
@@ -138,12 +86,12 @@ void put_texture(t_all *all, t_maping_texture *texture, int h, int h_real)
 	print_floor_and_ceilling(all, 0, texture->Y);
 }
 
-void print3d(t_all *all, double x, double y)
+void	print3d(t_all *all, double x, double y)
 {
-	t_maping_texture texture;
-	double l;
-	int h;
-	int h_real;
+	t_maping_texture	texture;
+	double				l;
+	int					h;
+	int					h_real;
 
 	l = sqrt(pow((all->player.x - x), 2) + pow((all->player.y - y), 2));
 	l *= cos(fabs(all->visual.ugl - (all->angle.alpha * PI180)));
@@ -161,8 +109,8 @@ void print3d(t_all *all, double x, double y)
 
 void	dda(t_all *all, double x2, double y2, int length)
 {
-	double	dX;
-	double	dY;
+	double	dx;
+	double	dy;
 	double	x1;
 	double	y1;
 
@@ -170,16 +118,16 @@ void	dda(t_all *all, double x2, double y2, int length)
 	y1 = all->player.y;
 	if (length == 0)
 		return ;
-	dX = (x2 - all->player.x) / length;
-	dY = (y2 - all->player.y) / length++;
+	dx = (x2 - all->player.x) / length;
+	dy = (y2 - all->player.y) / length++;
 	while (length--)
 	{
-		if (all->file.map[(int)(round((y1 += dY)) / SIZE_CHUNK)]
-				[(int)(round((x1 += dX)) / SIZE_CHUNK)] == '1')
+		if (all->file.map[(int)(round((y1 += dy)) / SIZE_CHUNK)]
+						[(int)(round((x1 += dx)) / SIZE_CHUNK)] == '1')
 		{
 			if (all->visual.color != 0)/*------------map---------------*/
 				print3d(all, x1, y1);
-			break;
+			break ;
 		}
 		if (all->visual.color == 0)/*------------map---------------*/
 			my_mlx_pixel_put(&all->map, (int)round(x1 / SIZE_CHUNK * SIZE_MAP),
@@ -197,7 +145,7 @@ void	reycast(t_all *all)
 	/*all->visual.distC = (all->file.R_x / 2.0) * tan((int)FOV2 * PI180);*/
 	all->visual.distC = (all->file.R_x / 2.0) / tan((int)FOV2 * PI180);
 	all->visual.width = 0;
-	all->visual.color =  0x00FF0000;
+	all->visual.color = 0x00FF0000;
 	while (all->visual.ugl <= ((all->angle.alpha + (int)FOV2) * PI180))
 	{
 		x = all->player.x + (10000 * cos(all->visual.ugl));
@@ -251,23 +199,10 @@ int		render_next_frame(t_all *all)
 		move(all);
 	}
 	all->key.keycode = -1;
+	return (0);
 }
 
-void print_error_img(t_all *all)
-{
-	if (all->NO_texture.img == NULL)
-		ft_putstr_fd("Error\ncould not read the wall texture file NO\n", 1);
-	if (all->SO_texture.img == NULL)
-		ft_putstr_fd("Error\ncould not read the wall texture file SO\n", 1);
-	if (all->WE_texture.img == NULL)
-		ft_putstr_fd("Error\ncould not read the wall texture file WE\n", 1);
-	if (all->EA_texture.img == NULL)
-		ft_putstr_fd("Error\ncould not read the wall texture file EA\n", 1);
-	if (all->S_texture.img == NULL)
-		ft_putstr_fd("Error\nСould not read sprite texture file S\n", 1);
-}
-
-void init_all_help(t_all *all)
+void	init_all_help(t_all *all)
 {
 	all->NO_texture.addr = mlx_get_data_addr(all->NO_texture.img,
 	&all->NO_texture.bits_per_pixel, &all->NO_texture.line_length,
@@ -286,7 +221,7 @@ void init_all_help(t_all *all)
 	&all->S_texture.endian);
 }
 
-int init_all(t_all *all)
+int		init_all(t_all *all)
 {
 	all->player.x = 0;
 	all->player.y = 0;
@@ -338,7 +273,7 @@ int		ft_window(t_file file)
 	if (init_all(&all) == -1)
 		return	(-1);
 	mlx_loop_hook(all.vars.mlx, myFPS, &all);
-	mlx_put_image_to_window(all.vars.mlx, all.vars.win, all.data.img, 0, 0);
+	//mlx_loop_hook(all.vars.mlx, render_next_frame, &all);
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
 	mlx_hook(all.vars.win, CLOSE, 0, ft_close_exit, &all);
 	mlx_loop(all.vars.mlx);

@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 15:29:56 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/24 12:20:50 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/03/24 12:28:36 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,10 @@ int		ft_pars(int fd, t_file *file)
 	{
 		i = get_next_line(fd, &line);
 		if (i == -1)
+		{
+			ft_putstr_fd("Error\nFailed to read the file\n", 1);
 			return (-1);
+		}
 		ft_init_file(line, file, &tmp_map, &i);
 		free(line);
 	}
