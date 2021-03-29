@@ -44,10 +44,10 @@
 #include <stdio.h>
 //-----------------
 # define PI 3.14159265358979323846
-# define SIZE_CHUNK 256
+# define SIZE_CHUNK 512
 # define SIZE_MAP 16
 # define SIZE_PLAYER 2
-# define SPEED_MOVE 30
+# define SPEED_MOVE 60
 # define SPEED_ANGLE 3
 # define FOV 60
 # define FOV2 (FOV / 2)
