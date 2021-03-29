@@ -80,12 +80,12 @@ void walking(t_all *all, double x, double y, int key)
 		x += SPEED_MOVE * cos((all->angle.alpha * PI / 180) + PI / 2);
 		y += SPEED_MOVE * sin((all->angle.alpha * PI / 180) + PI / 2);
 	}
-	if (chek_position(all, all->player.x, all->player.y, &x, &y) && all->key.keycode != ARROW_LEFT && all->key.keycode != ARROW_RIGHT)
+	//if (chek_position(all, all->player.x, all->player.y, &x, &y) && all->key.keycode != ARROW_LEFT && all->key.keycode != ARROW_RIGHT)
 	//if (chek_position(all, x, y))
-	{
+	//{
 		all->player.x = x;
 		all->player.y = y;
-	}
+	//}
 }
 
 void move(t_all *all)

@@ -15,13 +15,13 @@
 void	print_error_img(t_all *all)
 {
 	if (all->NO_texture.img == NULL)
-		ft_putstr_fd("Error\ncould not read the wall texture file NO\n", 1);
+		ft_putstr_fd("Error\nСould not read the wall texture file NO\n", 1);
 	if (all->SO_texture.img == NULL)
-		ft_putstr_fd("Error\ncould not read the wall texture file SO\n", 1);
+		ft_putstr_fd("Error\nСould not read the wall texture file SO\n", 1);
 	if (all->WE_texture.img == NULL)
-		ft_putstr_fd("Error\ncould not read the wall texture file WE\n", 1);
+		ft_putstr_fd("Error\nСould not read the wall texture file WE\n", 1);
 	if (all->EA_texture.img == NULL)
-		ft_putstr_fd("Error\ncould not read the wall texture file EA\n", 1);
+		ft_putstr_fd("Error\nСould not read the wall texture file EA\n", 1);
 	if (all->S_texture.img == NULL)
 		ft_putstr_fd("Error\nСould not read sprite texture file S\n", 1);
 }
@@ -49,6 +49,14 @@ void	angel_palyer(t_all *all, int *color, char **map)
 	}
 }
 
+void	save_max_map_value(t_all *all, int x, int y)
+{
+	if (x > all->map_mass.max_x)
+		all->map_mass.max_x = x;
+	if (y > all->map_mass.max_y)
+		all->map_mass.max_y = y;
+}
+
 void	create_map(char **map, t_all *all)
 {
 	int	color;
@@ -56,6 +64,7 @@ void	create_map(char **map, t_all *all)
 	color = 0x00000000;
 	while (map[all->map_mass.x] != NULL)
 	{
+		all->map_mass.y = 0;
 		while (map[all->map_mass.x][all->map_mass.y] != '\0')
 		{
 			/*------------map---------------*/
@@ -74,6 +83,6 @@ void	create_map(char **map, t_all *all)
 		all->pix_for_map.y += SIZE_MAP;
 		/*------------mapend-------------*/
 		all->map_mass.x++;
-		all->map_mass.y = 0;
+		save_max_map_value(all, all->map_mass.x, all->map_mass.y);
 	}
 }

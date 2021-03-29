@@ -24,7 +24,10 @@ void print_kodred(t_all *all, int size, int color, int x, int y)
 		y = tmp_y;
 		while (y < (tmp_y + size))
 		{
-			my_mlx_pixel_put(&all->map, x, y, color);
+			//if ((x + 1 == (tmp_x + size)) || y + 1 == (tmp_y + size))
+			//	my_mlx_pixel_put(&all->map, x, y, 0x00000000);
+			//else
+				my_mlx_pixel_put(&all->map, x, y, color);
 			y += 1;
 		}
 		x += 1;

@@ -140,6 +140,8 @@ typedef struct	s_mas
 {
 	int			x;
 	int			y;
+	int			max_x;
+	int			max_y;
 }				t_mas;
 
 typedef struct	s_angle
