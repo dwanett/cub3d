@@ -108,14 +108,12 @@ void	put_texture(t_all *all, t_maping_texture *texture, int h, int h_real)
 	print_floor_and_ceilling(all, 0, texture->y_tmp);
 }
 
-void	print3d(t_all *all, double x, double y)
+void	print3d(t_all *all, double x, double y, double l)
 {
 	t_maping_texture	texture;
-	double				l;
 	int					h;
 	int					h_real;
 
-	l = sqrt(pow((all->player.x - x), 2) + pow((all->player.y - y), 2));
 	l *= cos(fabs(all->visual.ugl - (all->angle.alpha * PI180)));
 	h = (int)round((SIZE_CHUNK / l) * all->visual.distC);
 	h_real = h;
@@ -217,102 +215,85 @@ void	dda(t_all *all, double x2, double y2, int length)
 
 void	reycast(t_all *all)
 {
-	int		raz_h;
-	int		raz_v;
-	double	gip_h;
-	double	gip_v;
-	double	dist_h;
-	double	dist_v;
-	double	dist_v_x;
-	double	dist_h_y;
-	double	gip_dist_res;
-	double	cos_a;
-	double	sin_a;
-	double	x;
-	double	x_2;
-	double	y;
-	double	y_2;
+	t_reycast	horiz;
+	t_reycast	verti;
+	t_posi		tmp;
+	double		cos_a;
+	double		sin_a;
 
 	all->visual.ugl = (all->angle.alpha - (int)FOV2) * PI180;
 	//all->visual.ugl = all->angle.alpha * PI180;
 	all->visual.distC = (all->file.R_x / 2.0) / tan((int) FOV2 * PI180);
 	all->visual.width = 0;
 	all->visual.color = 0x00000000;
-	x = (all->player.x) + (500 * cos(all->angle.alpha * PI180));
-	y = (all->player.y) + (500 * sin(all->angle.alpha * PI180));
-	dda(all, (int) x, (int) y,
-			MAX(abs((int) (round(all->player.x) - round(x))),
-					abs((int) (round(all->player.y) - round(y)))));
+	tmp.x = (all->player.x) + (16 * cos(all->angle.alpha * PI180));
+	tmp.y = (all->player.y) + (16 * sin(all->angle.alpha * PI180));
+	dda(all, (int) tmp.x, (int) tmp.y,
+			MAX(abs((int) (round(all->player.x) - round(tmp.x))),
+					abs((int) (round(all->player.y) - round(tmp.y)))));
 	while (all->visual.ugl <= ((all->angle.alpha + (int)FOV2) * PI180))
 	{
-		x = all->player.x;
-		y = all->player.y;
-		gip_v = all->player.y;
-		gip_h = all->player.x;
-		x_2 = all->player.x ;
-		y_2 = all->player.y;
+		tmp.x = all->player.x;
+		tmp.y = all->player.y;
+		verti.gip = all->player.y;
+		horiz.gip = all->player.x;
 		cos_a = cos(all->visual.ugl);
 		sin_a = sin(all->visual.ugl);
 		if (cos_a >= 0)
-			raz_v = 1;
+			verti.raz = 1;
 		else
-			raz_v = -1;
+			verti.raz = -1;
 		if (sin_a >= 0)
 
-			raz_h = 1;
+			horiz.raz = 1;
 		else
-			raz_h = -1;
+			horiz.raz = -1;
 		while (1)
 		{
-			dist_v_x = floor(x / SIZE_CHUNK) * SIZE_CHUNK + (raz_v * SIZE_CHUNK);
+			verti.dist_x = floor(tmp.x / SIZE_CHUNK) * SIZE_CHUNK + (verti.raz * SIZE_CHUNK);
 			if (cos_a < 0)
-				dist_v_x += SIZE_CHUNK - SIZE_PLAYER;
-			dist_v = fabs(dist_v_x - x_2) / cos_a;
-			gip_v += (dist_v * sin(all->visual.ugl) * (raz_v));
-			if (gip_v < 0 || dist_v_x < 0 || (gip_v / SIZE_CHUNK >= all->map_mass.max_x))
+				verti.dist_x += SIZE_CHUNK - SIZE_PLAYER;
+			verti.dist = fabs(verti.dist_x - tmp.x) / cos_a;
+			verti.gip += (verti.dist * sin(all->visual.ugl) * (verti.raz));
+			if (verti.gip < 0 || verti.dist_x < 0 || (verti.gip / SIZE_CHUNK >= all->map_mass.max_x))
 				break;
-			//print_kodred(all, 3, 0x00FFFFFF, (int) (dist_v_x / SIZE_CHUNK * SIZE_MAP), (int) (gip_v / SIZE_CHUNK * SIZE_MAP));
-			if (all->file.map[(int)(floor(gip_v) / SIZE_CHUNK)]
-			[(int)(floor(dist_v_x) / SIZE_CHUNK)] == '1')
+			if (all->file.map[(int)(floor(verti.gip) / SIZE_CHUNK)]
+			[(int)(floor(verti.dist_x) / SIZE_CHUNK)] == '1')
 				break;
-			x = dist_v_x;
-			x_2 = dist_v_x;
+			tmp.x = verti.dist_x;
 		}
 		while (1)
 		{
-			dist_h_y = floor((y / SIZE_CHUNK)) * SIZE_CHUNK + (raz_h * SIZE_CHUNK);
+			horiz.dist_y = floor((tmp.y / SIZE_CHUNK)) * SIZE_CHUNK + (horiz.raz * SIZE_CHUNK);
 			if (sin_a < 0)
-				dist_h_y += SIZE_CHUNK - SIZE_PLAYER;
-			dist_h = fabs(dist_h_y - y_2) / sin_a;
-			gip_h += (dist_h * cos(all->visual.ugl) * (raz_h));
-			if (dist_h_y < 0 || gip_h < 0 || (gip_h / SIZE_CHUNK >= all->map_mass.max_y) || (dist_h_y / SIZE_CHUNK >= all->map_mass.max_x))
+				horiz.dist_y += SIZE_CHUNK - SIZE_PLAYER;
+			horiz.dist = fabs(horiz.dist_y - tmp.y) / sin_a;
+			horiz.gip += (	horiz.dist * cos(all->visual.ugl) * (horiz.raz));
+			if (horiz.dist_y < 0 || horiz.gip < 0 || (horiz.gip / SIZE_CHUNK >= all->map_mass.max_y) || (horiz.dist_y / SIZE_CHUNK >= all->map_mass.max_x))
 				break;
-			//print_kodred(all, 3, 0x000000FF, (int)(gip_h / SIZE_CHUNK * SIZE_MAP), (int)(dist_h_y / SIZE_CHUNK * SIZE_MAP));
-			if (all->file.map[(int) (floor(dist_h_y) / SIZE_CHUNK)]
-			[(int)(floor(gip_h) / SIZE_CHUNK)] == '1')
+			if (all->file.map[(int) (floor(horiz.dist_y) / SIZE_CHUNK)]
+			[(int)(floor(horiz.gip) / SIZE_CHUNK)] == '1')
 				break;
-			y = dist_h_y;
-			y_2 = dist_h_y;
+			tmp.y = horiz.dist_y;
 		}
-		double l_1 = sqrt(pow((all->player.x - gip_h), 2) + pow((all->player.y - dist_h_y), 2));
-		double l_2 = sqrt(pow((all->player.x - dist_v_x), 2) + pow((all->player.y - gip_v), 2));
-		if (fabs(l_1) < fabs(l_2))
+		horiz.l = sqrt(pow((all->player.x - horiz.gip), 2) + pow((all->player.y - horiz.dist_y), 2));
+		verti.l = sqrt(pow((all->player.x - verti.dist_x), 2) + pow((all->player.y - verti.gip), 2));
+		if (fabs(horiz.l) <= fabs(verti.l))
 		{
-			print3d(all, gip_h, dist_h_y);
+			print3d(all, horiz.gip, horiz.dist_y, horiz.l);
 			//print_kodred(all, 3, 0x00FF0000, (int)(gip_h / SIZE_CHUNK * SIZE_MAP), (int)(dist_h_y / SIZE_CHUNK * SIZE_MAP));
-/*			dda(all, (int)gip_h, (int)dist_h_y + 1,
-			MAX(abs((int)(round(all->player.x) - round(gip_h))),
-			abs((int)(round(all->player.y) - round(dist_h_y + 1)))));*/
+			dda(all, (int)horiz.gip, (int)horiz.dist_y + 1,
+			MAX(abs((int)(round(all->player.x) - round(horiz.gip))),
+			abs((int)(round(all->player.y) - round(horiz.dist_y + 1)))));
 		}
 		else
 		{
-			print3d(all, dist_v_x, gip_v);
+			print3d(all, verti.dist_x, verti.gip, verti.l);
 			//print_kodred(all, 3, 0x00FF0000, (int)(dist_v_x / SIZE_CHUNK * SIZE_MAP), (int)(gip_v / SIZE_CHUNK * SIZE_MAP));
-/*			dda(all, (int)dist_v_x, (int)gip_v,
-					MAX(abs((int)(round(all->player.x) - round(dist_v_x))),
-							abs((int)(round(all->player.y) - round(gip_v)))));*/
+			dda(all, (int)verti.dist_x, (int)verti.gip,
+					MAX(abs((int)(round(all->player.x) - round(verti.dist_x))),
+							abs((int)(round(all->player.y) - round(verti.gip)))));
 		}
-		//printf("h = %f, v = %f\n", y, x);
 		all->visual.ugl += (FOV * PI180) / (all->file.R_x - 1);
 		all->visual.width++;
 	}

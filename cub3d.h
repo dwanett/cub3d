@@ -128,7 +128,14 @@ typedef struct	s_reycast
 	double		distC;
 	double 		ugl;
 	int 		color;
+	int			raz;
+	double		gip;
+	double		dist;
+	double		dist_x;
+	double		dist_y;
+	double		l;
 }				t_reycast;
+
 
 typedef struct	s_posi
 {
