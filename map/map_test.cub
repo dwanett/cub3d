@@ -1,4 +1,4 @@
-R 1240 720
+R 640 320
 NO ./texture/N.xpm
 SO ./texture/SO.xpm
 WE ./texture/W.xpm
