@@ -44,7 +44,7 @@
 #include <stdio.h>
 //-----------------
 # define PI 3.14159265358979323846
-# define SIZE_CHUNK 512
+# define SIZE_CHUNK 256
 # define SIZE_MAP 16
 # define SIZE_PLAYER 2
 # define SPEED_MOVE 60
@@ -95,6 +95,9 @@ typedef struct s_maping_texture
 typedef struct s_sprite
 {
 	double		x;
+	double		y;
+	double 		verti_x;
+	double		verti_y;
 	int			y_tmp;
 	int 		yes;
 	int 		h;

@@ -104,15 +104,16 @@ void	init_sprite(t_all *all)
 	all->sprite.h_real = all->sprite.h;
 	if (all->sprite.h > all->file.R_y)
 		all->sprite.h = all->file.R_y;
+	//all->sprite.h_real = all->sprite.h;
 	texture.y_tmp = (all->file.R_y / 2) + (all->sprite.h / 2);
 	texture.x_mass = (int)(round(all->sprite.x) / SIZE_CHUNK) * SIZE_CHUNK;
 	texture.y_mass = (int)(round(all->sprite.y) / SIZE_CHUNK) * SIZE_CHUNK;
 	texture.x = all->sprite.x;
 	texture.y = all->sprite.y;
-	if (SIZE_CHUNK > all->S_texture.width)
-		all->S_texture.color_x = (int)(((int)texture.y % SIZE_CHUNK) / (SIZE_CHUNK / all->S_texture.width));
-	else
-		all->S_texture.color_x = (int)(((int)texture.y % SIZE_CHUNK) * (all->S_texture.width / SIZE_CHUNK));
+/*	if (SIZE_CHUNK > all->S_texture.width)*/
+	all->S_texture.color_x = (int)(((int)texture.y % SIZE_CHUNK) / (SIZE_CHUNK / all->S_texture.width));
+/*	else
+		all->S_texture.color_x = (int)(((int)texture.y % SIZE_CHUNK) * (all->S_texture.width / SIZE_CHUNK));*/
 	while (texture.y_tmp >= (all->file.R_y / 2) - (all->sprite.h / 2) &&
 		   texture.y_tmp >= 0)
 	{
