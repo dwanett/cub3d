@@ -58,17 +58,74 @@ void	put_pix_texture(t_all *all, t_maping_texture *texture)
 			(int)all->WE_texture.color_x, (int)all->WE_texture.color_y));
 }
 
-void	init_sprite(t_all *all, double x, double y)
+void	init_sprite(t_all *all)
 {
-	all->sprite.yes = 1;
-	all->sprite.x = x;
-	all->sprite.dist = sqrt(pow((all->player.x - x), 2) + pow((all->player.y - y), 2));
-	all->sprite.dist *= cos(fabs(all->visual.ugl - (all->angle.alpha * PI180)));
+	double l1;
+	double l2;
+	t_maping_texture texture;
+	int k;
+	int i;
+
+	i = 0;
+	//l1 = sqrt(pow((all->player.x - all->sprite.horiz_x), 2) + pow((all->player.y - all->sprite.horiz_y), 2));
+	l2 = sqrt(pow((all->player.x - all->sprite.verti_x), 2) + pow((all->player.y - all->sprite.verti_y), 2));
+/*	if (fabs(l1) <= fabs(l2))
+	{
+		all->sprite.x = all->sprite.horiz_x;
+		all->sprite.y = all->sprite.horiz_y;
+		all->sprite.dist = l1;
+	}
+	else
+	{*/
+		all->sprite.x = all->sprite.verti_x;
+		all->sprite.y = all->sprite.verti_y;
+		all->sprite.dist = l2;
+//	}
+	double teta;
+	double dx;
+	double dy;
+	double gamma;
+	double delta_rey;
+	int current_rey;
+	dx = all->player.x - all->sprite.x;
+	dx = all->player.y - all->sprite.y;
+	//teta = fabs(atan2(dx, dy));
+	teta = atan2(dx, dy);
+	if (teta > 0)
+		teta *= -1;
+	gamma = teta - (all->angle.alpha * PI180);
+	if (dx < 0 && dy < 0)
+		gamma += PI * 2;
+	delta_rey = (int)(gamma / all->visual.ugl);
+	//current_rey = (all->file.R_x / 2) + delta_rey;
+	all->sprite.dist *= cos(fabs((all->visual.ugl * delta_rey) - (all->angle.alpha * PI180)));
 	all->sprite.h = (int)round((SIZE_CHUNK / all->sprite.dist) * all->visual.distC);
+	//all->sprite.h = (int)round((all->S_texture.width / all->sprite.dist) * all->visual.distC);
 	all->sprite.h_real = all->sprite.h;
 	if (all->sprite.h > all->file.R_y)
 		all->sprite.h = all->file.R_y;
-	all->sprite.y_tmp = (all->file.R_y / 2) - (all->sprite.h / 2);
+	texture.y_tmp = (all->file.R_y / 2) + (all->sprite.h / 2);
+	texture.x_mass = (int)(round(all->sprite.x) / SIZE_CHUNK) * SIZE_CHUNK;
+	texture.y_mass = (int)(round(all->sprite.y) / SIZE_CHUNK) * SIZE_CHUNK;
+	texture.x = all->sprite.x;
+	texture.y = all->sprite.y;
+	if (SIZE_CHUNK > all->S_texture.width)
+		all->S_texture.color_x = (int)(((int)texture.y % SIZE_CHUNK) / (SIZE_CHUNK / all->S_texture.width));
+	else
+		all->S_texture.color_x = (int)(((int)texture.y % SIZE_CHUNK) * (all->S_texture.width / SIZE_CHUNK));
+	while (texture.y_tmp >= (all->file.R_y / 2) - (all->sprite.h / 2) &&
+		   texture.y_tmp >= 0)
+	{
+		k = ((all->sprite.h + all->sprite.h_real) >> 1) - i;
+		all->S_texture.color_y = (int)(all->S_texture.height * k / all->sprite.h_real);
+		my_mlx_pixel_put(&all->data, all->visual.width, texture.y_tmp,
+					(int)get_color_image(&all->S_texture,
+							(int)all->S_texture.color_x, (int)all->S_texture.color_y));
+		//my_mlx_pixel_put(&all->data, all->visual.width, texture.y_tmp, 0x00FFFFFF);
+		texture.y_tmp--;
+		i++;
+	}
+	all->sprite.yes = 0;
 }
 
 void	put_texture(t_all *all, t_maping_texture *texture, int h, int h_real)
@@ -77,13 +134,25 @@ void	put_texture(t_all *all, t_maping_texture *texture, int h, int h_real)
 	int i;
 
 	i = 0;
-	all->NO_texture.color_x = (int)(((int)texture->x % SIZE_CHUNK) / (SIZE_CHUNK / all->NO_texture.width));
-	all->SO_texture.color_x = (int)(((int)texture->x % SIZE_CHUNK) / (SIZE_CHUNK / all->SO_texture.width));
-	all->EA_texture.color_x = (int)(((int)texture->y % SIZE_CHUNK) / (SIZE_CHUNK / all->EA_texture.width));
-	all->WE_texture.color_x = (int)(((int)texture->y % SIZE_CHUNK) / (SIZE_CHUNK / all->WE_texture.width));
-	print_floor_and_ceilling(all, texture->y_tmp, all->file.R_y);
-	while (texture->y_tmp <= (all->file.R_y / 2) + (h / 2) &&
-		   texture->y_tmp <= all->file.R_y)
+	if (SIZE_CHUNK > all->NO_texture.width)
+		all->NO_texture.color_x = (int)(((int)texture->x % SIZE_CHUNK) / (SIZE_CHUNK / all->NO_texture.width));
+	else
+		all->NO_texture.color_x = (int)(((int)texture->x % SIZE_CHUNK) * (all->NO_texture.width / SIZE_CHUNK));
+	if (SIZE_CHUNK > all->SO_texture.width)
+		all->SO_texture.color_x = (int)(((int)texture->x % SIZE_CHUNK) / (SIZE_CHUNK / all->SO_texture.width));
+	else
+		all->SO_texture.color_x = (int)(((int)texture->x % SIZE_CHUNK) * (all->SO_texture.width / SIZE_CHUNK));
+	if (SIZE_CHUNK > all->EA_texture.width)
+		all->EA_texture.color_x = (int)(((int)texture->y % SIZE_CHUNK) / (SIZE_CHUNK / all->EA_texture.width));
+	else
+		all->EA_texture.color_x = (int)(((int)texture->y % SIZE_CHUNK) * (all->EA_texture.width / SIZE_CHUNK));
+	if (SIZE_CHUNK > all->WE_texture.width)
+		all->WE_texture.color_x = (int)(((int)texture->y % SIZE_CHUNK) / (SIZE_CHUNK / all->WE_texture.width));
+	else
+		all->WE_texture.color_x = (int)(((int)texture->y % SIZE_CHUNK) * (all->WE_texture.width / SIZE_CHUNK));
+	print_floor_and_ceilling(all, 0, texture->y_tmp);
+	while (texture->y_tmp >= (all->file.R_y / 2) - (h / 2) &&
+		   texture->y_tmp >= 0)
 	{
 		k = ((h + h_real) >> 1) - i;
 		all->NO_texture.color_y = (int)(all->NO_texture.height * k / h_real);
@@ -92,20 +161,10 @@ void	put_texture(t_all *all, t_maping_texture *texture, int h, int h_real)
 		all->WE_texture.color_y = (int)(all->WE_texture.height * k / h_real);
 		put_pix_texture(all, texture);
 		//my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp, 0x00FFFFFF);
-		texture->y_tmp++;
+		texture->y_tmp--;
 		i++;
 	}
-	/*while (all->sprite.y_tmp <= (all->file.R_y / 2) + (all->sprite.h / 2) &&
-			all->sprite.y_tmp <= all->file.R_y && all->sprite.yes)
-	{
-		all->S_texture.color_y = (int)(all->S_texture.height * k / all->sprite.h_real);
-		my_mlx_pixel_put(&all->data, all->visual.width, all->sprite.y_tmp,
-				(int)get_color_image(&all->S_texture,
-						(int)all->S_texture.color_x, (int)all->S_texture.color_y));
-		all->sprite.y_tmp++;
-
-	}*/
-	print_floor_and_ceilling(all, 0, texture->y_tmp);
+	print_floor_and_ceilling(all, texture->y_tmp, all->file.R_y);
 }
 
 void	print3d(t_all *all, double x, double y, double l)
@@ -119,7 +178,7 @@ void	print3d(t_all *all, double x, double y, double l)
 	h_real = h;
 	if (h > all->file.R_y)
 		h = all->file.R_y;
-	texture.y_tmp = (all->file.R_y / 2) - (h / 2);
+	texture.y_tmp = (all->file.R_y / 2) + (h / 2);
 	texture.x_mass = (int)(round(x) / SIZE_CHUNK) * SIZE_CHUNK;
 	texture.y_mass = (int)(round(y) / SIZE_CHUNK) * SIZE_CHUNK;
 	texture.x = x;
@@ -232,6 +291,13 @@ void	reycast(t_all *all)
 			if (all->file.map[(int)(floor(verti.gip) / SIZE_CHUNK)]
 			[(int)(floor(verti.dist_x) / SIZE_CHUNK)] == '1')
 				break;
+			if (all->file.map[(int)(floor(verti.gip) / SIZE_CHUNK)]
+				[(int)(floor(verti.dist_x) / SIZE_CHUNK)] == '2')
+			{
+				all->sprite.verti_x = verti.dist_x;
+				all->sprite.verti_y = verti.gip;
+				all->sprite.yes = 1;
+			}
 			tmp.x = verti.dist_x;
 		}
 		while (1)
@@ -246,14 +312,23 @@ void	reycast(t_all *all)
 			if (all->file.map[(int) (floor(horiz.dist_y) / SIZE_CHUNK)]
 			[(int)(floor(horiz.gip) / SIZE_CHUNK)] == '1')
 				break;
+/*			if (all->file.map[(int) (floor(horiz.dist_y) / SIZE_CHUNK)]
+				[(int)(floor(horiz.gip) / SIZE_CHUNK)] == '2')
+			{
+				all->sprite.horiz_x = horiz.gip;
+				all->sprite.horiz_y = horiz.dist_y;
+				all->sprite.yes = 1;
+			}*/
 			tmp.y = horiz.dist_y;
 		}
 		horiz.l = sqrt(pow((all->player.x - horiz.gip), 2) + pow((all->player.y - horiz.dist_y), 2));
 		verti.l = sqrt(pow((all->player.x - verti.dist_x), 2) + pow((all->player.y - verti.gip), 2));
-		if (fabs(horiz.l) <= fabs(verti.l))
+		if (fabs(horiz.l) < fabs(verti.l))
 			print3d(all, horiz.gip, horiz.dist_y, horiz.l);
 		else
 			print3d(all, verti.dist_x, verti.gip, verti.l);
+		if (all->sprite.yes == 1)
+			init_sprite(all);
 		all->visual.ugl += (FOV * PI180) / (all->file.R_x - 1);
 		all->visual.width++;
 	}
@@ -389,4 +464,5 @@ int		main(int argc, char *argv[])
 	if (ft_window(file) == -1)
 		exit(-1);
 	full_free_file(&file);
+	return (0);
 }

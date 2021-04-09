@@ -12,7 +12,7 @@
 
 #include "cub3d.h"
 
-void print_kodred(t_all *all, int size, int color, int x, int y)
+void	print_kodred(t_all *all, int size, int color, int x, int y)
 {
 	int tmp_y;
 	int tmp_x;
@@ -59,7 +59,7 @@ void	dda(t_all *all, double x2, double y2)
 	}
 }
 
-void print_player(t_all *all)
+void	print_player(t_all *all)
 {
 	int	tmp_y;
 	int	tmp_x;
@@ -73,7 +73,7 @@ void print_player(t_all *all)
 	dda(all, tmp_x, tmp_y);
 }
 
-void color_map(char symbol, int *color)
+void	color_map(char symbol, int *color)
 {
 	if (symbol == ' ')
 		*color = 0x00000000;
