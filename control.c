@@ -80,16 +80,12 @@ void walking(t_all *all, double x, double y, int key)
 		x += SPEED_MOVE * cos((all->angle.alpha * PI / 180) + PI / 2);
 		y += SPEED_MOVE * sin((all->angle.alpha * PI / 180) + PI / 2);
 	}
-	if (chek_position(all, all->player.x, all->player.y, &x, &y) && all->key.keycode != ARROW_LEFT && all->key.keycode != ARROW_RIGHT)
+	//if (chek_position(all, all->player.x, all->player.y, &x, &y) && all->key.keycode != ARROW_LEFT && all->key.keycode != ARROW_RIGHT)
 	//if (chek_position(all, x, y))
-	{
+	//{
 		all->player.x = x;
 		all->player.y = y;
-	}
-	if (chek_position(all, all->player.x, all->player.y, &all->player.x, &y) && all->key.keycode != ARROW_LEFT && all->key.keycode != ARROW_RIGHT)
-		all->player.y = y;
-	if (chek_position(all, all->player.x, all->player.y, &x, &all->player.y) && all->key.keycode != ARROW_LEFT && all->key.keycode != ARROW_RIGHT)
-		all->player.x = x;
+	//}
 }
 
 void move(t_all *all)
@@ -116,7 +112,7 @@ int ft_key_hook(int keycode, t_all *all)
 	if (keycode == ESC)
 	{
 		mlx_destroy_window(all->vars.mlx, all->vars.win);
-		exit(0);
+		exit(-1);
 	}
 	if (keycode == W || keycode == S || keycode == A || keycode == D || keycode == M
 		|| keycode == ARROW_LEFT || keycode == ARROW_RIGHT)
@@ -126,5 +122,5 @@ int ft_key_hook(int keycode, t_all *all)
 
 int ft_close_exit()
 {
-	exit(0);
+	exit(-1);
 }
