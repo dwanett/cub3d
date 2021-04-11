@@ -44,10 +44,10 @@
 #include <stdio.h>
 //-----------------
 # define PI 3.14159265358979323846
-# define SIZE_CHUNK 256
+# define SIZE_CHUNK 128
 # define SIZE_MAP 16
 # define SIZE_PLAYER 2
-# define SPEED_MOVE 60
+# define SPEED_MOVE 80
 # define SPEED_ANGLE 3
 # define FOV 60
 # define FOV2 (FOV / 2)
@@ -96,13 +96,13 @@ typedef struct s_sprite
 {
 	double		x;
 	double		y;
-	double 		verti_x;
-	double		verti_y;
 	int			y_tmp;
 	int 		yes;
 	int 		h;
 	double		dist;
 	int			h_real;
+	int			start;
+	int 		end;
 }				t_sprite;
 
 typedef struct	s_file
@@ -206,6 +206,7 @@ void			create_map(char **map, t_all *all);
 void			print_kodred(t_all *all, int size, int color, int x, int y);
 void			print_player(t_all *all);
 void			color_map(char symbol, int *color);
+void			dda(t_all *all, double x2, double y2);
 /*------------mapend---------------*/
 int				myFPS(t_all *all); /*------------cheats_42---------------*/
 

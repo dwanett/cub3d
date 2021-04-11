@@ -1,15 +1,15 @@
-R 1240 720
-NO ./texture/N.xpm
-SO ./texture/SO.xpm
-WE ./texture/W.xpm
-EA ./texture/E.xpm
+R 1240 1240
+NO ./texture/bluestone.xpm
+SO ./texture/greystone.xpm
+WE ./texture/mossy.xpm
+EA ./texture/redbrick.xpm
 S ./texture/S.xpm
 F 0,219,255
 C 102,102,102
 
         1111111111111111111111111
         1000000000110000000000001
-        1011000001110000002000001
+        1011000001110000000000001
         1001000000000000000000001
 111111111011000001110000000000001
 100000000000000001110111111111111

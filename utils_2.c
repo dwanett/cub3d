@@ -71,6 +71,11 @@ void	create_map(char **map, t_all *all)
 			color_map(map[all->map_mass.x][all->map_mass.y], &color);
 			/*------------mapend-------------*/
 			angel_palyer(all, &color, map);
+			if (map[all->map_mass.x][all->map_mass.y] == '2')
+			{
+				all->sprite.x = all->map_mass.y * SIZE_CHUNK + (SIZE_CHUNK / 2.0);
+				all->sprite.y = all->map_mass.x * SIZE_CHUNK + (SIZE_CHUNK / 2.0);
+			}
 			/*------------map---------------*/
 			print_kodred(all, SIZE_MAP, color,
 						 all->pix_for_map.x, all->pix_for_map.y);

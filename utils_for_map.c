@@ -81,4 +81,6 @@ void	color_map(char symbol, int *color)
 		*color = 0x000FF000;
 	if (symbol == '0')
 		*color = 0x000FFFF0;
+	if (symbol == '2')
+		*color = 0x00FF0000;
 }
