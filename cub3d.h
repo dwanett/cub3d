@@ -44,16 +44,15 @@
 #include <stdio.h>
 //-----------------
 # define PI 3.14159265358979323846
-# define SIZE_CHUNK 128
+# define SIZE_CHUNK 256
 # define SIZE_MAP 16
 # define SIZE_PLAYER 2
-# define SPEED_MOVE 80
+# define SPEED_MOVE 30
 # define SPEED_ANGLE 3
 # define FOV 60
 # define FOV2 (FOV / 2)
 # define PI180 (PI / 180)
 # define MAX(x, y) x > y ? x: y
-# define MIN(x, y) x < y ? x: y
 
 typedef struct	s_vars
 {
@@ -92,18 +91,16 @@ typedef struct s_maping_texture
 	double		y;
 }				t_maping_texture;
 
-typedef struct s_sprite
+typedef struct		s_sprite
 {
-	double		x;
-	double		y;
-	int			y_tmp;
-	int 		yes;
-	int 		h;
-	double		dist;
-	int			h_real;
-	int			start;
-	int 		end;
-}				t_sprite;
+	double			x;
+	double			y;
+	double			dist;
+	int				size;
+	int				start;
+	int				y_start;
+	struct s_sprite	*next;
+}					t_sprite;
 
 typedef struct	s_file
 {
@@ -137,6 +134,9 @@ typedef struct	s_reycast
 	double		dist_x;
 	double		dist_y;
 	double		l;
+	double 		*rey_len;
+	int 		sprite_yes;
+	int 		count_sprite;
 }				t_reycast;
 
 
@@ -171,12 +171,13 @@ typedef struct	s_all
 	t_angle		angle;
 	t_reycast	visual;
 	t_data		map;
+	t_data		pl;
 	t_texture	NO_texture;
 	t_texture	SO_texture;
 	t_texture	WE_texture;
 	t_texture	EA_texture;
 	t_texture	S_texture;
-	t_sprite	sprite;
+	t_sprite	*sprite;
 }				t_all;
 
 int				check_last_str_map(char **tmp_map);

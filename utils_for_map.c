@@ -59,6 +59,28 @@ void	dda(t_all *all, double x2, double y2)
 	}
 }
 
+void	print_kodred_test(t_all *all, int size, int color, int x, int y)
+{
+	int tmp_y;
+	int tmp_x;
+
+	tmp_y = y;
+	tmp_x = x;
+	while (x < (tmp_x + size))
+	{
+		y = tmp_y;
+		while (y < (tmp_y + size))
+		{
+			if ((x + 1 == (tmp_x + size)) || y + 1 == (tmp_y + size))
+				my_mlx_pixel_put(&all->pl, x, y, 0x00000000);
+			else
+				my_mlx_pixel_put(&all->pl, x, y, color);
+			y += 1;
+		}
+		x += 1;
+	}
+}
+
 void	print_player(t_all *all)
 {
 	int	tmp_y;
@@ -66,11 +88,12 @@ void	print_player(t_all *all)
 
 	tmp_y = (int)(all->player.y / SIZE_CHUNK * SIZE_MAP);
 	tmp_x = (int)(all->player.x / SIZE_CHUNK * SIZE_MAP);
-	print_kodred(all, SIZE_PLAYER, 0x00FF0000, tmp_x, tmp_y);
+	print_kodred_test(all, SIZE_PLAYER, 0x00FF0000, 0, 0);
+/*	print_kodred(all, SIZE_PLAYER, 0x00FF0000, tmp_x, tmp_y);
 	tmp_x = (int)((all->player.x) + ((SIZE_CHUNK * 2) * cos(all->angle.alpha * PI180)));
 	tmp_y = (int)((all->player.y) + ((SIZE_CHUNK * 2) * sin(all->angle.alpha * PI180)));
 	all->visual.color = 0x00000000;
-	dda(all, tmp_x, tmp_y);
+	dda(all, tmp_x, tmp_y);*/
 }
 
 void	color_map(char symbol, int *color)

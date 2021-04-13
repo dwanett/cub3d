@@ -58,54 +58,143 @@ void	put_pix_texture(t_all *all, t_maping_texture *texture)
 			(int)all->WE_texture.color_x, (int)all->WE_texture.color_y));
 }
 
-void	init_sprite(t_all *all)
+/*void sort_list(t_sprite *list)
 {
-	t_maping_texture texture;
-	int center;
-	int k;
-	int i;
-	double teta;
-	double dx;
-	double dy;
-	int x;
-	i = 0;
-	x = 0;
-	dx = all->sprite.x - all->player.x;
-	dy = all->sprite.y - all->player.y;
-	teta = atan2(dy, dx);
-	while (teta - all->angle.alpha >  PI)
-		teta -= 2 * PI;
-	while (teta - all->angle.alpha < -PI)
-		teta += 2 * PI;
-	all->sprite.dist = sqrt(pow(all->player.x - all->sprite.x, 2) + pow(all->player.y - all->sprite.y, 2));
-	//all->sprite.dist *= cos(fabs(all->visual.ugl - (all->angle.alpha * PI180)));
-	all->sprite.h = (int)round((SIZE_CHUNK / all->sprite.dist) * all->visual.distC);
-	//all->sprite.h = all->sprite.end - all->sprite.start;
-	all->sprite.h_real = all->sprite.h;
-	if (all->sprite.h > all->file.R_y)
-		all->sprite.h = all->file.R_y;
-	/*if (all->sprite.end - all->sprite.start > all->sprite.h)
-		all->sprite.end = all->sprite.start + all->sprite.h;*/
-	all->sprite.start = (teta - all->angle.alpha) * (all->file.R_x/2)/(FOV) + (all->file.R_x/2) - all->sprite.h/2;
-	while (all->sprite.start <= all->sprite.h)
+	t_sprite *curr;
+	t_sprite *nxt;
+	t_sprite *last;
+	t_sprite *tmp;
+
+	curr = list;
+	nxt = list;
+	tmp = list;
+	while (tmp != NULL)
 	{
-		texture.y_tmp = (all->file.R_y / 2) + (all->sprite.h / 2);
-		//all->S_texture.color_x = (teta - all->angle.alpha) * (all->sprite.start / 2.0) / (FOV) + (all->visual.width / 2.0) / 2 - all->sprite.h / 2.0;
-		while (texture.y_tmp >= (all->file.R_y / 2) - (all->sprite.h / 2) &&
-			   texture.y_tmp >= 0)
-		{
-			k = ((all->sprite.h + all->sprite.h_real) >> 1) - i;
-			all->S_texture.color_y = (int) (all->S_texture.height * k / all->sprite.h_real);
-/*			my_mlx_pixel_put(&all->data, all->sprite.start, texture.y_tmp,
-					(int)get_color_image(&all->S_texture,
-							(int)all->S_texture.color_x, (int)all->S_texture.color_y));*/
-			my_mlx_pixel_put(&all->data, all->sprite.start, texture.y_tmp, 0x00FFFFFF);
-			texture.y_tmp--;
-			i++;
-		}
-		all->sprite.start++;
+		if (list->dist > tmp->dist)
+			list = list->next;
+		tmp = tmp->next;
 	}
-	all->sprite.yes = 0;
+	tmp = curr;
+	for (int i = 0; tmp->next != NULL; tmp = tmp->next)
+	{
+		for (int j = 0; curr->next != NULL; curr = curr->next)
+		{
+			if (curr->dist > curr->next->dist)
+			{
+				nxt = curr;
+				arr[j] = arr[j + 1];
+				arr[j + 1] = temp;
+			}
+		}
+	}
+}*/
+
+int check(double n1, double n2)
+{
+	if (n1 > n2)
+		return (0);
+	else
+		return (1);
+}
+
+t_sprite* sort_list(t_sprite *head)
+{
+	t_sprite	*q;
+	t_sprite	*out;
+	t_sprite	*p;
+	t_sprite	*pr;
+
+	out = NULL;
+	while (head !=NULL)
+	{
+  		q = head;
+  		head = head->next;
+		p = out, pr = NULL;
+		while (p != NULL && check(q->dist,p->dist) > 0)
+			pr = p, p = p->next;
+		if (pr == NULL)
+		{
+			q->next = out;
+			out = q;
+		}
+		else
+		{
+			q->next = p;
+			pr->next = q;
+		}
+ 	}
+	return out;
+}
+
+void print_sprite(t_all *all)
+{
+	t_sprite	*tmp;
+	int 	i;
+	int 	j;
+
+	tmp = all->sprite;
+	while (all->sprite != NULL)
+	{
+		i = -1;
+		while (i < all->sprite->size)
+		{
+			i++;
+			if (all->sprite->start + i < 0 ||
+				all->sprite->start + i >= all->file.R_x ||
+				all->visual.rey_len[all->sprite->start + i] < all->sprite->dist)
+				continue;
+			j = -1;
+			while (j < all->sprite->size)
+			{
+				j++;
+				if (all->sprite->y_start + j < 0 ||
+					all->sprite->y_start + j >= all->file.R_y)
+					continue;
+				my_mlx_pixel_put(&all->data,
+						(int) (all->sprite->start + i),
+						(int) (all->sprite->y_start + j),
+						(int) get_color_image(&all->S_texture,
+								(int) (i * all->S_texture.width /
+									   all->sprite->size),
+								(int) (j * all->S_texture.height /
+									   all->sprite->size)));
+			}
+		}
+		all->sprite = all->sprite->next;
+	}
+	all->sprite = tmp;
+}
+
+
+void	init_sprite(t_all *all, double step)
+{
+	t_sprite		*tmp;
+	double			teta;
+
+	tmp = all->sprite;
+	while (all->sprite != NULL)
+	{
+		teta = atan2(all->sprite->y - all->player.y,
+				all->sprite->x - all->player.x);
+		all->sprite->dist = sqrt(pow(all->sprite->x - all->player.x, 2) +
+								pow(all->sprite->y - all->player.y, 2));
+		//all->sprite.dist *= cos(fabs((all->angle.alpha * PI180) - teta));
+		while (teta - (all->angle.alpha * PI180) > PI)
+			teta -= 2 * PI;
+		while (teta - (all->angle.alpha * PI180) < -PI)
+			teta += 2 * PI;
+		all->sprite->size = (int) round(
+				(all->S_texture.width / all->sprite->dist) * all->visual.distC);
+		all->sprite->start = (int) ((all->file.R_x - 1) / 2.0 +
+								   (teta - (all->angle.alpha * PI180)) / step -
+								   all->sprite->size / 2.0);
+		all->sprite->y_start = (all->file.R_y / 2) - (all->sprite->size / 2);
+		all->sprite = all->sprite->next;
+	}
+	all->sprite = tmp;
+	all->sprite = sort_list(all->sprite);
+	print_sprite(all);
+	all->visual.sprite_yes = 0;
 }
 
 void	put_texture(t_all *all, t_maping_texture *texture, int h, int h_real)
@@ -153,6 +242,7 @@ void	print3d(t_all *all, double x, double y, double l)
 	int					h;
 	int					h_real;
 
+	all->visual.rey_len[all->visual.width] = l;
 	l *= cos(fabs(all->visual.ugl - (all->angle.alpha * PI180)));
 	h = (int)round((SIZE_CHUNK / l) * all->visual.distC);
 	h_real = h;
@@ -165,70 +255,6 @@ void	print3d(t_all *all, double x, double y, double l)
 	texture.y = y;
 	put_texture(all, &texture, h, h_real);
 }
-//
-//void	dda(t_all *all, double x2, double y2, int length)
-//{
-//	double	dx;
-//	double	dy;
-//	double	x1;
-//	double	y1;
-//
-//	x1 = all->player.x;
-//	y1 = all->player.y;
-//	if (length == 0)
-//		return ;
-//	dx = (x2 - all->player.x) / length;
-//	dy = (y2 - all->player.y) / length++;
-//	while (length--)
-//	{
-//		if (all->file.map[(int)(round((y1 += dy)) / SIZE_CHUNK)]
-//						[(int)(round((x1 += dx)) / SIZE_CHUNK)] == '1')
-//		{
-//			if (all->visual.color != 0)*//*------------map---------------*//*
-//				print3d(all, x1, y1);
-//			all->sprite.yes = 0;
-//			break ;
-//
-//		}
-//		if (all->file.map[(int)(round(y1) / SIZE_CHUNK)]
-//			 [(int)(round(x1) / SIZE_CHUNK)] == '2')
-//			init_sprite(all, x1, y1);
-//		if (all->visual.color == 0)*//*------------map---------------*//*
-//			my_mlx_pixel_put(&all->map, (int)round(x1 / SIZE_CHUNK * SIZE_MAP),
-//					(int)round(y1 / SIZE_CHUNK * SIZE_MAP), all->visual.color);
-//		*//*------------mapend-------------*//*
-//	}
-//}
-//
-//void	reycast(t_all *all)
-//{
-//	double	x;
-//	double	y;
-//
-//	all->visual.ugl = (all->angle.alpha - (int)FOV2) * PI180;
-//	//all->visual.distC = (all->file.R_x / 2.0) * tan((int)FOV2 * PI180);
-//	all->visual.distC = (all->file.R_x / 2.0) / tan((int)FOV2 * PI180);
-//	all->visual.width = 0;
-//	all->visual.color = 0x00FF0000;
-//	while (all->visual.ugl <= ((all->angle.alpha + (int)FOV2) * PI180))
-//	{
-//		x = all->player.x + (10000 * cos(all->visual.ugl));
-//		y = all->player.y + (10000 * sin(all->visual.ugl));
-//		dda(all, (int)x, (int)y,
-//		MAX(abs((int)(round(all->player.x) - round(x))),
-//		abs((int)(round(all->player.y) - round(y)))));
-//		all->visual.ugl += (FOV * PI180) / (all->file.R_x - 1);
-//		all->visual.width++;
-//	}
-//	all->visual.color = 0x00000000;
-//	//------------map---------------
-//	x = (all->player.x) + (all->visual.distC * cos(all->angle.alpha * PI180));
-//	y = (all->player.y) + (all->visual.distC * sin(all->angle.alpha * PI180));
-//	dda(all, (int)x, (int)y,
-//	MAX(abs((int)(round(all->player.x) - round(x))),
-//	abs((int)(round(all->player.y) - round(y)))));
-//	//------------mapend------------
-//}
 
 void	reycast(t_all *all)
 {
@@ -237,11 +263,13 @@ void	reycast(t_all *all)
 	t_posi		tmp;
 	double		cos_a;
 	double		sin_a;
+	double		step;
 
 	all->visual.ugl = (all->angle.alpha - (int)FOV2) * PI180;
 	//all->visual.ugl = all->angle.alpha * PI180;
 	all->visual.distC = (all->file.R_x / 2.0) / tan((int) FOV2 * PI180);
 	all->visual.width = 0;
+	step = (FOV * PI180) / (all->file.R_x - 1);
 	while (all->visual.ugl <= ((all->angle.alpha + (int)FOV2) * PI180))
 	{
 		tmp.x = all->player.x;
@@ -271,15 +299,9 @@ void	reycast(t_all *all)
 			if (all->file.map[(int)(floor(verti.gip) / SIZE_CHUNK)]
 			[(int)(floor(verti.dist_x) / SIZE_CHUNK)] == '1')
 				break;
-			if ((all->file.map[(int)(floor(verti.gip) / SIZE_CHUNK)]
-				[(int)(floor(verti.dist_x) / SIZE_CHUNK)] == '2') && all->sprite.yes == 0)
-			{
-				all->sprite.yes = 1;
-				all->sprite.start = all->visual.width;
-			}
-			else if (all->file.map[(int)(floor(verti.gip) / SIZE_CHUNK)]
-						 [(int)(floor(verti.dist_x) / SIZE_CHUNK)] == '2')
-				all->sprite.end = all->visual.width;
+			if (all->file.map[(int)(floor(verti.gip) / SIZE_CHUNK)]
+				[(int)(floor(verti.dist_x) / SIZE_CHUNK)] == '2')
+				all->visual.sprite_yes = 1;
 			tmp.x = verti.dist_x;
 		}
 		while (1)
@@ -294,15 +316,9 @@ void	reycast(t_all *all)
 			if (all->file.map[(int) (floor(horiz.dist_y) / SIZE_CHUNK)]
 			[(int)(floor(horiz.gip) / SIZE_CHUNK)] == '1')
 				break;
-			if ((all->file.map[(int) (floor(horiz.dist_y) / SIZE_CHUNK)]
-				[(int)(floor(horiz.gip) / SIZE_CHUNK)] == '2') && all->sprite.yes == 0)
-			{
-				all->sprite.yes = 1;
-				all->sprite.start = all->visual.width;
-			}
-			else if (all->file.map[(int) (floor(horiz.dist_y) / SIZE_CHUNK)]
-					 [(int)(floor(horiz.gip) / SIZE_CHUNK)] == '2')
-				all->sprite.end = all->visual.width;
+			if (all->file.map[(int) (floor(horiz.dist_y) / SIZE_CHUNK)]
+				[(int)(floor(horiz.gip) / SIZE_CHUNK)] == '2')
+				all->visual.sprite_yes = 1;
 			tmp.y = horiz.dist_y;
 		}
 		horiz.l = sqrt(pow((all->player.x - horiz.gip), 2) + pow((all->player.y - horiz.dist_y), 2));
@@ -311,34 +327,38 @@ void	reycast(t_all *all)
 			print3d(all, horiz.gip, horiz.dist_y, horiz.l);
 		else
 			print3d(all, verti.dist_x, verti.gip, verti.l);
-/*		if (all->sprite.yes == 1)
-			init_sprite(all);*/
-		all->visual.ugl += (FOV * PI180) / (all->file.R_x - 1);
+		all->visual.ugl += step;
 		all->visual.width++;
 	}
-	if (all->sprite.yes == 1)
-		init_sprite(all);
+	if (all->visual.sprite_yes == 1)
+		init_sprite(all, step);
+	else
+		all->visual.width;
 }
 
 int		render_next_frame(t_all *all)
 {
-	create_map(all->file.map, all);
+	//create_map(all->file.map, all);
 	print_player(all);/*------------map---------------*/
 	reycast(all);
 	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
 	/*------------map---------------*/
 	if (all->key.map == 1)
+	{
 		mlx_put_image_to_window(all->vars.mlx, all->vars.win,
-		all->map.img, 0, 0);
+				all->map.img, 0, 0);
+		mlx_put_image_to_window(all->vars.mlx, all->vars.win,
+				all->pl.img, (int)(all->player.x / SIZE_CHUNK * SIZE_MAP), (int)(all->player.y / SIZE_CHUNK * SIZE_MAP));
+	}
 	/*------------mapend------------*/
 	if (all->key.keycode >= 0)
 	{
-		all->map_mass.x = 0;
+/*		all->map_mass.x = 0;
 		all->map_mass.y = 0;
 		all->map_mass.max_x = 0;
 		all->map_mass.max_y = 0;
 		all->pix_for_map.x = 0;
-		all->pix_for_map.y = 0;
+		all->pix_for_map.y = 0;*/
 		mlx_destroy_image(all->vars.mlx, all->data.img);
 		all->data.img = mlx_new_image(all->vars.mlx,
 		all->file.R_x, all->file.R_y);
@@ -346,11 +366,12 @@ int		render_next_frame(t_all *all)
 		&all->data.bits_per_pixel, &all->data.line_length,
 		&all->data.endian);
 		/*------------map---------------*/
-		mlx_destroy_image(all->vars.mlx, all->map.img);
-		all->map.img = mlx_new_image(all->vars.mlx, 550, 250);
-		all->map.addr = mlx_get_data_addr(all->map.img,
-		&all->map.bits_per_pixel, &all->map.line_length,
-		&all->map.endian);
+		mlx_destroy_image(all->vars.mlx, all->pl.img);
+		all->pl.img = mlx_new_image(all->vars.mlx,
+				SIZE_PLAYER, SIZE_PLAYER);
+		all->pl.addr = mlx_get_data_addr(all->pl.img,
+				&all->pl.bits_per_pixel, &all->pl.line_length,
+				&all->pl.endian);
 		/*------------mapend------------*/
 		move(all);
 	}
@@ -379,7 +400,9 @@ void	init_all_help(t_all *all)
 
 int		init_all(t_all *all)
 {
-	all->sprite.yes = 0;
+	all->sprite = NULL;
+	all->visual.sprite_yes = 0;
+	all->visual.count_sprite = 0;
 	all->player.x = 0;
 	all->player.y = 0;
 	all->map_mass.x = 0;
@@ -423,19 +446,27 @@ int		ft_window(t_file file)
 	all.data.addr = mlx_get_data_addr(all.data.img,
 	&all.data.bits_per_pixel, &all.data.line_length, &all.data.endian);
 	/*------------map---------------*/
-	all.map.img = mlx_new_image(all.vars.mlx, 550, 500);
+	all.map.img = mlx_new_image(all.vars.mlx, 550, 250);
 	all.map.addr = mlx_get_data_addr(all.map.img,
 	&all.map.bits_per_pixel, &all.map.line_length, &all.map.endian);
+	all.pl.img = mlx_new_image(all.vars.mlx, SIZE_PLAYER, SIZE_PLAYER);
+	all.pl.addr = mlx_get_data_addr(all.pl.img,
+			&all.pl.bits_per_pixel, &all.pl.line_length, &all.pl.endian);
 	all.key.map = 0;
 	/*------------mapend------------*/
 	all.file = file;
+	all.visual.rey_len = (double*)malloc(sizeof(double) * all.file.R_x);
+	if (all.visual.rey_len == NULL)
+		return (-1);
 	if (init_all(&all) == -1)
 		return (-1);
+	create_map(all.file.map, &all);
 	mlx_loop_hook(all.vars.mlx, myFPS, &all);
 	//mlx_loop_hook(all.vars.mlx, render_next_frame, &all);
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
 	mlx_hook(all.vars.win, CLOSE, 0, ft_close_exit, &all);
 	mlx_loop(all.vars.mlx);
+	free(all.visual.rey_len);
 	return (0);
 }
 

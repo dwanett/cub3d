@@ -57,6 +57,24 @@ void	save_max_map_value(t_all *all, int x, int y)
 		all->map_mass.max_y = y;
 }
 
+void	init_sprite_list(t_all *all)
+{
+	t_sprite	*tmp;
+
+	tmp = all->sprite;
+	while (all->sprite != NULL)
+		all->sprite = all->sprite->next;
+	if (all->sprite == NULL)
+	{
+		all->sprite = (t_sprite*)malloc(sizeof(t_sprite));
+		if (all->sprite == NULL)
+			exit(-1);
+		all->sprite->x = all->map_mass.y * SIZE_CHUNK + (SIZE_CHUNK / 2.0);
+		all->sprite->y = all->map_mass.x * SIZE_CHUNK + (SIZE_CHUNK / 2.0);
+		all->sprite->next = tmp;
+	}
+}
+
 void	create_map(char **map, t_all *all)
 {
 	int	color;
@@ -73,8 +91,7 @@ void	create_map(char **map, t_all *all)
 			angel_palyer(all, &color, map);
 			if (map[all->map_mass.x][all->map_mass.y] == '2')
 			{
-				all->sprite.x = all->map_mass.y * SIZE_CHUNK + (SIZE_CHUNK / 2.0);
-				all->sprite.y = all->map_mass.x * SIZE_CHUNK + (SIZE_CHUNK / 2.0);
+				init_sprite_list(all);
 			}
 			/*------------map---------------*/
 			print_kodred(all, SIZE_MAP, color,

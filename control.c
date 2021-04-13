@@ -12,20 +12,6 @@
 
 #include "cub3d.h"
 
-/*int	chek_position(t_all *all, double x, double y)
-{
-	if (!((all->file.map[(int) (round(y) / SIZE_CHUNK)]
-		   [(int) (round(x) / SIZE_CHUNK)] == '1')
-		  || (all->file.map[(int) (round(y + SIZE_PLAYER) / SIZE_CHUNK)]
-			  [(int) (round(x) / SIZE_CHUNK)] == '1')
-		  || (all->file.map[(int) (round(y) / SIZE_CHUNK)]
-			  [(int) (round(x + SIZE_PLAYER) / SIZE_CHUNK)] == '1')
-		  || (all->file.map[(int) (round(y + SIZE_PLAYER) / SIZE_CHUNK)]
-			  [(int) (round(x + SIZE_PLAYER - 1) / SIZE_CHUNK)] == '1')))
-		return (1);
-	return (0);
-}*/
-
 int chek_position(t_all *all, double x1, double y1, double *x2, double *y2)
 {
 	int deltaX;
@@ -81,7 +67,6 @@ void walking(t_all *all, double x, double y, int key)
 		y += SPEED_MOVE * sin((all->angle.alpha * PI / 180) + PI / 2);
 	}
 	if (chek_position(all, all->player.x, all->player.y, &x, &y) && all->key.keycode != ARROW_LEFT && all->key.keycode != ARROW_RIGHT)
-	//if (chek_position(all, x, y))
 	{
 		all->player.x = x;
 		all->player.y = y;
