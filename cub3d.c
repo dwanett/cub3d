@@ -32,7 +32,7 @@ void	print_floor_and_ceilling(t_all *all, int floor, int ceilling)
 
 void	put_pix_texture(t_all *all, t_maping_texture *texture)
 {
-	if ((texture->y_mass + SIZE_CHUNK - 2 == (int)round(texture->y) &&
+	if ((texture->y_mass + SIZE_CHUNK - SIZE_PLAYER == (int)round(texture->y) &&
 		(all->file.map[(texture->y_mass / SIZE_CHUNK) + 1]
 		 [texture->x_mass / SIZE_CHUNK] == '0')))
 			my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
@@ -44,7 +44,7 @@ void	put_pix_texture(t_all *all, t_maping_texture *texture)
 		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
 			(int)get_color_image(&all->SO_texture,
 			(int)all->SO_texture.color_x, (int)all->SO_texture.color_y));
-	else if ((texture->x_mass + SIZE_CHUNK - 2 <= (int)round(texture->x)) &&
+	else if ((texture->x_mass + SIZE_CHUNK - SIZE_PLAYER <= (int)round(texture->x)) &&
 			 (all->file.map[texture->y_mass / SIZE_CHUNK]
 			[(texture->x_mass / SIZE_CHUNK) + 1] == '0'))
 		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
@@ -144,7 +144,7 @@ void print_sprite(t_all *all)
 				all->visual.rey_len[all->sprite->start + i] < all->sprite->dist)
 				continue;
 			j = -1;
-			while (j < all->sprite->size)
+			while (j < all->sprite->size - 1)
 			{
 				j++;
 				if (all->sprite->y_start + j < 0 ||
@@ -184,11 +184,11 @@ void	init_sprite(t_all *all, double step)
 		while (teta - (all->angle.alpha * PI180) < -PI)
 			teta += 2 * PI;
 		all->sprite->size = (int) round(
-				(all->S_texture.width / all->sprite->dist) * all->visual.distC);
+				((SIZE_CHUNK / SCALE) / all->sprite->dist) * all->visual.distC);
 		all->sprite->start = (int) ((all->file.R_x - 1) / 2.0 +
 								   (teta - (all->angle.alpha * PI180)) / step -
 								   all->sprite->size / 2.0);
-		all->sprite->y_start = (all->file.R_y / 2) - (all->sprite->size / 2);
+		all->sprite->y_start = (all->file.R_y / 2) + (all->sprite->size / SIZE_CHUNK);
 		all->sprite = all->sprite->next;
 	}
 	all->sprite = tmp;
@@ -266,27 +266,40 @@ void	reycast(t_all *all)
 	double		step;
 
 	all->visual.ugl = (all->angle.alpha - (int)FOV2) * PI180;
-	//all->visual.ugl = all->angle.alpha * PI180;
-	all->visual.distC = (all->file.R_x / 2.0) / tan((int) FOV2 * PI180);
+	all->visual.distC = (all->file.R_x/ 2.0) / tan((int) FOV2 * PI180);
 	all->visual.width = 0;
 	step = (FOV * PI180) / (all->file.R_x - 1);
 	while (all->visual.ugl <= ((all->angle.alpha + (int)FOV2) * PI180))
 	{
 		tmp.x = all->player.x;
 		tmp.y = all->player.y;
-		verti.gip = all->player.y;
 		horiz.gip = all->player.x;
 		cos_a = cos(all->visual.ugl);
 		sin_a = sin(all->visual.ugl);
 		if (cos_a >= 0)
+		{
+			verti.gip = all->player.y;
+			horiz.gip = all->player.x;
 			verti.raz = 1;
+		}
 		else
+		{
+			verti.gip = all->player.y + SIZE_PLAYER;
+			horiz.gip = all->player.x + SIZE_PLAYER;
 			verti.raz = -1;
+		}
 		if (sin_a >= 0)
-
+		{
+			horiz.gip = all->player.x;
+			verti.gip = all->player.y;
 			horiz.raz = 1;
+		}
 		else
+		{
+			verti.gip = all->player.y + SIZE_PLAYER;
+			horiz.gip = all->player.x + SIZE_PLAYER;
 			horiz.raz = -1;
+		}
 		while (1)
 		{
 			verti.dist_x = floor(tmp.x / SIZE_CHUNK) * SIZE_CHUNK + (verti.raz * SIZE_CHUNK);
@@ -332,8 +345,6 @@ void	reycast(t_all *all)
 	}
 	if (all->visual.sprite_yes == 1)
 		init_sprite(all, step);
-	else
-		all->visual.width;
 }
 
 int		render_next_frame(t_all *all)
@@ -466,7 +477,6 @@ int		ft_window(t_file file)
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
 	mlx_hook(all.vars.win, CLOSE, 0, ft_close_exit, &all);
 	mlx_loop(all.vars.mlx);
-	free(all.visual.rey_len);
 	return (0);
 }
 

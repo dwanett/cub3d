@@ -101,6 +101,9 @@ int ft_key_hook(int keycode, t_all *all)
 	if (keycode == ESC)
 	{
 		mlx_destroy_window(all->vars.mlx, all->vars.win);
+		free(all->visual.rey_len);
+		if (all->sprite != NULL)
+			free_sprite(all);
 		exit(-1);
 	}
 	if (keycode == W || keycode == S || keycode == A || keycode == D || keycode == M
@@ -109,7 +112,10 @@ int ft_key_hook(int keycode, t_all *all)
 	return (0);
 }
 
-int ft_close_exit()
+int ft_close_exit(t_all *all)
 {
+	free(all->visual.rey_len);
+	if (all->sprite != NULL)
+		free_sprite(all);
 	exit(-1);
 }

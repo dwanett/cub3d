@@ -12,6 +12,18 @@
 
 #include "cub3d.h"
 
+void	free_sprite(t_all *all)
+{
+	t_sprite *tmp;
+
+	while(all->sprite != NULL)
+	{
+		tmp = all->sprite->next;
+		free(all->sprite);
+		all->sprite = tmp;
+	}
+}
+
 void			full_free_file(t_file *file)
 {
 	int	i;

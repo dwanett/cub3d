@@ -44,10 +44,11 @@
 #include <stdio.h>
 //-----------------
 # define PI 3.14159265358979323846
-# define SIZE_CHUNK 256
+# define SIZE_CHUNK 1240
+# define SCALE 2.5
 # define SIZE_MAP 16
 # define SIZE_PLAYER 2
-# define SPEED_MOVE 30
+# define SPEED_MOVE 200
 # define SPEED_ANGLE 3
 # define FOV 60
 # define FOV2 (FOV / 2)
@@ -194,7 +195,7 @@ int				ft_pars(int fd, t_file *file);
 int				ft_open_file(int argc, char *argv[], t_file *file);
 void			move(t_all *all);
 int				ft_key_hook(int keycode, t_all *all);
-int				ft_close_exit();
+int				ft_close_exit(t_all *all);
 void			full_free_file(t_file *file);
 void			my_mlx_pixel_put(t_data *data, int x, int y, int color);
 unsigned int	get_color_image(t_texture *texture, int x, int y);
@@ -203,6 +204,7 @@ int				render_next_frame(t_all *all);
 void			print_error_img(t_all *all);
 void			angel_palyer(t_all *all, int *color, char **map);
 void			create_map(char **map, t_all *all);
+void			free_sprite(t_all *all);
 	/*------------map---------------*/
 void			print_kodred(t_all *all, int size, int color, int x, int y);
 void			print_player(t_all *all);
