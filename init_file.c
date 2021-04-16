@@ -133,6 +133,16 @@ int		ft_open_file(int argc, char *argv[], t_file *file)
 		ft_putstr_fd("Error\nInvalid file extension\n", 1);
 		return (-1);
 	}
+	if (argc == 3) {
+		if (argv[2][0] != '-' || argv[2][1] != '-' || argv[2][2] != 's' ||
+			argv[2][3] != 'a' || argv[2][4] != 'v' || argv[2][5] != 'e')
+		{
+			ft_putstr_fd("Error\nInvalid two argument\n", 1);
+			return (-1);
+		}
+		else
+			file->check_save_image = 1;
+	}
 	fd = open(argv[1], O_RDONLY);
 	return (ft_pars(fd, file));
 }

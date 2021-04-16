@@ -115,6 +115,7 @@ typedef struct	s_file
 	int			F[3];
 	int			C[3];
 	char		**map;
+	int			check_save_image;
 }				t_file;
 
 typedef struct	s_key

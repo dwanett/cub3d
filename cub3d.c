@@ -30,7 +30,7 @@ void	print_floor_and_ceilling(t_all *all, int floor, int ceilling)
 		}
 }
 
-void	put_pix_texture(t_all *all, t_maping_texture *texture)
+/*void	put_pix_texture(t_all *all, t_maping_texture *texture)
 {
 	if ((texture->y_mass + SIZE_CHUNK - SIZE_PLAYER == (int)round(texture->y) &&
 		(all->file.map[(texture->y_mass / SIZE_CHUNK) + 1]
@@ -56,38 +56,27 @@ void	put_pix_texture(t_all *all, t_maping_texture *texture)
 		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
 			(int)get_color_image(&all->WE_texture,
 			(int)all->WE_texture.color_x, (int)all->WE_texture.color_y));
-}
-
-/*void sort_list(t_sprite *list)
-{
-	t_sprite *curr;
-	t_sprite *nxt;
-	t_sprite *last;
-	t_sprite *tmp;
-
-	curr = list;
-	nxt = list;
-	tmp = list;
-	while (tmp != NULL)
-	{
-		if (list->dist > tmp->dist)
-			list = list->next;
-		tmp = tmp->next;
-	}
-	tmp = curr;
-	for (int i = 0; tmp->next != NULL; tmp = tmp->next)
-	{
-		for (int j = 0; curr->next != NULL; curr = curr->next)
-		{
-			if (curr->dist > curr->next->dist)
-			{
-				nxt = curr;
-				arr[j] = arr[j + 1];
-				arr[j + 1] = temp;
-			}
-		}
-	}
 }*/
+
+void	put_pix_texture(t_all *all, t_maping_texture *texture)
+{
+	if ((texture->y_mass + SIZE_CHUNK - SIZE_PLAYER == (int)round(texture->y)))
+		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
+				   (int)get_color_image(&all->NO_texture,
+							(int)all->NO_texture.color_x, (int)all->NO_texture.color_y));
+	else if (texture->y_mass == (int)round(texture->y))
+		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
+						 (int)get_color_image(&all->SO_texture,
+											  (int)all->SO_texture.color_x, (int)all->SO_texture.color_y));
+	else if ((texture->x_mass + SIZE_CHUNK - SIZE_PLAYER <= (int)round(texture->x)))
+		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
+						 (int)get_color_image(&all->EA_texture,
+											  (int)all->EA_texture.color_x, (int)all->EA_texture.color_y));
+	else if (texture->x_mass == (int)round(texture->x))
+		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
+						 (int)get_color_image(&all->WE_texture,
+											  (int)all->WE_texture.color_x, (int)all->WE_texture.color_y));
+}
 
 int check(double n1, double n2)
 {
@@ -347,11 +336,24 @@ void	reycast(t_all *all)
 		init_sprite(all, step);
 }
 
+void	create_bmp(t_all *all)
+{
+	int	fd;
+
+	open("screen.bmp", O_CREAT, S_IRWXU);
+	fd = open("./screen.bmp", O_WRONLY);
+	ft_putstr_fd("BM", fd);
+	all->file.check_save_image = 0;
+	close(fd);
+}
+
 int		render_next_frame(t_all *all)
 {
 	//create_map(all->file.map, all);
 	print_player(all);/*------------map---------------*/
 	reycast(all);
+	if (all->file.check_save_image == 1)
+		create_bmp(all);
 	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
 	/*------------map---------------*/
 	if (all->key.map == 1)
@@ -458,6 +460,7 @@ int		ft_window(t_file file)
 	&all.data.bits_per_pixel, &all.data.line_length, &all.data.endian);
 	/*------------map---------------*/
 	all.map.img = mlx_new_image(all.vars.mlx, 550, 250);
+	//all.map.img = mlx_new_image(all.vars.mlx, all.map_mass.max_y * SIZE_MAP + 1, all.map_mass.max_x * SIZE_MAP + 1);
 	all.map.addr = mlx_get_data_addr(all.map.img,
 	&all.map.bits_per_pixel, &all.map.line_length, &all.map.endian);
 	all.pl.img = mlx_new_image(all.vars.mlx, SIZE_PLAYER, SIZE_PLAYER);
