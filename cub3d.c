@@ -336,13 +336,70 @@ void	reycast(t_all *all)
 		init_sprite(all, step);
 }
 
+void	ft_hex(unsigned int u_dec, char **hex)
+{
+	char			*str;
+	unsigned int	tmp;
+	int				i;
+	int				j;
+
+	i = 1;
+	str = "0123456789abcdef";
+	tmp = u_dec;
+	while (tmp > 15 && i++)
+		tmp /= 16;
+	if ((*hex = (char *)malloc(sizeof(char) * i + 1)) != NULL)
+	{
+		hex[0][i] = '\0';
+		while (i != 0)
+		{
+			i--;
+			j = (int)(u_dec - (16 * (u_dec / 16)));
+			u_dec /= 16;
+			hex[0][i] = str[j];
+		}
+	}
+}
+
 void	create_bmp(t_all *all)
 {
-	int	fd;
+	int				fd;
+	int 	size_file;
+	int	byts;
+	int	tmp;
+	int	tmp2;
+	int i;
 
+	i = 16;
+	size_file = 14 + all->file.R_y * all->file.R_x;
+	size_file = 6220854;
 	open("screen.bmp", O_CREAT, S_IRWXU);
 	fd = open("./screen.bmp", O_WRONLY);
 	ft_putstr_fd("BM", fd);
+	while (i <= 10000)
+	{
+		tmp = size_file >> 8;
+		//size_file = size_file << 8;
+		tmp = size_file >> 16;
+		byts = size_file - tmp * i;
+		size_file *= 16;
+		i*=16;
+	}
+/*	tmp = size_file >> i;
+	tmp2 = tmp;
+	byts = size_file - tmp * 16;
+	tmp = size_file >> 4;
+	byts = tmp2 - tmp * 16;
+	tmp2 = tmp;
+	tmp = size_file >> 8;
+	byts = tmp2 - tmp * 16;
+	byts = size_file >> 16;*/
+/*	tmp = size_file >> 4;
+	byts = size_file - tmp * 16;
+	tmp = size_file >> 8;
+	byts = size_file - tmp * 16 * 16;
+	tmp = size_file >> 16;*/
+	//ft_putstr_fd(size_file, fd);
 	all->file.check_save_image = 0;
 	close(fd);
 }
