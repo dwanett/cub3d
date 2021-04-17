@@ -4,7 +4,7 @@ SO ./texture/greystone.xpm
 WE ./texture/mossy.xpm
 EA ./texture/redbrick.xpm
 S ./texture/S.xpm
-F 0,219,255
+F 0,200,255
 C 102,102,102
 
         1111111111111111111111111

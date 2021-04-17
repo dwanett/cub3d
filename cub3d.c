@@ -336,81 +336,78 @@ void	reycast(t_all *all)
 		init_sprite(all, step);
 }
 
-void	ft_hex(unsigned int u_dec, char **hex)
+void print_byts(unsigned char byts, int count, int fd)
 {
-	char			*str;
-	unsigned int	tmp;
-	int				i;
-	int				j;
-
-	i = 1;
-	str = "0123456789abcdef";
-	tmp = u_dec;
-	while (tmp > 15 && i++)
-		tmp /= 16;
-	if ((*hex = (char *)malloc(sizeof(char) * i + 1)) != NULL)
+	while (count != 0)
 	{
-		hex[0][i] = '\0';
-		while (i != 0)
-		{
-			i--;
-			j = (int)(u_dec - (16 * (u_dec / 16)));
-			u_dec /= 16;
-			hex[0][i] = str[j];
-		}
+		ft_putchar_fd(byts, fd);
+		byts = 0;
+		count--;
 	}
+}
+
+void print_byts_offset(int value, int fd)
+{
+	ft_putchar_fd((unsigned char)value, fd);
+	ft_putchar_fd((unsigned char)(value >> 8), fd);
+	ft_putchar_fd((unsigned char)(value >> 16), fd);
+	ft_putchar_fd((unsigned char)(value >> 24), fd);
+}
+
+unsigned int	get_color(t_data *data, int x, int y)
+{
+	char *dst;
+
+	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+	return (*(unsigned int *)dst);
 }
 
 void	create_bmp(t_all *all)
 {
 	int				fd;
-	int 	size_file;
-	int	byts;
-	int	tmp;
-	int	tmp2;
-	int i;
+	int				size_file;
+	int				x;
+	int				y;
+	unsigned int	color;
 
-	i = 16;
-	size_file = 14 + all->file.R_y * all->file.R_x;
-	size_file = 6220854;
+	y = all->file.R_y;
+	color = 0;
+	size_file = (54 + (all->file.R_y * all->file.R_x  * 3));
 	open("screen.bmp", O_CREAT, S_IRWXU);
 	fd = open("./screen.bmp", O_WRONLY);
 	ft_putstr_fd("BM", fd);
-	while (i <= 10000)
+	print_byts_offset(size_file, fd);
+	print_byts(0, 4, fd);
+	print_byts(54, 4, fd);
+	print_byts(40, 4, fd);
+	print_byts_offset(all->file.R_x, fd);
+	print_byts_offset(all->file.R_y, fd);
+	print_byts(1, 2, fd);
+	print_byts(24, 2, fd);
+	print_byts(0, 24, fd);
+	while (y != 0)
 	{
-		tmp = size_file >> 8;
-		//size_file = size_file << 8;
-		tmp = size_file >> 16;
-		byts = size_file - tmp * i;
-		size_file *= 16;
-		i*=16;
+		x = 0;
+		while (x < all->file.R_x)
+		{
+			color = get_color(&all->data, x, y);
+			write(fd, &color, 3);
+			x++;
+		}
+		y--;
 	}
-/*	tmp = size_file >> i;
-	tmp2 = tmp;
-	byts = size_file - tmp * 16;
-	tmp = size_file >> 4;
-	byts = tmp2 - tmp * 16;
-	tmp2 = tmp;
-	tmp = size_file >> 8;
-	byts = tmp2 - tmp * 16;
-	byts = size_file >> 16;*/
-/*	tmp = size_file >> 4;
-	byts = size_file - tmp * 16;
-	tmp = size_file >> 8;
-	byts = size_file - tmp * 16 * 16;
-	tmp = size_file >> 16;*/
-	//ft_putstr_fd(size_file, fd);
 	all->file.check_save_image = 0;
 	close(fd);
 }
-
 int		render_next_frame(t_all *all)
 {
-	//create_map(all->file.map, all);
 	print_player(all);/*------------map---------------*/
 	reycast(all);
 	if (all->file.check_save_image == 1)
+	{
 		create_bmp(all);
+		ft_close_exit(all);
+	}
 	mlx_put_image_to_window(all->vars.mlx, all->vars.win, all->data.img, 0, 0);
 	/*------------map---------------*/
 	if (all->key.map == 1)
