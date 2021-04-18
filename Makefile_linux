@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = cub3d
+NAME = cub3D
 CC = gcc
 FLAGS = -Wall -Wextra #-Werror
 LIB = -L mlx_linux/ -L get_next_line/ -L libft/

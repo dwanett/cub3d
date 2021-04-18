@@ -59,7 +59,7 @@ void	dda(t_all *all, double x2, double y2)
 	}
 }
 
-void	print_kodred_test(t_all *all, int size, int color, int x, int y)
+void print_kodred_player(t_all *all, int size, int color, int x, int y)
 {
 	int tmp_y;
 	int tmp_x;
@@ -88,8 +88,8 @@ void	print_player(t_all *all)
 
 	tmp_y = (int)(all->player.y / SIZE_CHUNK * SIZE_MAP);
 	tmp_x = (int)(all->player.x / SIZE_CHUNK * SIZE_MAP);
-	print_kodred_test(all, SIZE_PLAYER, 0x00FF0000, 0, 0);
-/*	print_kodred(all, SIZE_PLAYER, 0x00FF0000, tmp_x, tmp_y);
+	print_kodred_player(all, SIZE_PLAYER, 0x00FF0000, 0, 0);
+	/*	print_kodred(all, SIZE_PLAYER, 0x00FF0000, tmp_x, tmp_y);
 	tmp_x = (int)((all->player.x) + ((SIZE_CHUNK * 2) * cos(all->angle.alpha * PI180)));
 	tmp_y = (int)((all->player.y) + ((SIZE_CHUNK * 2) * sin(all->angle.alpha * PI180)));
 	all->visual.color = 0x00000000;

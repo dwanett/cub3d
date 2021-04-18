@@ -3,9 +3,9 @@ NO ./texture/bluestone.xpm
 SO ./texture/greystone.xpm
 WE ./texture/mossy.xpm
 EA ./texture/redbrick.xpm
-S ./texture/S.xpm
-F 0,200,255
-C 102,102,102
+S ./texture/barrel.xpm
+F 102,102,102
+C 0,219,255
 
         1111111111111111111111111
         1000000000110000000000001

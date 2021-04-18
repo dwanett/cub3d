@@ -44,8 +44,8 @@
 #include <stdio.h>
 //-----------------
 # define PI 3.14159265358979323846
-# define SIZE_CHUNK 1240
-# define SCALE 2.5
+# define SIZE_CHUNK 512
+# define SCALE 1.9
 # define SIZE_MAP 16
 # define SIZE_PLAYER 2
 # define SPEED_MOVE 200
