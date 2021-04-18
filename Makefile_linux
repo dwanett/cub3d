@@ -6,7 +6,7 @@
 #    By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/15 01:41:01 by dwanetta          #+#    #+#              #
-#    Updated: 2021/04/19 01:31:50 by dwanetta         ###   ########.fr        #
+#    Updated: 2021/04/19 01:44:32 by dwanetta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,9 @@ SRCS =	cub3d.c\
 		cheats_42.c\
 		utils_2.c \
 		init_struct_all.c \
-		create_bmp.c
+		create_bmp.c \
+		sprite.c \
+		put_3d.c
 
 OBJS_SRCS = ${SRCS:.c=.o}
 

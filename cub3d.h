@@ -208,8 +208,10 @@ void			create_map(char **map, t_all *all);
 void			free_sprite(t_all *all);
 int				init_all(t_all *all, t_file file);
 void			create_bmp(t_all *all);
+void			init_sprite(t_all *all, double step);
+void			print3d(t_all *all, double x, double y, double l);
 	/*------------map---------------*/
-	void print_kodred(t_all *all, int size, int color, int x, int y);
+void print_kodred(t_all *all, int size, int color, int x, int y);
 void			print_player(t_all *all);
 void			color_map(char symbol, int *color);
 void			dda(t_all *all, double x2, double y2);
