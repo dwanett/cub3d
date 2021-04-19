@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 16:50:18 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/04/19 23:11:48 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/04/19 13:27:03 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,10 @@ void reycast_help_horiz(t_all *all, t_reycast *horiz, double sin_a)
 		horiz->dist = fabs(horiz->dist_y - tmp_cor) / sin_a;
 		horiz->gip += (horiz->dist * cos(all->visual.ugl) * (horiz->raz));
 		if (horiz->dist_y < 0 || horiz->gip < 0 || (horiz->gip / SIZE_CHUNK >= all->map_mass.max_y) || (horiz->dist_y / SIZE_CHUNK >= all->map_mass.max_x))
-			break;
+			break ;
 		if (all->file.map[(int) (floor(horiz->dist_y) / SIZE_CHUNK)]
 			[(int)(floor(horiz->gip) / SIZE_CHUNK)] == '1')
-			break;
+			break ;
 		if (all->file.map[(int) (floor(horiz->dist_y) / SIZE_CHUNK)]
 			[(int)(floor(horiz->gip) / SIZE_CHUNK)] == '2')
 			all->visual.sprite_yes = 1;

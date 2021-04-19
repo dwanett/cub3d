@@ -6,16 +6,16 @@
 #    By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/15 01:41:01 by dwanetta          #+#    #+#              #
-#    Updated: 2021/04/19 23:12:18 by dwanetta         ###   ########.fr        #
+#    Updated: 2021/04/19 13:19:57 by dwanetta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = cub3D
 CC = gcc
-FLAGS = -Wall -Wextra #-Werror
+FLAGS = -Wall -Wextra -Werror
 LIB = -L mlx_linux/ -L get_next_line/ -L libft/
 OPTION_LIB = -lmlx -lXext -lX11 -lm -lbsd -lft -lgnl
-OPTION = -O3 -c -g
+OPTION = -O3 -c
 LIBFT = make -C libft
 GNLIB = make -C get_next_line
 SRCS =	cub3d.c\
@@ -47,6 +47,7 @@ clean:
 		@$(GNLIB) clean
 fclean: clean
 		rm -f $(NAME)
+		rm -f *.bmp
 		@$(LIBFT) fclean
 		@$(GNLIB) fclean
 re: fclean all

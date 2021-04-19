@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 01:42:58 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/04/19 01:43:33 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/04/19 13:27:54 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,49 +30,29 @@ void print_floor_and_ceilling(t_all *all, int ceilling, int floor)
 		}
 }
 
-/*void	put_pix_texture(t_all *all, t_maping_texture *texture)
-{
-	if ((texture->y_mass + SIZE_CHUNK - SIZE_PLAYER == (int)round(texture->y) &&
-		(all->file.map[(texture->y_mass / SIZE_CHUNK) + 1]
-		 [texture->x_mass / SIZE_CHUNK] == '0')))
-			my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
-			(int)get_color_image(&all->NO_texture,
-			(int)all->NO_texture.color_x, (int)all->NO_texture.color_y));
-	else if ((texture->y_mass == (int)round(texture->y)) &&
-			 (all->file.map[(texture->y_mass / SIZE_CHUNK) - 1]
-			[texture->x_mass / SIZE_CHUNK] == '0'))
-		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
-			(int)get_color_image(&all->SO_texture,
-			(int)all->SO_texture.color_x, (int)all->SO_texture.color_y));
-	else if ((texture->x_mass + SIZE_CHUNK - SIZE_PLAYER <= (int)round(texture->x)) &&
-			 (all->file.map[texture->y_mass / SIZE_CHUNK]
-			[(texture->x_mass / SIZE_CHUNK) + 1] == '0'))
-		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
-			(int)get_color_image(&all->EA_texture,
-			(int)all->EA_texture.color_x, (int)all->EA_texture.color_y));
-	else if ((texture->x_mass == (int)round(texture->x)) &&
-			 (all->file.map[texture->y_mass / SIZE_CHUNK]
-			[(texture->x_mass / SIZE_CHUNK) - 1] == '0'))
-		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
-			(int)get_color_image(&all->WE_texture,
-			(int)all->WE_texture.color_x, (int)all->WE_texture.color_y));
-}*/
-
 void put_pix_texture(t_all *all, t_maping_texture *texture)
 {
-	if ((texture->y_mass + SIZE_CHUNK - SIZE_PLAYER == (int)round(texture->y)))
+	if (texture->y_mass + SIZE_CHUNK - SIZE_PLAYER == (int)round(texture->y) &&
+		(all->file.map[(texture->y_mass / SIZE_CHUNK) + 1]
+					  [texture->x_mass / SIZE_CHUNK] != '1'))
 		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
 						 (int)get_color_image(&all->NO_texture,
 											  (int)all->NO_texture.color_x, (int)all->NO_texture.color_y));
-	else if (texture->y_mass == (int)round(texture->y))
+	else if ((texture->y_mass == (int)round(texture->y)) &&
+			 (all->file.map[(texture->y_mass / SIZE_CHUNK) - 1]
+						   [texture->x_mass / SIZE_CHUNK] != '1'))
 		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
 						 (int)get_color_image(&all->SO_texture,
 											  (int)all->SO_texture.color_x, (int)all->SO_texture.color_y));
-	else if ((texture->x_mass + SIZE_CHUNK - SIZE_PLAYER <= (int)round(texture->x)))
+	else if ((texture->x_mass + SIZE_CHUNK - SIZE_PLAYER <= (int)round(texture->x)) &&
+			 (all->file.map[texture->y_mass / SIZE_CHUNK]
+						   [(texture->x_mass / SIZE_CHUNK) + 1] != '1'))
 		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
 						 (int)get_color_image(&all->EA_texture,
 											  (int)all->EA_texture.color_x, (int)all->EA_texture.color_y));
-	else if (texture->x_mass == (int)round(texture->x))
+	else if ((texture->x_mass == (int)round(texture->x)) &&
+			 (all->file.map[texture->y_mass / SIZE_CHUNK]
+						   [(texture->x_mass / SIZE_CHUNK) - 1] != '1'))
 		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
 						 (int)get_color_image(&all->WE_texture,
 											  (int)all->WE_texture.color_x, (int)all->WE_texture.color_y));
@@ -142,7 +122,7 @@ void print3d(t_all *all, double x, double y, double l)
 	h_real = h;
 	if (h > all->file.R_y)
 		h = all->file.R_y;
-	texture.y_tmp = (all->file.R_y / 2) + (h / 2);
+	texture.y_tmp = (all->file.R_y / 2) + (h / 2) - 1;
 	texture.x_mass = (int)(round(x) / SIZE_CHUNK) * SIZE_CHUNK;
 	texture.y_mass = (int)(round(y) / SIZE_CHUNK) * SIZE_CHUNK;
 	texture.x = x;

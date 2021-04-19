@@ -46,7 +46,7 @@ void			create_bmp(t_all *all)
 	int				y;
 	unsigned int	color;
 
-	y = all->file.R_y;
+	y = all->file.R_y - 1;
 	size_file = (54 + (all->file.R_y * all->file.R_x * 3));
 	open("screen.bmp", O_CREAT, S_IRWXU);
 	fd = open("./screen.bmp", O_WRONLY);

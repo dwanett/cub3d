@@ -6,7 +6,7 @@
 #    By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/15 01:41:01 by dwanetta          #+#    #+#              #
-#    Updated: 2021/03/14 07:50:03 by dwanetta         ###   ########.fr        #
+#    Updated: 2021/04/19 13:23:19 by dwanetta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,15 @@ SRCS =	cub3d.c\
 		check_file_save_map.c\
 		init_file.c\
 		control.c\
-		utils.c
+		utils.c\
+		utils_for_map.c\
+		cheats_42.c\
+		utils_2.c \
+		init_struct_all.c \
+		create_bmp.c \
+		sprite.c \
+		put_3d.c \
+		reycast.c
 
 OBJS_SRCS = ${SRCS:.c=.o}
 
@@ -30,16 +38,17 @@ all: $(NAME)
 
 $(NAME) : $(OBJS_SRCS)
 		@$(CC) $(FLAGS) $(OPTION) $(SRCS)
-		#@$(LIBFT)
-		#@$(GNLIB)
+		@$(LIBFT)
+		@$(GNLIB)
 		@$(CC) $(LIB) $(OPTION_LIB) $(OBJS_SRCS) -o $(NAME)
 clean:
 		rm -f $(OBJS_SRCS)
-		#@$(LIBFT) clean
-		#@$(GNLIB) clean
+		@$(LIBFT) clean
+		@$(GNLIB) clean
 fclean: clean
 		rm -f $(NAME)
-		#@$(LIBFT) fclean
-		#$(GNLIB) fclean
+		rm -f *.bmp
+		@$(LIBFT) fclean
+		@$(GNLIB) fclean
 re: fclean all
 .PHONY: all clean fclean re
