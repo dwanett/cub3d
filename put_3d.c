@@ -22,7 +22,7 @@ void print_floor_and_ceilling(t_all *all, int ceilling, int floor)
 			ceilling--;
 		}
 	if (floor != all->file.R_y)
-		while (floor <= all->file.R_y)
+		while (floor < all->file.R_y)
 		{
 			my_mlx_pixel_put(&all->data, all->visual.width, floor,
 							 create_trgb(0, all->file.F[0], all->file.F[1], all->file.F[2]));

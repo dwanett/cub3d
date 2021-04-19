@@ -12,97 +12,6 @@
 
 #include "cub3d.h"
 
-void		reycast(t_all *all)
-{
-	t_reycast	horiz;
-	t_reycast	verti;
-	t_posi		tmp;
-	double		cos_a;
-	double		sin_a;
-	double		step;
-
-	all->visual.ugl = (all->angle.alpha - (int)FOV2) * PI180;
-	all->visual.distC = (all->file.R_x/ 2.0) / tan((int) FOV2 * PI180);
-	all->visual.width = 0;
-	step = (FOV * PI180) / (all->file.R_x - 1);
-	while (all->visual.ugl <= ((all->angle.alpha + (int)FOV2) * PI180))
-	{
-		tmp.x = all->player.x;
-		tmp.y = all->player.y;
-		horiz.gip = all->player.x;
-		cos_a = cos(all->visual.ugl);
-		sin_a = sin(all->visual.ugl);
-		if (cos_a >= 0)
-		{
-			verti.gip = all->player.y;
-			horiz.gip = all->player.x;
-			verti.raz = 1;
-		}
-		else
-		{
-			verti.gip = all->player.y + SIZE_PLAYER;
-			horiz.gip = all->player.x + SIZE_PLAYER;
-			verti.raz = -1;
-		}
-		if (sin_a >= 0)
-		{
-			horiz.gip = all->player.x;
-			verti.gip = all->player.y;
-			horiz.raz = 1;
-		}
-		else
-		{
-			verti.gip = all->player.y + SIZE_PLAYER;
-			horiz.gip = all->player.x + SIZE_PLAYER;
-			horiz.raz = -1;
-		}
-		while (1)
-		{
-			verti.dist_x = floor(tmp.x / SIZE_CHUNK) * SIZE_CHUNK + (verti.raz * SIZE_CHUNK);
-			if (cos_a < 0)
-				verti.dist_x += SIZE_CHUNK - SIZE_PLAYER;
-			verti.dist = fabs(verti.dist_x - tmp.x) / cos_a;
-			verti.gip += (verti.dist * sin(all->visual.ugl) * (verti.raz));
-			if (verti.gip < 0 || verti.dist_x < 0 || (verti.gip / SIZE_CHUNK >= all->map_mass.max_x))
-				break;
-			if (all->file.map[(int)(floor(verti.gip) / SIZE_CHUNK)]
-			[(int)(floor(verti.dist_x) / SIZE_CHUNK)] == '1')
-				break;
-			if (all->file.map[(int)(floor(verti.gip) / SIZE_CHUNK)]
-				[(int)(floor(verti.dist_x) / SIZE_CHUNK)] == '2')
-				all->visual.sprite_yes = 1;
-			tmp.x = verti.dist_x;
-		}
-		while (1)
-		{
-			horiz.dist_y = floor((tmp.y / SIZE_CHUNK)) * SIZE_CHUNK + (horiz.raz * SIZE_CHUNK);
-			if (sin_a < 0)
-				horiz.dist_y += SIZE_CHUNK - SIZE_PLAYER;
-			horiz.dist = fabs(horiz.dist_y - tmp.y) / sin_a;
-			horiz.gip += (horiz.dist * cos(all->visual.ugl) * (horiz.raz));
-			if (horiz.dist_y < 0 || horiz.gip < 0 || (horiz.gip / SIZE_CHUNK >= all->map_mass.max_y) || (horiz.dist_y / SIZE_CHUNK >= all->map_mass.max_x))
-				break;
-			if (all->file.map[(int) (floor(horiz.dist_y) / SIZE_CHUNK)]
-			[(int)(floor(horiz.gip) / SIZE_CHUNK)] == '1')
-				break;
-			if (all->file.map[(int) (floor(horiz.dist_y) / SIZE_CHUNK)]
-				[(int)(floor(horiz.gip) / SIZE_CHUNK)] == '2')
-				all->visual.sprite_yes = 1;
-			tmp.y = horiz.dist_y;
-		}
-		horiz.l = sqrt(pow((all->player.x - horiz.gip), 2) + pow((all->player.y - horiz.dist_y), 2));
-		verti.l = sqrt(pow((all->player.x - verti.dist_x), 2) + pow((all->player.y - verti.gip), 2));
-		if (fabs(horiz.l) < fabs(verti.l))
-			print3d(all, horiz.gip, horiz.dist_y, horiz.l);
-		else
-			print3d(all, verti.dist_x, verti.gip, verti.l);
-		all->visual.ugl += step;
-		all->visual.width++;
-	}
-	if (all->visual.sprite_yes == 1)
-		init_sprite(all, step);
-}
-
 int			render_next_frame(t_all *all)
 {
 	print_player(all);/*------------map---------------*/
@@ -156,8 +65,13 @@ int			ft_window(t_file file)
 		ft_putstr_fd("Error\nLibrary initialization mlx.\n", 1);
 		return (-1);
 	}
+# ifndef __APPLE__
 	mlx_get_screen_size(all.vars.mlx, &real_size_x, &real_size_y);
-	if ((file.R_x > real_size_x || file.R_y > real_size_y) && all.file.check_save_image != 1)
+#else
+	real_size_x = SIZE_SCREEN_X;
+	real_size_y = SIZE_SCREEN_Y;
+#endif
+	if (file.check_save_image != 1 && (file.R_x > real_size_x || file.R_y > real_size_y))
 	{
 		file.R_x = real_size_x;
 		file.R_y = real_size_y;

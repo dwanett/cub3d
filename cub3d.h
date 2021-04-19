@@ -24,6 +24,8 @@
 #  define M 46
 #  define ARROW_LEFT 123
 #  define ARROW_RIGHT 124
+#  define SIZE_SCREEN_X 2560
+#  define SIZE_SCREEN_Y 1440
 # else
 #  include "mlx_linux/mlx.h"
 #  define CLOSE 33
@@ -210,6 +212,7 @@ int				init_all(t_all *all, t_file file);
 void			create_bmp(t_all *all);
 void			init_sprite(t_all *all, double step);
 void			print3d(t_all *all, double x, double y, double l);
+void			reycast(t_all *all);
 	/*------------map---------------*/
 void print_kodred(t_all *all, int size, int color, int x, int y);
 void			print_player(t_all *all);
