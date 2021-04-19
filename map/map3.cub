@@ -1,0 +1,12 @@
+R 1280 720
+NO ./texture/bluestone.xpm
+SO ./texture/greystone.xpm
+WE ./texture/mossy.xpm
+EA ./texture/redbrick.xpm
+S ./texture/barrel.xpm
+F 0,121,219
+C 102,102,102
+
+111
+1N1
+111
