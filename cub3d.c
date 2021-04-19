@@ -68,8 +68,7 @@ int			ft_window(t_file file)
 # ifndef __APPLE__
 	mlx_get_screen_size(all.vars.mlx, &real_size_x, &real_size_y);
 #else
-	real_size_x = SIZE_SCREEN_X;
-	real_size_y = SIZE_SCREEN_Y;
+	mlx_get_screen_size(&real_size_x, &real_size_y);
 #endif
 	if (file.check_save_image != 1 && (file.R_x > real_size_x || file.R_y > real_size_y))
 	{

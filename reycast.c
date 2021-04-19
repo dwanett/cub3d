@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 16:50:18 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/04/19 16:51:18 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/04/19 23:11:48 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void reycast_help_init(t_all *all, t_reycast *horiz, t_reycast *verti)
 	reycast_help_verti(all, verti, cos_a);
 	reycast_help_horiz(all, horiz, sin_a);
 }
+
 void		reycast(t_all *all)
 {
 	t_reycast	horiz;
