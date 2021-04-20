@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 15:29:56 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/04/20 17:29:47 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/04/20 17:43:48 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ int	ft_pars_help2(int fd)
 			ft_putstr_fd("Error\nInvalid_file\n", 1);
 			return (-1);
 		}
+		free(line);
 	}
 	return (0);
 }
