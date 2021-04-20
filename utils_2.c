@@ -26,14 +26,18 @@ void	print_error_img(t_all *all)
 		ft_putstr_fd("Error\nСould not read sprite texture file S\n", 1);
 }
 
-void	angel_palyer(t_all *all, int *color, char **map)
+void	angel_palyer(t_all *all, int *color, char **map, int *flag)
 {
 	if ((map[all->map_mass.x][all->map_mass.y] == 'N'
 		|| map[all->map_mass.x][all->map_mass.y] == 'S'
 		|| map[all->map_mass.x][all->map_mass.y] == 'E'
-		|| map[all->map_mass.x][all->map_mass.y] == 'W')
-		&& all->player.x == 0)
+		|| map[all->map_mass.x][all->map_mass.y] == 'W'))
 	{
+		if (*flag == 1)
+		{
+			ft_putstr_fd("Error\nA lot of player\n", 1);
+			exit(-1);
+		}
 		if (map[all->map_mass.x][all->map_mass.y] == 'S')
 			all->angle.alpha = 90;
 		if (map[all->map_mass.x][all->map_mass.y] == 'W')
@@ -46,6 +50,7 @@ void	angel_palyer(t_all *all, int *color, char **map)
 		all->player.y = all->map_mass.x * SIZE_CHUNK;
 		map[all->map_mass.x][all->map_mass.y] = '0';
 		*color = 0x000FFFF0;
+		*flag = 1;
 	}
 }
 
@@ -78,14 +83,16 @@ void	init_sprite_list(t_all *all)
 void	create_map(char **map, t_all *all)
 {
 	int	color;
+	int flag;
 
 	color = 0x00000000;
+	flag = 0;
 	while (map[all->map_mass.x] != NULL)
 	{
 		all->map_mass.y = 0;
 		while (map[all->map_mass.x][all->map_mass.y] != '\0')
 		{
-			angel_palyer(all, &color, map);
+			angel_palyer(all, &color, map, &flag);
 			if (map[all->map_mass.x][all->map_mass.y] == '2')
 			{
 				init_sprite_list(all);

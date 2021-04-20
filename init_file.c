@@ -80,8 +80,10 @@ int	ft_pars(int fd, t_file *file)
 	char	*line;
 	char	*tmp_map;
 	int		i;
+	int		j;
 
 	i = 1;
+	j = 1;
 	ft_pars_help(file);
 	tmp_map = NULL;
 	while (i > 0)
@@ -93,6 +95,18 @@ int	ft_pars(int fd, t_file *file)
 			return (-1);
 		}
 		ft_init_file(line, file, &tmp_map, &i);
+		if (i == 0)
+		{
+			while (j > 0)
+			{
+				j = get_next_line(fd, &line);
+				if (line[0] != '\0')
+				{
+					ft_putstr_fd("Error\nInvalid_file\n", 1);
+					return (-1);
+				}
+			}
+		}
 		free(line);
 	}
 	file->map = ft_split(tmp_map, '\n');

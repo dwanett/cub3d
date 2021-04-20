@@ -159,7 +159,7 @@ typedef struct s_all
 	t_sprite	*sprite;
 }				t_all;
 
-int				check_last_str_map(char **tmp_map);
+int				check_last_str_map(char **tmp_map, int *return_gnl);
 void			ft_save_map(char *line, char **tmp_map, int *return_gnl);
 int				help_check_map(char **map, int *flag_player, int *i, int *j);
 int				check_map(char **map);
@@ -180,7 +180,7 @@ unsigned int	get_color_image(t_texture *texture, int x, int y);
 int				create_trgb(int t, int r, int g, int b);
 int				render_next_frame(t_all *all);
 void			print_error_img(t_all *all);
-void			angel_palyer(t_all *all, int *color, char **map);
+void			angel_palyer(t_all *all, int *color, char **map, int *flag);
 void			create_map(char **map, t_all *all);
 void			free_sprite(t_all *all);
 int				init_all(t_all *all, t_file file);

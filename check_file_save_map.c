@@ -6,13 +6,13 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 15:34:22 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/09 15:54:17 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/04/20 16:14:45 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-int	check_last_str_map(char **tmp_map)
+int	check_last_str_map(char **tmp_map, int *return_gnl)
 {
 	int	i;
 
@@ -27,6 +27,7 @@ int	check_last_str_map(char **tmp_map)
 	}
 	if (i == 0)
 		return (0);
+	*return_gnl = 0;
 	return (1);
 }
 
@@ -35,7 +36,7 @@ void	ft_save_map(char *line, char **tmp_map, int *return_gnl)
 	char	*tmp;
 
 	if (line[0] == '\0' && *return_gnl == 1
-		&& *tmp_map != NULL && check_last_str_map(tmp_map) != 1)
+		&& *tmp_map != NULL && check_last_str_map(tmp_map, return_gnl) != 1)
 	{
 		ft_putstr_fd("Error\nInvalid map\n", 1);
 		exit(-1);

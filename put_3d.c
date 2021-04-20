@@ -53,14 +53,14 @@ void	put_pix_texture(t_all *all, t_maping_texture *texture)
 		&& (all->file.map[texture->y_mass / SIZE_CHUNK]
 			[(texture->x_mass / SIZE_CHUNK) + 1] != '1'))
 		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
-			(int)get_color_image(&all->EA_texture,
-				(int)all->EA_texture.color_x, (int)all->EA_texture.color_y));
+			(int)get_color_image(&all->WE_texture,
+				(int)all->WE_texture.color_x, (int)all->WE_texture.color_y));
 	else if ((texture->x_mass == (int)round(texture->x))
 		&& (all->file.map[texture->y_mass / SIZE_CHUNK]
 			[(texture->x_mass / SIZE_CHUNK) - 1] != '1'))
 		my_mlx_pixel_put(&all->data, all->visual.width, texture->y_tmp,
-			(int)get_color_image(&all->WE_texture,
-				(int)all->WE_texture.color_x, (int)all->WE_texture.color_y));
+			(int)get_color_image(&all->EA_texture,
+				(int)all->EA_texture.color_x, (int)all->EA_texture.color_y));
 }
 
 void	put_texture_help(t_all *all, t_maping_texture *texture)
