@@ -6,7 +6,7 @@
 #    By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/15 01:41:01 by dwanetta          #+#    #+#              #
-#    Updated: 2021/04/20 14:24:15 by dwanetta         ###   ########.fr        #
+#    Updated: 2021/04/20 14:30:26 by dwanetta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ CC = gcc
 FLAGS = -Wall -Wextra -Werror
 LIB = -L mlx_mac -L get_next_line -L libft
 OPTION_LIB = -lmlx -framework OpenGL -framework AppKit -lgnl -lft
-OPTION = -c
+OPTION = -c -g
 LIBFT = make -C libft
 GNLIB = make -C get_next_line
 SRCS =	check_file_save_map.c \

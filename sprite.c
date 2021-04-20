@@ -18,7 +18,7 @@ void	print_curr_sprite(t_all *all)
 	int	i;
 
 	i = -1;
-	while (i < all->sprite->size)
+	while (i < all->sprite->size - 1)
 	{
 		i++;
 		if (all->sprite->start + i < 0

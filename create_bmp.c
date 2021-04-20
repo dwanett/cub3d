@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 01:29:08 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/04/19 01:30:47 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/04/20 14:30:02 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	create_bmp(t_all *all)
 	unsigned int	color;
 
 	y = all->file.R_y - 1;
-	size_file = (54 + ((all->file.R_y - 1) * all->file.R_x * 3));
+	size_file = (54 + (all->file.R_y * all->file.R_x * 3));
 	open("screen.bmp", O_CREAT, S_IRWXU);
 	fd = open("./screen.bmp", O_WRONLY);
 	ft_putstr_fd("BM", fd);
