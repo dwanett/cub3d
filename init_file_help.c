@@ -6,7 +6,7 @@
 /*   By: dwanetta <dwanetta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 15:29:56 by dwanetta          #+#    #+#             */
-/*   Updated: 2021/03/24 12:28:36 by dwanetta         ###   ########.fr       */
+/*   Updated: 2021/04/20 17:29:47 by dwanetta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,24 @@ int	ft_open_file_help(int argc, char *argv[], t_file *file, int check_dot)
 		}
 		else
 			file->check_save_image = 1;
+	}
+	return (0);
+}
+
+int	ft_pars_help2(int fd)
+{
+	char	*line;
+	int		j;
+
+	j = 1;
+	while (j > 0)
+	{
+		j = get_next_line(fd, &line);
+		if (line[0] != '\0')
+		{
+			ft_putstr_fd("Error\nInvalid_file\n", 1);
+			return (-1);
+		}
 	}
 	return (0);
 }

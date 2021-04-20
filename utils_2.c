@@ -83,7 +83,7 @@ void	init_sprite_list(t_all *all)
 void	create_map(char **map, t_all *all)
 {
 	int	color;
-	int flag;
+	int	flag;
 
 	color = 0x00000000;
 	flag = 0;

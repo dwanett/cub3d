@@ -195,5 +195,6 @@ int				ft_open_file_help(int argc, char *argv[],
 					t_file *file, int check_dot);
 t_sprite		*sort_list(t_sprite *head);
 int				check(double n1, double n2);
+int				ft_pars_help2(int fd);
 
 #endif
