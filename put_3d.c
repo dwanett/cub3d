@@ -125,7 +125,7 @@ void	print3d(t_all *all, double x, double y, double l)
 	int					h_real;
 
 	all->visual.rey_len[all->visual.width] = l;
-	l *= cos(fabs(all->visual.ugl - (all->angle.alpha * PI180)));
+	l *= cos(fabs(all->visual.ugl - (all->angle.alpha * (PI / 180))));
 	h = (int)round((SIZE_CHUNK / l) * all->visual.distC);
 	h_real = h;
 	if (h > all->file.R_y)

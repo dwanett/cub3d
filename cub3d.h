@@ -13,36 +13,20 @@
 #ifndef CUB3D_H
 # define CUB3D_H
 
-# ifdef __APPLE__
-#  include "mlx_mac/mlx.h"
-#  define CLOSE 17
-#  define ESC 53
-#  define W 13
-#  define S 1
-#  define A 0
-#  define D 2
-#  define M 46
-#  define ARROW_LEFT 123
-#  define ARROW_RIGHT 124
-#  define SIZE_SCREEN_X 2560
-#  define SIZE_SCREEN_Y 1440
-# else
-#  include "mlx_linux/mlx.h"
-#  define CLOSE 33
-#  define ESC 65307
-#  define W 119
-#  define S 115
-#  define A 97
-#  define D 100
-#  define M 109
-#  define ARROW_LEFT 65361
-#  define ARROW_RIGHT 65363
-# endif
+# include "mlx_mac/mlx.h"
 # include "libft/libft.h"
 # include "get_next_line/get_next_line.h"
 # include <math.h>
 # include <fcntl.h>
 
+# define CLOSE 17
+# define ESC 53
+# define W 13
+# define S 1
+# define A 0
+# define D 2
+# define ARROW_LEFT 123
+# define ARROW_RIGHT 124
 # define PI 3.14159265358979323846
 # define SIZE_CHUNK 512
 # define SCALE 1.9
@@ -50,47 +34,46 @@
 # define SPEED_MOVE 200
 # define SPEED_ANGLE 3
 # define FOV 60
-# define FOV2 (FOV / 2)
-# define PI180 (PI / 180)
+# define FOV2 30
 
-typedef struct	s_vars
+typedef struct s_vars
 {
-	void		*mlx;
-	void		*win;
-}				t_vars;
+	void			*mlx;
+	void			*win;
+}					t_vars;
 
-typedef struct	s_data
+typedef struct s_data
 {
-	void		*img;
-	char		*addr;
-	int			bits_per_pixel;
-	int			line_length;
-	int			endian;
-}				t_data;
+	void			*img;
+	char			*addr;
+	int				bits_per_pixel;
+	int				line_length;
+	int				endian;
+}					t_data;
 
-typedef struct	s_texture
+typedef struct s_texture
 {
-	void		*img;
-	char		*addr;
-	int			bits_per_pixel;
-	int			line_length;
-	int			endian;
-	int 		width;
-	int			height;
-	double		color_x;
-	double		color_y;
-}				t_texture;
+	void			*img;
+	char			*addr;
+	int				bits_per_pixel;
+	int				line_length;
+	int				endian;
+	int				width;
+	int				height;
+	double			color_x;
+	double			color_y;
+}					t_texture;
 
 typedef struct s_maping_texture
 {
-	int			x_mass;
-	int			y_mass;
-	int			y_tmp;
-	double		x;
-	double		y;
-}				t_maping_texture;
+	int				x_mass;
+	int				y_mass;
+	int				y_tmp;
+	double			x;
+	double			y;
+}					t_maping_texture;
 
-typedef struct		s_sprite
+typedef struct s_sprite
 {
 	double			x;
 	double			y;
@@ -101,7 +84,7 @@ typedef struct		s_sprite
 	struct s_sprite	*next;
 }					t_sprite;
 
-typedef struct	s_file
+typedef struct s_file
 {
 	int			R_x;
 	int			R_y;
@@ -116,36 +99,35 @@ typedef struct	s_file
 	int			check_save_image;
 }				t_file;
 
-typedef struct	s_key
+typedef struct s_key
 {
 	int			keycode;
 }				t_key;
 
-typedef struct	s_reycast
+typedef struct s_reycast
 {
 	int			width;
 	double		distC;
-	double 		ugl;
-	int 		color;
+	double		ugl;
+	int			color;
 	int			raz;
 	double		gip;
 	double		dist;
 	double		dist_x;
 	double		dist_y;
 	double		l;
-	double 		*rey_len;
-	int 		sprite_yes;
-	int 		count_sprite;
+	double		*rey_len;
+	int			sprite_yes;
+	int			count_sprite;
 }				t_reycast;
 
-
-typedef struct	s_posi
+typedef struct s_posi
 {
 	double		x;
 	double		y;
 }				t_posi;
 
-typedef struct	s_mas
+typedef struct s_mas
 {
 	int			x;
 	int			y;
@@ -153,12 +135,12 @@ typedef struct	s_mas
 	int			max_y;
 }				t_mas;
 
-typedef struct	s_angle
+typedef struct s_angle
 {
-	double 		alpha;
+	double		alpha;
 }				t_angle;
 
-typedef struct	s_all
+typedef struct s_all
 {
 	t_file		file;
 	t_vars		vars;
@@ -184,9 +166,9 @@ int				check_map(char **map);
 int				ft_check_init_file(t_file *file);
 int				ft_init_file_int(char *line, int *i);
 void			ft_init_file_char(char *line, t_file *file,
-				char **tmp_map, int *return_gnl);
+					char **tmp_map, int *return_gnl);
 void			ft_init_file(char *line, t_file *file, char **tmp_map,
-				int *return_gnl);
+					int *return_gnl);
 int				ft_pars(int fd, t_file *file);
 int				ft_open_file(int argc, char *argv[], t_file *file);
 void			move(t_all *all);
@@ -209,7 +191,8 @@ void			reycast(t_all *all);
 void			walking_help(t_all *all, double *x, double *y, int key);
 int				chek_position(t_all *all, double *x2, double *y2);
 void			ft_pars_help(t_file *file);
-int				ft_open_file_help(int argc, char *argv[], t_file *file, int check_dot);
+int				ft_open_file_help(int argc, char *argv[],
+					t_file *file, int check_dot);
 t_sprite		*sort_list(t_sprite *head);
 int				check(double n1, double n2);
 

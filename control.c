@@ -53,7 +53,7 @@ int	ft_key_hook(int keycode, t_all *all)
 		exit(-1);
 	}
 	if (keycode == W || keycode == S || keycode == A
-		|| keycode == D || keycode == M
+		|| keycode == D
 		|| keycode == ARROW_LEFT || keycode == ARROW_RIGHT)
 		all->key.keycode = keycode;
 	return (0);

@@ -98,11 +98,11 @@ void	reycast(t_all *all)
 	t_reycast	verti;
 	double		step;
 
-	all->visual.ugl = (all->angle.alpha - (int)FOV2) * PI180;
-	all->visual.distC = (all->file.R_x / 2.0) / tan((int) FOV2 * PI180);
+	all->visual.ugl = (all->angle.alpha - (int)FOV2) * (PI / 180);
+	all->visual.distC = (all->file.R_x / 2.0) / tan((int)FOV2 * (PI / 180));
 	all->visual.width = 0;
-	step = (FOV * PI180) / (all->file.R_x - 1);
-	while (all->visual.ugl <= ((all->angle.alpha + (int)FOV2) * PI180))
+	step = (FOV * (PI / 180)) / (all->file.R_x - 1);
+	while (all->visual.ugl <= ((all->angle.alpha + (int)FOV2) * (PI / 180)))
 	{
 		reycast_help_init(all, &horiz, &verti);
 		horiz.l = sqrt(pow((all->player.x - horiz.gip), 2)

@@ -62,14 +62,14 @@ void	init_sprite_help(t_all *all, double step)
 			all->sprite->x - all->player.x);
 	all->sprite->dist = sqrt(pow(all->sprite->x - all->player.x, 2)
 			+ pow(all->sprite->y - all->player.y, 2));
-	while (teta - (all->angle.alpha * PI180) > PI)
+	while (teta - (all->angle.alpha * (PI / 180)) > PI)
 		teta -= 2 * PI;
-	while (teta - (all->angle.alpha * PI180) < -PI)
+	while (teta - (all->angle.alpha * (PI / 180)) < -PI)
 		teta += 2 * PI;
 	all->sprite->size = (int)round(((SIZE_CHUNK / SCALE)
 				/ all->sprite->dist) * all->visual.distC);
 	all->sprite->start = (int)((all->file.R_x - 1) / 2.0
-			+ (teta - (all->angle.alpha * PI180))
+			+ (teta - (all->angle.alpha * (PI / 180)))
 			/ step - all->sprite->size / 2.0);
 	all->sprite->y_start = (all->file.R_y / 2)
 		+ (all->sprite->size / SIZE_CHUNK);
