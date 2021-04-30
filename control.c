@@ -112,6 +112,14 @@ int ft_key_hook(int keycode, t_all *all)
 	return (0);
 }
 
+int ft_key_stop(int keycode, t_all *all)
+{
+	if (keycode == W || keycode == S || keycode == A || keycode == D || keycode == M
+		|| keycode == ARROW_LEFT || keycode == ARROW_RIGHT)
+		all->key.keycode = -1;
+	return (0);
+}
+
 int ft_close_exit(t_all *all)
 {
 	free(all->visual.rey_len);

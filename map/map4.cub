@@ -1,8 +1,8 @@
 R 1280 720
-NO ./texture/N_2.xpm
-SO ./texture/SO_2.xpm
-WE ./texture/W_2.xpm
-EA ./texture/E_2.xpm
+NO ./texture/N.xpm
+SO ./texture/SO.xpm
+WE ./texture/W.xpm
+EA ./texture/E.xpm
 S ./texture/S.xpm
 F 102,102,102
 C 0,219,255

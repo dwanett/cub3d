@@ -50,8 +50,8 @@
 # define SCALE 1.9
 # define SIZE_MAP 16
 # define SIZE_PLAYER 2
-# define SPEED_MOVE 200
-# define SPEED_ANGLE 3
+# define SPEED_MOVE 100
+# define SPEED_ANGLE 1
 # define FOV 60
 # define FOV2 (FOV / 2)
 # define PI180 (PI / 180)
@@ -198,6 +198,7 @@ int				ft_pars(int fd, t_file *file);
 int				ft_open_file(int argc, char *argv[], t_file *file);
 void			move(t_all *all);
 int				ft_key_hook(int keycode, t_all *all);
+int				ft_key_stop(int keycode, t_all *all);
 int				ft_close_exit(t_all *all);
 void			full_free_file(t_file *file);
 void			my_mlx_pixel_put(t_data *data, int x, int y, int color);

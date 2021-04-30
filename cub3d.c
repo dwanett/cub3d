@@ -50,7 +50,7 @@ int			render_next_frame(t_all *all)
 		/*------------mapend------------*/
 		move(all);
 	}
-	all->key.keycode = -1;
+	//all->key.keycode = -1;
 	return (0);
 }
 
@@ -91,6 +91,7 @@ int			ft_window(t_file file)
 	mlx_loop_hook(all.vars.mlx, myFPS, &all);
 	//mlx_loop_hook(all.vars.mlx, render_next_frame, &all);
 	mlx_hook(all.vars.win, 2, 1L << 0, ft_key_hook, &all);
+	mlx_hook(all.vars.win, 3, 1L << 1, ft_key_stop, &all);
 	mlx_hook(all.vars.win, CLOSE, 0, ft_close_exit, &all);
 	mlx_loop(all.vars.mlx);
 	return (0);
