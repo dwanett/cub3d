@@ -12,7 +12,7 @@
 
 NAME = cub3D
 CC = gcc
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra #-Werror
 LIB = -L mlx_linux/ -L get_next_line/ -L libft/
 OPTION_LIB = -lmlx -lXext -lX11 -lm -lbsd -lft -lgnl
 OPTION = -O3 -c
