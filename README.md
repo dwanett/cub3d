@@ -18,5 +18,5 @@ cd mlx_linux; make
 make -f Makefile_linux
 ```
 # Пример работы
-<img src="https://github.com/dwanett/cub3d/tree/master/gif/1.gif" width="20" height="20" />
-<img src="https://github.com/dwanett/cub3d/tree/master/gif/2.gif" width="20" height="20" />
+![](https://github.com/dwanett/cub3d/tree/master/gif/2.gif)
+![](https://github.com/dwanett/cub3d/tree/master/gif/1.gif)
