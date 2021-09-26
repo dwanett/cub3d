@@ -1,6 +1,6 @@
 # Описание
 Программа cub3d реализует алгоритм рейкастинга, который использовался в такой игре, как Wolfenstein 3D.
-# Как устакновить проект cub3d
+# Как установить cub3d
 **Требуемые библиотеки для компиляции**
 ```
 sudo apt-get update && sudo apt-get install xorg libxext-dev zlib1g-dev
@@ -17,3 +17,4 @@ make -f Makefile_mac
 cd mlx_linux; make
 make -f Makefile_linux
 ```
+# Пример работы
