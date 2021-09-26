@@ -18,5 +18,5 @@ cd mlx_linux; make
 make -f Makefile_linux
 ```
 # Пример работы
-![](https://github.com/dwanett/cub3d/gif/1.gif)
+![](https://github.com/dwanett/cub3d/tree/master/gif/1.gif)
 ![](https://github.com/dwanett/cub3d/tree/master/gif/2.gif)
