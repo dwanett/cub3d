@@ -7,13 +7,13 @@ sudo apt-get update && sudo apt-get install xorg libxext-dev zlib1g-dev
 sudo apt-get install libbsd-dev
 ```
 **В корне репозитория ввести**
-**Для MacOS (требуется OpenGL):**
 ```
+Для MacOS (требуется OpenGL):
 cd mlx_mac; make
 make -f Makefile_mac
-```
-**Для Linux:**
-```
+
+
+Для Linux:
 cd mlx_linux; make
 make -f Makefile_linux
 ```
