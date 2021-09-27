@@ -18,13 +18,13 @@ cd mlx_linux; make
 make -f Makefile_linux
 ```
 # Управление
-W - вперёд<br/>
-S - назад<br/>
-A - влево<br/>
-D - впарво<br/>
-← - повернуть камеру влево<br/>
-→ - повернуть камеру вправо<br/>
-M - карта
+`W` - вперёд<br/>
+`S` - назад<br/>
+`A` - влево<br/>
+`D` - впарво<br/>
+`←` - повернуть камеру влево<br/>
+`→` - повернуть камеру вправо<br/>
+`M` - карта
 # Пример работы
 ![](https://github.com/dwanett/cub3d/blob/master/gif/1.gif)
 ![](https://github.com/dwanett/cub3d/blob/master/gif/2.gif)
