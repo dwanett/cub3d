@@ -17,6 +17,14 @@ make -f Makefile_mac
 cd mlx_linux; make
 make -f Makefile_linux
 ```
+# Управление
+W - вперёд
+S - назад
+A - влево
+D - впарво
+← - повернуть камеру влево
+→ - повернуть камеру вправо
+M - карта
 # Пример работы
 ![](https://github.com/dwanett/cub3d/blob/master/gif/1.gif)
 ![](https://github.com/dwanett/cub3d/blob/master/gif/2.gif)
